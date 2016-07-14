@@ -1,5 +1,4 @@
 let mapleader=" "
-set scrolloff=5
 "============================================================================
 " Bindings
 "============================================================================
@@ -129,6 +128,7 @@ set scrolloff=5
 		set nowrap          " Don't wrap lines
 		set nocursorline    " Wont higlight current line
 		set nocursorcolumn  " Wont make cursor to column
+		set scrolloff=5
 "============================================================================
 " Search Settings
 "============================================================================
