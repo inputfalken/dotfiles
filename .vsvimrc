@@ -42,7 +42,7 @@
 	nmap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
 	nmap gi :vsc ReSharper.ReSharper_GotoImplementation<CR>
 "============================================================================
-"		Go To Next Error in Solution"
+"		Go To Next Error In Solution"
 "============================================================================
 	nmap ge :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
 	noremap <C-E> :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
@@ -64,12 +64,23 @@
 	nmap <leader>ai :vsc Project.AddInterface<CR>
 	nmap <leader>ar :vsc Project.AddReference<CR>
 "============================================================================
-"		Fold Code
+"		Formating & Folding
 "============================================================================
-	nmap <leader>fr :vsc Edit.CollapseCurrentRegion <CR>
+	nmap <leader>fr :vsc Edit.CollapseCurrentRegion<CR>
+	nmap <leader>rc :vsc ReSharper.ReSharper_ReformatCode<CR>
 "============================================================================
-
-
+"		Git
+"============================================================================
+	nmap <leader>cwu Team.Git.CompareWithUnmodified<CR>
+"============================================================================
+"		Unbinded Useful Commands
+"============================================================================
+	" Team.Git.ShowGraph
+	" File.ViewHistory
+	" View.PackageManagerConsole
+"============================================================================
+"		Good sources
+"============================================================================
 " Found many vsvimrc files on github:
 " https://github.com/jaredpar/VsVim/wiki/Settings-Reference
 " https://github.com/aburok/mysettings/blob/master/Vim/_vsvimrc
@@ -81,3 +92,7 @@
 " https://github.com/cakn/vimfiles/blob/master/_vsvimrc
 " https://github.com/potz/dotfiles/blob/401ff11fafdb80c927387a471cacc5a5a2b53c28/.vsvimrc
 " https://github.com/StanislawSwierc/Profile/blob/d268cc58366fa8d6a347b3e98bd4daff8257d212/_vsvimrc
+"============================================================================
+"		Tips
+"============================================================================
+" To Find VS Commands Go To Options -> Enviroment -> Keyboard
