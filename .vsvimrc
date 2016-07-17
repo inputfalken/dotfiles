@@ -2,16 +2,24 @@
 "		General Settings
 "============================================================================
 	let mapleader=" "
+"============================================================================
+" 		Search Settings
+"============================================================================
 	set incsearch
 	set hlsearch
 	set ignorecase
 	set cursorline
+	set smartcase     " Ignore case if search pattern is all lowercase, case-sensitive otherwise
+"============================================================================
 	set backspace=indent,eol,start
 	set vsvim_useeditorindent
 	set vsvim_useeditordefaults
 	set whichwrap=b,s,<,>,h,l   " wrap backspace and cursors correctly
 	set scrolloff=5
 	set clipboard=unnamed
+"============================================================================
+"		Bindings
+"============================================================================
 	map Y y
 	noremap Y y$
 	noremap x "_x
@@ -19,16 +27,27 @@
 	nnoremap j gj
 	nnoremap k gk
 	inoremap jk <esc>
+	nmap <Leader>svc :source C://Users/Robert/.vsvimrc<CR>
 "============================================================================
 "		Build & Debugging
 "============================================================================
 	nnoremap <leader>B :vsc Build.BuildSolution<CR>
 	nmap <leader>s :vsc Debug.Start<CR>
 	nmap <leader>S :vsc Debug.StopDebugging<CR>
+	nmap <Down> :vsc Debug.StepInto<CR>
+	nmap <Up> :vsc Debug.StepOut<CR>
+	nmap <Left> :vsc Debug.StepOver<CR>
+	nmap <Leader>bp :vsc Debug.ToggleBreakpoint<CR>
 "============================================================================
 "		Test
 "============================================================================
 	nmap <Leader>ta :vsc ReSharper.ReSharper_UnitTestRunSolution<CR>
+"============================================================================
+"		Toggle Bookmark & Go To Next Or Previous BookMark In Solution
+"============================================================================
+	nmap <Leader>bm :vsc Edit.ToggleBookmark<CR>
+	nmap gb :vsc Edit.NextBookmark<CR>
+	nmap gB :vsc Edit.NextBookmark<CR>
 "============================================================================
 "		Go To file / member
 "============================================================================
@@ -42,7 +61,7 @@
 	nmap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
 	nmap gi :vsc ReSharper.ReSharper_GotoImplementation<CR>
 "============================================================================
-"		Go To Next Error In Solution"
+"		Go To Next Error Or Previous Error In Solution
 "============================================================================
 	nmap ge :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
 	noremap <C-E> :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
@@ -73,11 +92,14 @@
 "============================================================================
 	nmap <leader>cwu :vsc Team.Git.CompareWithUnmodified<CR>
 "============================================================================
+"		Bindings End
+"============================================================================
 "		Unbinded Useful Commands
 "============================================================================
 	" Team.Git.ShowGraph
 	" File.ViewHistory
 	" View.PackageManagerConsole
+	" TODO ADD CLOSE TAB HERE
 "============================================================================
 "		Good sources
 "============================================================================
