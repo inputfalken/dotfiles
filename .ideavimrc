@@ -10,7 +10,6 @@ set ignorecase
 set cursorline
 set smartcase
 set scrolloff=5
-set relativenumber
 noremap <Leader>rc :action ReformatCode<CR>
 noremap <Leader>bm :action ToggleBookmark<CR>
 noremap gb :action GotoNextBookmark<CR>
