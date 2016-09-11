@@ -1,0 +1,31 @@
+[user]
+	email = inputfalken@gmail.com
+	name = Robert Andersson
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[difftool "vsdiffmerge"]
+	cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\vsdiffmerge.exe\" \"$LOCAL\" \"$REMOTE\" //t
+[difftool "vsdiffmerge"]
+	keepbackup = false
+[merge]
+	tool = vsdiffmerge
+[mergetool]
+	prompt = true
+[mergetool "vsdiffmerge"]
+	cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\vsdiffmerge.exe\" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\" //m
+	trustexitcode = true
+[mergetool "vsdiffmerge"]
+	keepbackup = false
+[push]
+	default = simple
+[alias]
+	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	d = difftool
+[core]
+	autocrlf = true
+	editor = vim
+	excludesfile = /cygdrive/c/Users/Robert/.gitignore_global
+[gui]
+	recentrepo = C:/Users/Robert/gitTest
