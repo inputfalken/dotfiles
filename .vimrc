@@ -58,17 +58,15 @@ let mapleader=" "
 "============================================================================
 " 		Vundle Config
 "============================================================================
-	execute pathogen#infect()
 	set nocompatible              " Be iMproved, required
 	filetype off                  " Required
-	" Set the runtime path to include Vundle and initialize
 	set rtp+=~/.vim/bundle/Vundle.vim
 	call vundle#begin()
 	Plugin 'VundleVim/Vundle.vim'
 	Plugin 'scrooloose/syntastic'
 	Plugin 'scrooloose/nerdtree'
 	Plugin 'tpope/vim-fugitive'
-	"Plugin 'Valloric/YouCompleteMe'
+	Plugin 'Valloric/YouCompleteMe'
 	call vundle#end()            " Required
 	filetype plugin indent on    " Required
 	syntax on
@@ -163,3 +161,11 @@ let mapleader=" "
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " For those buffers that are only a few lines
 	nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
+
+"============================================================================
+" 		Dotnet Core
+"============================================================================
+augroup filetype_cs
+  autocmd!
+  autocmd FileType cs nmap <leader>R :!dotnet run<CR>
+  autocmd FileType cs nmap <leader>B :!dotnet build<CR>
