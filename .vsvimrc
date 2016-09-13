@@ -69,8 +69,10 @@
 "============================================================================
 "		Refactorings
 "============================================================================
-	nmap <leader>r :vsc ReSharper.ReSharper_Rename<CR>
-	nmap <leader>R :vsc ReSharper.ReSharper_RefactorThis<CR>
+	nmap <leader>re :vsc ReSharper.ReSharper_Rename<CR>
+	nmap <leader>R :vsc Debug.StartWithoutDebugging<CR>
+	nmap <leader>D :vsc Debug.Start<CR>
+	nmap <leader>B :vsc Build.BuildSolution<CR>
 	vmap <leader>R :vsc ReSharper.ReSharper_RefactorThis<CR>
 	vmap <leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
 	nmap <leader>ei :vsc ReSharper.ReSharper_VSRefactor_ExtractInterface<CR>
