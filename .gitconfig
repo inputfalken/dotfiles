@@ -3,21 +3,6 @@
 	name = Robert Andersson
 [diff]
 	tool = vimdiff
-[difftool]
-	prompt = false
-[difftool "vsdiffmerge"]
-	cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\vsdiffmerge.exe\" \"$LOCAL\" \"$REMOTE\" //t
-[difftool "vsdiffmerge"]
-	keepbackup = false
-[merge]
-	tool = vsdiffmerge
-[mergetool]
-	prompt = true
-[mergetool "vsdiffmerge"]
-	cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\vsdiffmerge.exe\" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\" //m
-	trustexitcode = true
-[mergetool "vsdiffmerge"]
-	keepbackup = false
 [push]
 	default = simple
 [alias]
