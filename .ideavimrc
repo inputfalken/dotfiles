@@ -6,10 +6,14 @@ noremap X "_X
 nnoremap j gj
 nnoremap k gk
 inoremap jk <esc>
-set ignorecase
+
 set cursorline
 set smartcase
 set scrolloff=5
+set undolevels=100
+set relativenumber
+set incsearch
+
 noremap <Leader>rc :action ReformatCode<CR>
 noremap <Leader>bm :action ToggleBookmark<CR>
 noremap gb :action GotoNextBookmark<CR>
@@ -31,3 +35,4 @@ noremap <Leader>D :action Debug<CR>
 
 noremap <Leader>bp :action ToggleLineBreakpoint<CR>
 noremap <Leader>Gcwb :action Git.CompareWithBranch<CR>
+noremap <Leader>ta :action RiderUnitTestRunSolutionAction<CR>

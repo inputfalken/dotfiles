@@ -13,7 +13,10 @@ Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 Plug 'https://github.com/metakirby5/codi.vim'
 Plug 'https://github.com/scrooloose/syntastic'
 Plug 'https://github.com/Valloric/YouCompleteMe'
+Plug 'https://github.com/ctrlpvim/ctrlp.vim'
 Plug 'https://github.com/dag/vim-fish'
+Plug 'https://github.com/christoomey/vim-tmux-navigator'
+Plug 'https://github.com/tmux-plugins/vim-tmux'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'fsharp/vim-fsharp', {
       \ 'for': 'fsharp',
@@ -94,6 +97,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_javascript_eslint_exec = 'eslint_d'
 let g:processing_doc_style = 'local'
@@ -123,11 +127,10 @@ set wildmode=longest:full,full
 "Indent Settings
 "============================================================================
 set copyindent    " Copy the previous indentation on autoindenting
-set smarttab      " Insert tabs on the start of a line according to
+set expandtab
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
-set expandtab
 set autoindent
 set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'
 "============================================================================
@@ -173,18 +176,13 @@ filetype indent on
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " For those buffers that are only a few lines
 nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
-
 "============================================================================
 "Dotnet Core
 "============================================================================
   "C#
-  augroup filetype_cs
-    autocmd!
     autocmd FileType cs nmap <leader>R :!dotnet run<CR>
     autocmd FileType cs nmap <leader>B :!dotnet build<CR>
   "F#
-  augroup filetype_fs
-    autocmd!
-    autocmd FileType fs nmap <leader>R :!dotnet run<CR>
-    autocmd FileType fs nmap <leader>B :!dotnet build<CR>
-let g:OmniSharp_server_type = 'roslyn'
+    autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
+    autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
+let g:OmniSharp_selector_ui = 'ctrlp'
