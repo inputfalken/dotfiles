@@ -1,3 +1,4 @@
+let g:OmniSharp_selector_ui = 'ctrlp'
 "This is the default value, setting it isn't actually necessary
 let g:OmniSharp_host = "http://localhost:2000"
 

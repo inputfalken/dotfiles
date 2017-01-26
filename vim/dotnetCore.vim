@@ -4,4 +4,3 @@ autocmd FileType cs nmap <leader>B :!dotnet build<CR>
 "F#
 autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
 autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
-let g:OmniSharp_selector_ui = 'ctrlp'
