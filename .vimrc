@@ -5,21 +5,9 @@ if &shell =~# 'fish$'
       set shell=sh
    endif
 "============================================================================
-"Load plugins
+"Load plugins from Plugged
 "============================================================================
-source ~/dotfiles/vim/plugged.vim
-"============================================================================
-"Set colors
-"============================================================================
-set background=dark
-if has('nvim')
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-  let g:solarized_italic=0
-  au VimEnter * colorscheme solarized
-endif
-colorscheme solarized
-syntax enable
+source $HOME/.vimrc.bundles
 "============================================================================
 "Set leader key
 "============================================================================
@@ -30,7 +18,7 @@ let maplocalleader=" "
 "============================================================================
 set rtp+=~/.vim
 "============================================================================
-"Perform recursive search
+"Perform recursive search when using find command.
 "============================================================================
 set path+=**
 "============================================================================
@@ -80,13 +68,13 @@ nnoremap <silent> ]B :blast<CR>
 "============================================================================
 "Vimrc
 "============================================================================
-nmap <silent> <leader>ev :e ~/dotfiles/.vimrc<CR>
-nmap <silent> <leader>sv :so ~/dotfiles/.vimrcC<CR>
-nnoremap <leader>ev :vsplit ~/dotfiles/.vimrc<CR>
+nmap <silent> <leader>ev :e $HOME/.vimrc<CR>
+nmap <silent> <leader>sv :so $HOME/.vimrcC<CR>
+nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
 "Syntastic Settings
 "============================================================================
-source ~/dotfiles/vim/syntastic.vim
+source $HOME/.vimrc.syntastic
 "============================================================================
 " Abberviations
 "============================================================================
@@ -160,5 +148,23 @@ filetype indent on
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " For those buffers that are only a few lines
 nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
-source ~/dotfiles/vim/dotnetCore.vim
-source ~/dotfiles/vim/omnisharp.vim
+"============================================================================
+"Load .NET Core settings.
+"============================================================================
+source $HOME/.vimrc.dotnetCore
+"============================================================================
+"Load Omnisharp settings.
+"============================================================================
+autocmd FileType cs source $HOME/.vimrc.omnisharp
+"============================================================================
+"Set solarized dark color theme
+"============================================================================
+set background=dark
+if has('nvim')
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+  let g:solarized_italic=0
+  au VimEnter * colorscheme solarized
+endif
+colorscheme solarized
+syntax enable
