@@ -65,9 +65,9 @@ nnoremap <silent> ]B :blast<CR>
 "============================================================================
 "Vimrc
 "============================================================================
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nmap <silent> <leader>ev :e ~/dotfiles/.vimrc<CR>
+nmap <silent> <leader>sv :so ~/dotfiles/.vimrcC<CR>
+nnoremap <leader>ev :vsplit ~/dotfiles/.vimrc<CR>
 "============================================================================
 "Syntastic Settings
 "============================================================================
