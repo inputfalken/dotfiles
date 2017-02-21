@@ -2,8 +2,8 @@
 " Support fish shell.
 "============================================================================
 if &shell =~# 'fish$'
-      set shell=sh
-   endif
+  set shell=sh
+endif
 "============================================================================
 " Load plugins from Plugged
 "============================================================================
@@ -152,17 +152,17 @@ nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
 "============================================================================
 " .NET Core
 "============================================================================
-source $HOME/.vimrc.dotnetCore
+autocmd FileType cs nmap <leader>R :!dotnet run<CR>
+autocmd FileType cs nmap <leader>B :!dotnet build<CR>
+autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
+autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
+autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
 " Javascript
 "============================================================================
 let g:javascript_plugin_flow = 1 " Enables syntax highlighting for Flow from the repo pangloss/vim-javascript
 let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript extensions
 autocmd FileType javascript noremap gd :FlowJumpToDef<CR> " Go to definition with jsflow
-"============================================================================
-" Omnisharp
-"============================================================================
-autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
 " Solarized dark colorscheme
 "============================================================================
