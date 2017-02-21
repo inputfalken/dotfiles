@@ -1,78 +1,82 @@
 "============================================================================
-"Support fish shell.
+" Support fish shell.
 "============================================================================
 if &shell =~# 'fish$'
       set shell=sh
    endif
 "============================================================================
-"Load plugins from Plugged
+" Load plugins from Plugged
 "============================================================================
 source $HOME/.vimrc.bundles
 "============================================================================
-"Set leader key
+" Set leader key
 "============================================================================
 let mapleader=" "
 let maplocalleader=" "
 "============================================================================
-"Set runetimepath
+" Set runetimepath
 "============================================================================
 set rtp+=~/.vim
 "============================================================================
-"Perform recursive search when using find command.
+" Perform recursive search when using find command.
 "============================================================================
 set path+=**
 "============================================================================
-"Paste last yanked item
+" Paste last yanked item
 "============================================================================
 noremap <Leader>p "0p
 noremap <Leader>P "0P
 "============================================================================
-"Quote Selection
+" Quote Selection
 "============================================================================
 vnoremap <Leader>" c"<C-r>""<Esc>
 "============================================================================
-"Enter normal mode from insert mode
+" Enter normal mode from insert mode
 "============================================================================
 inoremap jk <esc>
 "============================================================================
-"Make Y behave as D, C
+" Go to definition with jsflow
+"============================================================================
+autocmd FileType javascript noremap gd :FlowJumpToDef<CR>
+"============================================================================
+" Make Y behave as D, C
 "============================================================================
 map Y y
 noremap Y y$
 "============================================================================
-"Move by line on the screen rather than by line in the file
+" Move by line on the screen rather than by line in the file
 "============================================================================
 nnoremap j gj
 nnoremap k gk
 "============================================================================
 nmap <silent>  <BS>  :nohlsearch<CR>
 "============================================================================
-"Cycle through history in Command-Line Window
+" Cycle through history in Command-Line Window
 "============================================================================
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 "============================================================================
-"Use arrow keys to navigate after a :vimgrep or :helpgrep
+" Use arrow keys to navigate after a :vimgrep or :helpgrep
 "============================================================================
 nmap <silent> <RIGHT>         :cnext<CR>
 nmap <silent> <RIGHT><RIGHT>  :cnfile<CR><C-G>
 nmap <silent> <LEFT>          :cprev<CR>
 nmap <silent> <LEFT><LEFT>    :cpfile<CR><C-G>
 "============================================================================
-"Navigate buffer list
+" Navigate buffer list
 "============================================================================
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 "============================================================================
-"Vimrc
+" Vimrc
 "============================================================================
 nmap <silent> <leader>ev :e $HOME/.vimrc<CR>
 nmap <silent> <leader>sv :so $HOME/.vimrcC<CR>
 nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
-"Syntastic Settings
+" Syntastic Settings
 "============================================================================
 source $HOME/.vimrc.syntastic
 "============================================================================
@@ -91,12 +95,12 @@ function! HelpInNewTab ()
   endif
 endfunction
 "============================================================================
-"When completing, show all options, insert common prefix, then iterate
+" When completing, show all options, insert common prefix, then iterate
 "============================================================================
 set wildmenu
 set wildmode=longest:full,full
 "============================================================================
-"Indent Settings
+" Indent Settings
 "============================================================================
 set copyindent    " Copy the previous indentation on autoindenting
 set expandtab
@@ -106,7 +110,7 @@ set softtabstop=2
 set autoindent
 set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'
 "============================================================================
-"Line Settings
+" Line Settings
 "============================================================================
 set number          " Enable line numbers
 set relativenumber  " Changes the line number where the cursor are to zero
@@ -115,7 +119,7 @@ set nocursorline    " Wont higlight current line
 set nocursorcolumn  " Wont make cursor to column
 set scrolloff=5
 "============================================================================
-"Search Settings
+" Search Settings
 "============================================================================
 set showmatch     " Set show matching parenthesis
 set ignorecase    " Ignore case when searching
@@ -129,6 +133,7 @@ set incsearch     " Show search matches as you type
 " set nrformats=alpha " Set increment numbers in decimal
 "============================================================================
 set backspace=indent,eol,start " Allow backspacing over everything in insert mode
+set eol " Add newline to end of file everytime you save the file.
 set title                " Change the terminal's title
 set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
@@ -149,15 +154,15 @@ filetype indent on
 " For those buffers that are only a few lines
 nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
 "============================================================================
-"Load .NET Core settings.
+" .NET Core
 "============================================================================
 source $HOME/.vimrc.dotnetCore
 "============================================================================
-"Load Omnisharp settings.
+" Omnisharp
 "============================================================================
 autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
-"Set solarized dark color theme
+" Solarized dark colorscheme
 "============================================================================
 set background=dark
 if has('nvim')
