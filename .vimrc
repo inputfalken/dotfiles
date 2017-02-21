@@ -35,10 +35,6 @@ vnoremap <Leader>" c"<C-r>""<Esc>
 "============================================================================
 inoremap jk <esc>
 "============================================================================
-" Go to definition with jsflow
-"============================================================================
-autocmd FileType javascript noremap gd :FlowJumpToDef<CR>
-"============================================================================
 " Make Y behave as D, C
 "============================================================================
 map Y y
@@ -157,6 +153,12 @@ nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
 " .NET Core
 "============================================================================
 source $HOME/.vimrc.dotnetCore
+"============================================================================
+" Javascript
+"============================================================================
+let g:javascript_plugin_flow = 1 " Enables syntax highlighting for Flow from the repo pangloss/vim-javascript
+let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript extensions
+autocmd FileType javascript noremap gd :FlowJumpToDef<CR> " Go to definition with jsflow
 "============================================================================
 " Omnisharp
 "============================================================================
