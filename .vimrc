@@ -69,7 +69,7 @@ nnoremap <silent> ]B :blast<CR>
 " Vimrc
 "============================================================================
 nmap <silent> <leader>ev :e $HOME/.vimrc<CR>
-nmap <silent> <leader>sv :so $HOME/.vimrcC<CR>
+nmap <silent> <leader>sv :so $HOME/.vimrc<CR>
 nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
 " Syntastic Settings
@@ -160,9 +160,9 @@ autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
 " Javascript
 "============================================================================
-let g:javascript_plugin_flow = 1 " Enables syntax highlighting for Flow from the repo pangloss/vim-javascript
 let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript extensions
-autocmd FileType javascript noremap gd :FlowJumpToDef<CR> " Go to definition with jsflow
+autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with ternjs
+autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 " Solarized dark colorscheme
 "============================================================================
