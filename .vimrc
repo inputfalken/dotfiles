@@ -156,7 +156,7 @@ autocmd FileType cs nmap <leader>R :!dotnet run<CR>
 autocmd FileType cs nmap <leader>B :!dotnet build<CR>
 autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
 autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
-autocmd FileType cs source $HOME/.vimrc.omnisharp
+"autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
 " Javascript
 "============================================================================
