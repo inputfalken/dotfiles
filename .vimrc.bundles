@@ -19,6 +19,7 @@ Plug 'https://github.com/tmux-plugins/vim-tmux'
 Plug 'https://github.com/tpope/vim-dispatch'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'junegunn/vim-easy-align'
+Plug 'https://github.com/nelstrom/vim-markdown-folding'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 
