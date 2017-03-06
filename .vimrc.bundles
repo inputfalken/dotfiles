@@ -4,6 +4,7 @@ Plug 'fsharp/vim-fsharp', {
       \ 'for': 'fsharp',
       \ 'do':  'make fsautocomplete',
       \}
+Plug 'https://github.com/OmniSharp/omnisharp-vim'
 Plug 'https://github.com/SirVer/ultisnips'
 Plug 'https://github.com/Valloric/YouCompleteMe'
 Plug 'https://github.com/christoomey/vim-tmux-navigator'

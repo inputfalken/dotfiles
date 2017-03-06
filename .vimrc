@@ -26,6 +26,7 @@ set path+=**
 "============================================================================
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif " Close vim if only nerdtree is open.
 "============================================================================
 " Paste last yanked item
 "============================================================================
@@ -161,7 +162,6 @@ autocmd FileType cs nmap <leader>R :!dotnet run<CR>
 autocmd FileType cs nmap <leader>B :!dotnet build<CR>
 autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
 autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
-"autocmd FileType cs source $HOME/.vimrc.omnisharp
 "============================================================================
 " Javascript
 "============================================================================
@@ -170,6 +170,11 @@ autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with tern
 autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 " Solarized dark colorscheme
+"============================================================================
+" If you enable set spell the completion will be used. Example :set spell
+" spelllang=sv,en
+"============================================================================
+set complete+=kspell
 "============================================================================
 set background=dark
 if has('nvim')
