@@ -1,7 +1,10 @@
 {
+  "libs": [
+    "browser"
+  ],
   "plugins": {
     "node": {},
-      "modules": {},
-      "es_modules": {}
+    "modules": {},
+    "es_modules": {}
   }
 }
