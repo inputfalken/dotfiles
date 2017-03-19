@@ -27,7 +27,7 @@ noremap X "_X
 nnoremap j gj
 nnoremap k gk
 inoremap jk <esc>
-nmap <Leader>so :source C://Users/Rober/.vsvimrc<CR>
+nmap <Leader>so :source ~/.vsvimrc<CR>
 "============================================================================
 " Track jumps accross session
 "============================================================================
