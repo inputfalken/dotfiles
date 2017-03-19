@@ -58,6 +58,10 @@ nmap gB :vsc Edit.NextBookmark<CR>
 "============================================================================
 "Go To file / member
 "============================================================================
+" Templating
+"============================================================================
+vmap <leader>s :vsc ReSharper.ReSharper_SurroundWith<CR>
+"============================================================================
 nmap gf :vsc ReSharper.ReSharper_GotoFile<CR>
 nmap gm :vsc ReSharper.ReSharper_GotoFileMember<CR>
 nnoremap gr :vsc ReSharper.ReSharper_GotoRecentFiles <CR>
