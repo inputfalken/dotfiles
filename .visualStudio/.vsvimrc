@@ -27,7 +27,7 @@ noremap X "_X
 nnoremap j gj
 nnoremap k gk
 inoremap jk <esc>
-nmap <Leader>svc :source C://Users/Robert/.vsvimrc<CR>
+nmap <Leader>so :source C://Users/Rober/.vsvimrc<CR>
 "============================================================================
 "Build & Debugging
 "============================================================================
