@@ -36,15 +36,15 @@ nmap <Leader>ev :vsplit<CR> :edit ~/.vsvimrc<CR>
 nmap <C-O> :vsc View.NavigateBackward<CR>
 nmap <C-I> :vsc View.NavigateForward<CR>
 "============================================================================
-"Build & Debugging
+"Build, Debugging And Run
 "============================================================================
-nnoremap <Leader>B :vsc Build.BuildSolution<CR>
-nmap <Leader>s :vsc Debug.Start<CR>
-nmap <Leader>S :vsc Debug.StopDebugging<CR>
 nmap <Down> :vsc Debug.StepInto<CR>
 nmap <Up> :vsc Debug.StepOut<CR>
 nmap <Left> :vsc Debug.StepOver<CR>
 nmap <Leader>bp :vsc Debug.ToggleBreakpoint<CR>
+nmap <Leader>R :vsc Debug.StartWithoutDebugging<CR>
+nmap <Leader>D :vsc Debug.Start<CR>
+nmap <Leader>B :vsc Build.BuildSolution<CR>
 "============================================================================
 "Test
 "============================================================================
@@ -84,10 +84,6 @@ nmap gE :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
 "Refactorings
 "============================================================================
 nmap <Leader>r :vsc ReSharper.ReSharper_Rename<CR>
-nmap <Leader>R :vsc Debug.StartWithoutDebugging<CR>
-nmap <Leader>D :vsc Debug.Start<CR>
-nmap <Leader>B :vsc Build.BuildSolution<CR>
-vmap <Leader>R :vsc ReSharper.ReSharper_RefactorThis<CR>
 vmap <Leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
 nmap <Leader>ei :vsc ReSharper.ReSharper_VSRefactor_ExtractInterface<CR>
 
