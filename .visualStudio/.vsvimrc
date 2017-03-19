@@ -28,6 +28,8 @@ nnoremap j gj
 nnoremap k gk
 inoremap jk <esc>
 nmap <Leader>so :source ~/.vsvimrc<CR>
+"Solves the problem kinda by opening a tab with .vsvimrc
+nmap <Leader>ev :vsplit<CR> :edit ~/.vsvimrc<CR>
 "============================================================================
 " Track jumps accross session
 "============================================================================
