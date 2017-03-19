@@ -79,6 +79,7 @@ nmap gE :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
 "============================================================================
 "Refactorings
 "============================================================================
+nmap <Leader>r :vsc ReSharper.ReSharper_Rename<CR>
 nmap <Leader>R :vsc Debug.StartWithoutDebugging<CR>
 nmap <Leader>D :vsc Debug.Start<CR>
 nmap <Leader>B :vsc Build.BuildSolution<CR>
