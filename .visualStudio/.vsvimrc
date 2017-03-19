@@ -29,6 +29,11 @@ nnoremap k gk
 inoremap jk <esc>
 nmap <Leader>so :source C://Users/Rober/.vsvimrc<CR>
 "============================================================================
+" Track jumps accross session
+"============================================================================
+nmap <C-O> :vsc View.NavigateBackward<CR>
+nmap <C-I> :vsc View.NavigateForward<CR>
+"============================================================================
 "Build & Debugging
 "============================================================================
 nnoremap <leader>B :vsc Build.BuildSolution<CR>
