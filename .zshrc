@@ -1,31 +1,12 @@
-SSH_ENV=$HOME/.ssh/environment
-  
-# start the ssh-agent
-function start_agent {
-    echo "Initializing new SSH agent..."
-    # spawn ssh-agent
-    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-    echo succeeded
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" > /dev/null
-    /usr/bin/ssh-add
-}
-  
-if [ -f "${SSH_ENV}" ]; then
-     . "${SSH_ENV}" > /dev/null
-	 ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-	    start_agent;
-	}
-else
-    start_agent;
-fi
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-  export ZSH=/cygdrive/c/Users/Robert/.oh-my-zsh
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
+export ZSH=$HOME/.oh-my-zsh
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-zsh is loaded.
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -51,7 +32,7 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+# COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -70,16 +51,17 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode)
-
-# User configuration
-export PATH="/usr/local/bin:/usr/bin:/cygdrive/c/WINDOWS/system32:/cygdrive/c/WINDOWS:/cygdrive/c/WINDOWS/System32/Wbem:/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0:/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/cygdrive/c/Program Files/nodejs:/cygdrive/c/Users/Robert/AppData/Roaming/npm:/cygdrive/c/Program Files/MongoDB/Server/3.2/bin:/cygdrive/c/Windows/Microsoft.NET/Framework/v4.0.30319:/cygdrive/c/Program Files (x86)/scala/bin:/cygdrive/c/Program Files/Java/jdk1.8.0_91/bin/:/cygdrive/c/Program Files/dotnet"
-# export MANPATH="/usr/local/man:$MANPATH"
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
+
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
@@ -91,7 +73,7 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -101,4 +83,3 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias sudo="cygstart --action=runas"
