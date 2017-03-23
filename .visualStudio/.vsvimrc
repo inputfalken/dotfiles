@@ -86,11 +86,9 @@ nmap gE :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
 nmap <Leader>r :vsc ReSharper.ReSharper_Rename<CR>
 vmap <Leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
 nmap <Leader>ei :vsc ReSharper.ReSharper_VSRefactor_ExtractInterface<CR>
-
 vmap <Leader>if :vsc ReSharper.ReSharper_IntroduceField<CR>
 vmap <Leader>ip :vsc ReSharper.ReSharper_IntroParameter<CR>
 vmap <Leader>iv :vsc ReSharper.ReSharper_IntroVariable<CR>
-
 nmap <Leader>ac :vsc Project.AddClass<CR>
 nmap <Leader>ai :vsc Project.AddInterface<CR>
 nmap <Leader>ar :vsc Project.AddReference<CR>
