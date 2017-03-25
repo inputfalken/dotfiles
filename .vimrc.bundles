@@ -7,7 +7,7 @@ Plug 'fsharp/vim-fsharp', {
 Plug 'https://github.com/OmniSharp/omnisharp-vim'
 Plug 'https://github.com/SirVer/ultisnips'
 Plug 'https://github.com/StanAngeloff/php.vim'
-Plug 'https://github.com/Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer --tern-completer' }
 Plug 'https://github.com/christoomey/vim-tmux-navigator'
 Plug 'https://github.com/ctrlpvim/ctrlp.vim'
 Plug 'https://github.com/dag/vim-fish'
@@ -17,7 +17,7 @@ Plug 'https://github.com/mxw/vim-jsx'
 Plug 'https://github.com/nelstrom/vim-markdown-folding'
 Plug 'https://github.com/pangloss/vim-javascript'
 Plug 'https://github.com/scrooloose/syntastic'
-Plug 'https://github.com/ternjs/tern_for_vim'
+Plug 'https://github.com/ternjs/tern_for_vim', {'do': 'npm install'}
 Plug 'https://github.com/tmux-plugins/vim-tmux'
 Plug 'https://github.com/tpope/vim-dispatch'
 Plug 'https://github.com/tpope/vim-fugitive'
