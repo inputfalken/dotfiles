@@ -42,3 +42,8 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_use_ultisnips_completer = 1
 let g:ycm_filetype_blacklist = {}
 
+let g:ultisnips_javascript = {
+      \ 'keyword-spacing': 'always',
+      \ 'semi': 'never',
+      \ 'space-before-function-paren': 'always',
+      \ }
