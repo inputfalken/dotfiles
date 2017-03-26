@@ -175,11 +175,10 @@ autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 " Solarized dark colorscheme
 "============================================================================
-" If you enable set spell the completion will be used. Example :set spell
-" spelllang=sv,en
-"============================================================================
-set complete+=kspell
-"============================================================================
+if empty(glob('~/.vim/colors/solarized.vim'))
+  silent !curl -fLo ~/.vim/colors/solarized.vim --create-dirs
+    \ https://raw.githubusercontent.com/altercation/solarized/master/vim-colors-solarized/colors/solarized.vim
+endif
 set background=dark
 if has('nvim')
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -189,3 +188,8 @@ if has('nvim')
 endif
 colorscheme solarized
 syntax enable
+"============================================================================
+" If you enable set spell the completion will be used. Example :set spell
+" spelllang=sv,en
+"============================================================================
+set complete+=kspell
