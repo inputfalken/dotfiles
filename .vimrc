@@ -11,7 +11,7 @@ autocmd filetype svn,*commit* setlocal spell" Support fish shell.
 "============================================================================
 " Load plugins from Plugged
 "============================================================================
-source $HOME/.vimrc.bundles
+source $HOME/.vimrc.plugins
 "============================================================================
 " Set leader key
 "============================================================================
@@ -25,12 +25,6 @@ set rtp+=~/.vim
 " Perform recursive search when using find command.
 "============================================================================
 set path+=**
-"============================================================================
-" Run nerdtree if a directory is targeted.
-"============================================================================
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif " Close vim if only nerdtree is open.
 "============================================================================
 " Paste last yanked item
 "============================================================================
@@ -166,12 +160,6 @@ autocmd FileType cs nmap <leader>R :!dotnet run<CR>
 autocmd FileType cs nmap <leader>B :!dotnet build<CR>
 autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
 autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
-"============================================================================
-" Javascript
-"============================================================================
-let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript extensions
-autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with ternjs
-autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 " Solarized dark colorscheme
 "============================================================================
