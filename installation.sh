@@ -27,12 +27,12 @@ function linuxInstallation {
 function linkItem() {
   if [ -f ~/$1 ] # Check if file exist
   then
-    printf $1 'exists, you have to remove it in order to link it' # ask user to delete it
+    printf "$1 exists, you have to remove it in order to link it \n" # ask user to delete it
     rm ~/$1 -i
   fi
   if [ ! -f ~/$1 ] # If file does not exist
   then
-    printf 'Linking ' $1
+    printf "Linking $1"
     link ./$1 ~/$1
   fi
 }
