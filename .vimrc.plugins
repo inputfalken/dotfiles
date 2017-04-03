@@ -12,7 +12,7 @@ Plug 'fsharp/vim-fsharp', {
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'SirVer/ultisnips'
 Plug 'StanAngeloff/php.vim'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer --tern-completer' }
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dag/vim-fish'
