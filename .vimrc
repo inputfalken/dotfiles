@@ -180,4 +180,17 @@ syntax enable
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
 "============================================================================
+set spellfile=$HOME/.vim-spell-en.utf-8.add
+
+" Disable unsafe commands.
+" http://andrew.stwrt.ca/posts/project-specific-vimrc/
+set secure
+" enable word completion for dictionary
 set complete+=kspell
+"============================================================================
+" To update spell dictionary.
+"============================================================================
+":edit <spell file>
+"(make changes to the spell file)
+":mkspell! %
+

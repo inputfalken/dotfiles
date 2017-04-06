@@ -32,6 +32,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
   linkItem .tmux.conf
   linkItem .vimrc.syntastic
   linkItem .tern-project
+  linkItem .vim-spell-en.utf-8.add
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
   printf 'Windows 32 bit'
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
