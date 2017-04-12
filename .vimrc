@@ -161,22 +161,6 @@ autocmd FileType cs nmap <leader>B :!dotnet build<CR>
 autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
 autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
 "============================================================================
-" Solarized dark colorscheme
-"============================================================================
-if empty(glob('~/.vim/colors/solarized.vim'))
-  silent !curl -fLo ~/.vim/colors/solarized.vim --create-dirs
-    \ https://raw.githubusercontent.com/altercation/solarized/master/vim-colors-solarized/colors/solarized.vim
-endif
-set background=dark
-if has('nvim')
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-  let g:solarized_italic=0
-  au VimEnter * colorscheme solarized
-endif
-colorscheme solarized
-syntax enable
-"============================================================================
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
 "============================================================================
