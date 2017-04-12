@@ -13,5 +13,3 @@
 	autocrlf = input
 	editor = vim.nox-py2
 	excludesfile = ~/.gitignore_global
-[gui]
-	recentrepo = C:/Users/Robert/gitTest
