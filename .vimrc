@@ -9,10 +9,6 @@ endif
 "============================================================================
 autocmd filetype svn,*commit* setlocal spell" Support fish shell.
 "============================================================================
-" Load plugins from Plugged
-"============================================================================
-source $HOME/.vimrc.plugins
-"============================================================================
 " Set leader key
 "============================================================================
 let mapleader=" "
@@ -76,10 +72,6 @@ nmap <silent> <leader>ev :e $HOME/.vimrc<CR>
 nmap <silent> <leader>sv :so $HOME/.vimrc<CR>
 nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
-" Syntastic Settings
-"============================================================================
-source $HOME/.vimrc.syntastic
-"============================================================================
 " Abberviations
 "============================================================================
 " Make :help appear in a full-screen tab, instead of a window
@@ -140,13 +132,11 @@ set listchars=tab:>.,trail:.,extends:#,nbsp:.
 set ruler        " Show where you are in file
 set matchpairs+=<:> " Add an extra matchpair
 set cpoptions+=$ " Adds a dollarsign where the change option is applied
-
 " Highlight the current line and column
 " Don't do this - It makes window redraws painfully slow
 " Show the current mode
 set showmode
-" Hide the mouse pointer while typing
-set mousehide
+set mousehide " Hide the mouse pointer while typing
 filetype on
 filetype plugin on
 filetype indent on
@@ -165,12 +155,15 @@ autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
 " spelllang=sv,en
 "============================================================================
 set spellfile=$HOME/.vim-spell-en.utf-8.add
-
 " Disable unsafe commands.
 " http://andrew.stwrt.ca/posts/project-specific-vimrc/
 set secure
-" enable word completion for dictionary
-set complete+=kspell
+set complete+=kspell " enable word completion for dictionary
+"============================================================================
+" Source files
+"============================================================================
+source $HOME/.vimrc.plugins
+source $HOME/.vimrc.syntastic
 "============================================================================
 " To update spell dictionary.
 "============================================================================
