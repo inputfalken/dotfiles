@@ -164,4 +164,4 @@ source $HOME/.vimrc.syntastic
 ":edit <spell file>
 "(make changes to the spell file)
 ":mkspell! %
-
+syntax enable
