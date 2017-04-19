@@ -38,14 +38,7 @@ if empty(glob('~/.vim/colors/solarized.vim'))
     \ https://raw.githubusercontent.com/altercation/solarized/master/vim-colors-solarized/colors/solarized.vim
 endif
 set background=dark
-if has('nvim')
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-  let g:solarized_italic=0
-  au VimEnter * colorscheme solarized
-else
-  colorscheme solarized
-endif
+colorscheme solarized
 "============================================================================
 " UltiSnips
 "============================================================================
