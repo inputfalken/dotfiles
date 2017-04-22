@@ -157,6 +157,9 @@ set complete+=kspell " enable word completion for dictionary
 "============================================================================
 source $HOME/.vimrc.plugins
 source $HOME/.vimrc.syntastic
+"Spell files are in GDrive do the following to set it up.
+"$ rmdir ~/.vim/spell
+"$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
 "============================================================================
 " To update spell dictionary.
 "============================================================================
