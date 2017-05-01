@@ -157,7 +157,6 @@ set complete+=kspell " enable word completion for dictionary
 " Source files
 "============================================================================
 source $HOME/.vimrc.plugins
-source $HOME/.vimrc.syntastic
 "============================================================================
 " To update spell dictionary.
 "============================================================================
