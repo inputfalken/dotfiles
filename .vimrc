@@ -148,7 +148,6 @@ autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
 "============================================================================
-set spellfile=$HOME/.vim-spell-en.utf-8.add
 " Disable unsafe commands.
 " http://andrew.stwrt.ca/posts/project-specific-vimrc/
 set secure
@@ -157,6 +156,9 @@ set complete+=kspell " enable word completion for dictionary
 " Source files
 "============================================================================
 source $HOME/.vimrc.plugins
+"Spell files are in GDrive do the following to set it up.
+"$ rmdir ~/.vim/spell
+"$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
 "============================================================================
 " To update spell dictionary.
 "============================================================================
