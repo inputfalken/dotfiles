@@ -63,7 +63,7 @@ let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript ex
 autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with ternjs
 autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
-" Run nerdtree if a directory is targeted.
+" Run nerdtree if a directory is targeted
 "============================================================================
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
