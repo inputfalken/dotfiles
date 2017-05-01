@@ -153,9 +153,12 @@ autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
 set secure
 set complete+=kspell " enable word completion for dictionary
 "============================================================================
-" Source files
+" Load plugins & plugin settings
 "============================================================================
 source $HOME/.vimrc.plugins
+"============================================================================
+" Spell stuff
+"============================================================================
 "Spell files are in GDrive do the following to set it up.
 "$ rmdir ~/.vim/spell
 "$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
