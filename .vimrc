@@ -168,4 +168,11 @@ source $HOME/.vimrc.plugins
 ":edit <spell file>
 "(make changes to the spell file)
 ":mkspell! %
-syntax enable
+"============================================================================
+" Enable syntax highlight if it's possible.
+"============================================================================
+" The if prevents an unnecessary execution of code
+" source: http://stackoverflow.com/a/33380495/5384895
+if !exists("g:syntax_on")
+  syntax enable
+endif
