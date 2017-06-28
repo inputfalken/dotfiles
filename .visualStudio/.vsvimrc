@@ -95,7 +95,7 @@ nmap <Leader>ar :vsc Project.AddReference<CR>
 "============================================================================
 "Formating & Folding
 "============================================================================
-nmap <Leader>cr :vsc Edit.CollapseCurrentRegion<CR>
+nmap <Leader>zf :vsc Edit.CollapseCurrentRegion<CR>
 nmap <Leader>rc :vsc ReSharper.ReSharper_ReformatCode<CR>
 "============================================================================
 "Git
