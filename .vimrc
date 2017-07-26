@@ -118,6 +118,24 @@ set smartcase     " Ignore case if search pattern is all lowercase, case-sensiti
 set hlsearch      " Highlight search terms
 set incsearch     " Show search matches as you type
 "============================================================================
+" Interactive powershell
+"============================================================================
+" Currently only works on windows and requires Dispatch plugin
+function! EvaluatePowershellSelection()
+  let tempDirectory = $TEMP
+  " Improvement: name file with current timestamp or UID, resolves having multiple
+  " vim editors using the same file.
+  let fileName = "evalPowershell.ps1"
+  let filePath = tempDirectory . "\\" . fileName
+  echom filePath
+  silent! execute "'<,'>write! " . filePath
+  execute "Dispatch powershell " . filePath
+endfunction
+augroup powershell
+  autocmd!
+  autocmd FileType ps1 xnoremap <leader>i :<C-W> call EvaluatePowershellSelection()<CR>
+augroup END
+"============================================================================
 " For virtual lines, helps when text is wrapped
 " nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 " nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
