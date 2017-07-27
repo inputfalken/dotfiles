@@ -102,14 +102,18 @@ function Install-Package ([string] $package, [Object[]] $packages, [bool] $promp
   }
 }
 
+# Installs the choco package manager
+# Source: https://chocolatey.org/
 function Install-Choco {
   if (Get-ExecutionPolicy -eq 'Restricted') {
     Set-ExecutionPolicy AllSigned
   }
+  # Execute the choco installation script.
   iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
   Reload-Path
 }
 
+# Copies the $file to the home directory.
 function Copy-Home ([string] $file) {
   Copy-Item ".\$file" $HOME
 }
