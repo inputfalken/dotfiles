@@ -1,3 +1,4 @@
+
 # Create the directory if it's not found
 function New-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
   if (!(Test-Path $path)) {
@@ -121,6 +122,27 @@ function Copy-Home ([string] $file) {
   Write-Host -NoNewLine $HOME -ForegroundColor yellow
   Write-Host
   Copy-Item ".\$file" $HOME
+}
+
+# Test a condition for a command
+function Test-Any() { process { $true; break } end { $false } }
+
+# Install Solarized-Dark
+# From https://github.com/neilpa/cmd-colors-solarized solarized
+function Install-Solarized ([string] $theme) {
+    # Clone the repository
+    git clone https://github.com/neilpa/cmd-colors-solarized solarized
+    $powershellPath = "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Windows PowerShell\Windows PowerShell.lnk"
+    #Run Update-Link
+    .\solarized\Update-Link.ps1 $powershellPath $theme
+    # Remove solarized without prompt
+    Remove-Item .\solarized\ -Recurse -Force
+    #TODO proper escaping, double quotes is not needed inside the string.
+    $script =  '. (Join-Path -Path (Split-Path -Parent -Path $PROFILE) -ChildPath $(switch($HOST.UI.RawUI.BackgroundColor.ToString()){"White"{"Set-SolarizedLightColorDefaults.ps1"}"Black"{"Set-SolarizedDarkColorDefaults.ps1"}default{return}}))'
+    # If the $script is not found in $PROFILE, append the script to $PROFILE.
+    if ((Get-Content $PROFILE | ?{$_ -eq $script} | Test-Any) -eq $false) {
+      Add-Content $PROFILE $script
+    }
 }
 
 # Install choco if necessary.
