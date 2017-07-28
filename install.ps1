@@ -115,6 +115,11 @@ function Install-Choco {
 
 # Copies the $file to the home directory.
 function Copy-Home ([string] $file) {
+  Write-Host -NoNewLine 'Copying '
+  Write-Host -NoNewLine $File -ForegroundColor yellow
+  Write-Host -NoNewLine ' to '
+  Write-Host -NoNewLine $HOME -ForegroundColor yellow
+  Write-Host
   Copy-Item ".\$file" $HOME
 }
 
