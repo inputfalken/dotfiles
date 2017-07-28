@@ -125,11 +125,12 @@ function! EvaluatePowershellSelection()
   let tempDirectory = $TEMP
   " Improvement: name file with current timestamp or UID, resolves having multiple
   " vim editors using the same file.
+  " Improvement: use whatif flag so the evaluation dosn't do anything stupid.
   let fileName = "evalPowershell.ps1"
   let filePath = tempDirectory . "\\" . fileName
   echom filePath
   silent! execute "'<,'>write! " . filePath
-  execute "Dispatch powershell " . filePath
+  execute "!powershell " . filePath
 endfunction
 augroup powershell
   autocmd!
