@@ -87,19 +87,18 @@ function Reload-Path {
 }
 
 # Install choco package
-function Install-Package ([string] $package, [Object[]] $packages, [bool] $prompt = $false) {
+function Install-Package ([string] $package, [string[]] $packages, [bool] $prompt = $false) {
   if ($packages -contains $package) {
-    Write-Host "Package '$package' is already installed, skipping..." -ForegroundColor yellow
+    Write-Host -NoNewLine 'Package '
+    Write-Host -NoNewLine $package -ForegroundColor yellow
+    Write-Host -NoNewLine ' is already installed, skipping installment.'
+    Write-Host
   } else {
-    if ($prompt) {
-      if (Confirm-Option "Would you like to install package '$package'?") {
-        choco install $package -y
-      } else {
-        Write-Host "Ignoring package '$package'" -ForegroundColor yellow
-      }
-    } else {
-      choco install $package -y
+    # If prompt and the confirmation is false.
+    if ($prompt -and !(Confirm-Option "Would you like to install package '$package'?")) {
+      return
     }
+    choco install $package -y
   }
 }
 
