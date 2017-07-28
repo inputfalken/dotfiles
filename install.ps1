@@ -24,8 +24,8 @@ function Is-Numeric ($Value) {
 }
 
 # Prompts user to choose an item from the array $options.
-# Then returns the index of that item.
-function Select-Index ([string[]] $options, [string] $property = 'Item') {
+# Then returns the selected item
+function Select-Item ([string[]] $options, [string] $property = 'Item') {
   $table = $options | % { $index = 1 } { [PSCustomObject] @{ Option = $index; $property = $_ }; $index++ } | Format-Table -AutoSize | Out-String
   while (1) {
     Write-Host $table
@@ -34,7 +34,7 @@ function Select-Index ([string[]] $options, [string] $property = 'Item') {
       if (Is-Numeric $option) {
         $index = (iex $option) -1
           if (($index -gt -1) -and ($index -lt $options.length)) {
-            return [int] $index
+            return [string] $options[$index]
           }
       }
     Write-Host "Error: Please select a number between 1 and $($options.length)" -ForegroundColor red
