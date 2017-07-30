@@ -140,6 +140,7 @@ function Install-Solarized ([string] $theme) {
     $script =  '. (Join-Path -Path (Split-Path -Parent -Path $PROFILE) -ChildPath $(switch($HOST.UI.RawUI.BackgroundColor.ToString()){"White"{"Set-SolarizedLightColorDefaults.ps1"}"Black"{"Set-SolarizedDarkColorDefaults.ps1"}default{return}}))'
     # If the $script is not found in $PROFILE, append the script to $PROFILE.
     if ((Get-Content $PROFILE | ?{$_ -eq $script} | Test-Any) -eq $false) {
+      Add-Content $PROFILE '# Source: https://github.com/neilpa/cmd-colors-solarized#update-your-powershell-profile'
       Add-Content $PROFILE $script
     }
 }
