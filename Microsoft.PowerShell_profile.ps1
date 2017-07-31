@@ -6,3 +6,7 @@ Import-Module posh-git
 function Reload-Path {
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")       
 }
+
+function Create-Link ($target, $link) {
+  New-Item -Path $link -ItemType SymbolicLink -Value $target
+}
