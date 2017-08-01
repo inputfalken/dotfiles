@@ -10,3 +10,5 @@ function Reload-Path {
 function Create-Link ($target, $link) {
   New-Item -Path $link -ItemType SymbolicLink -Value $target
 }
+
+Set-Alias vi vim
