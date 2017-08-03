@@ -170,15 +170,14 @@ Reload-Path
 #                                   Copy files to home directory                                   #
 #                                                                                                  #
 ####################################################################################################
-Copy-Home '.gitconfig'
-Copy-Home '.gitignore_global'
-Copy-Home '.tern-project'
-Copy-Home '.vimrc'
-Copy-Home '.vimrc.omnisharp'
-Copy-Home '.vimrc.plugins'
-Copy-Home '.vimrc.syntastic'
-# TODO only use .vsvimrc if visual studio is installed.
-Copy-Home '.\.visualStudio\.vsvimrc'
+Copy-Home '.\git\.gitconfig'
+Copy-Home '.\git\.gitignore_global'
+Copy-Home '.\tern\.tern-project'
+Copy-Home '.\vim\.vimrc'
+Copy-Home '.\vim\.vimrc.omnisharp'
+Copy-Home '.\vim\.vimrc.plugins'
+Copy-Home '.\vim\.vimrc.syntastic'
+Copy-Home '.\visualStudio\.vsvimrc'
 ####################################################################################################
 #                                                                                                  #
 #                                            Setup Vim                                             #
