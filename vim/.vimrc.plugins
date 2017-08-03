@@ -35,8 +35,8 @@ Plug 'vim-jp/syntax-vim-ex'
 Plug 'robbles/logstash.vim'
 Plug 'elzr/vim-json'
 Plug 'rhysd/vim-gfm-syntax'
-Plug 'OmniSharp/omnisharp-vim', { 'do': 'git clone https://github.com/OmniSharp/omnisharp-vim.git and; cd server and; msbuild and; ../omnisharp-roslyn/.build.sh' }
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
 call plug#end()
 set background=dark
