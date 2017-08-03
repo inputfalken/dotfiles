@@ -184,16 +184,11 @@ Copy-Home '.\.visualStudio\.vsvimrc'
 #                                            Setup Vim                                             #
 #                                                                                                  #
 ####################################################################################################
-if (Confirm-Option 'Do you want to setup vim?') {
   # Run vim, install plugins and quit vim
-  if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
-    Write-Host 'Plug not found, starting installation.' -ForegroundColor yellow
-    Install-Plug
-  }
+if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
+  Write-Host 'Plug not found, starting installation.' -ForegroundColor yellow
+  Install-Plug
   vim +PlugInstall +qall
-}
-if (Confirm-Option 'Do you want to install standardJS?') {
-  npm install standard --global
 }
 ## Check for updates in chocolatey
 #cup all -y
