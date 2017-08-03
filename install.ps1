@@ -159,18 +159,10 @@ Install-Package '7zip' $installedPackages
 Install-Package 'cmake' $installedPackages
 Install-Package 'git' $installedPackages
 Install-Package 'googlechrome' $installedPackages
-Install-Package 'googledrive' $installedPackages
-Install-Package 'keepass' $installedPackages
 Install-Package 'nodejs' $installedPackages
 Install-Package 'python2' $installedPackages
-Install-Package 'skype' $installedPackages
-Install-Package 'slack' $installedPackages
-Install-Package 'spotify' $installedPackages
 Install-Package 'vim' $installedPackages
-Install-Package 'vlc' $installedPackages
-Install-Package 'winrar' $installedPackages
 Install-Package 'nuget.commandline' $InstalledPackages
-Install-Package 'visualstudio2017community' $installedPackages $true
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
