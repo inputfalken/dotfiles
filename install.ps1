@@ -1,6 +1,6 @@
 
 # Create the directory if it's not found
-function New-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
+function Create-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
   if (!(Test-Path $path)) {
     New-Item -ItemType Directory -Force -Path $path
   }
@@ -54,8 +54,8 @@ function Install-YouCompleteMe {
 # Install a plugin manager for vim
 # Link: https://github.com/junegunn/vim-plug
 function Install-Plug {
-  New-DirectoryIfNotFound "$HOME\.vim" {
-    New-DirectoryIfNotFound "$HOME\.vim\autoload" {
+  Create-DirectoryIfNotFound "$HOME\.vim" {
+    Create-DirectoryIfNotFound "$HOME\.vim\autoload" {
       Invoke-WebRequest -Uri "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" -OutFile "$HOME\.vim\autoload\plug.vim"
     }
   }
