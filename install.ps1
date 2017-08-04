@@ -162,7 +162,8 @@ Install-Package 'googlechrome' $installedPackages
 Install-Package 'nodejs' $installedPackages
 Install-Package 'python2' $installedPackages
 Install-Package 'vim' $installedPackages
-Install-Package 'nuget.commandline' $InstalledPackages
+Install-Package 'openssh' $installedPackages
+Install-Package 'nuget.commandline' $installedPackages
 # Install-Package 'vcredist140' $installedPackages # Test if this works instead of visual studio
 Reload-Path
 ####################################################################################################
