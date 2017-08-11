@@ -1,4 +1,3 @@
-
 # Create the directory if it's not found
 function Create-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
   if (!(Test-Path $path)) {
@@ -87,8 +86,8 @@ function Reload-Path {
 }
 
 # Install choco package
-function Install-Package ([string] $package, [string[]] $packages, [bool] $prompt = $false) {
-  if ($packages -contains $package) {
+function Install-Package ([string] $package, [bool] $prompt = $false) {
+  if ($installedPackages -contains $package) {
     Write-Host -NoNewLine 'Package '
     Write-Host -NoNewLine $package -ForegroundColor yellow
     Write-Host -NoNewLine ' is already installed, skipping installment.'
@@ -145,6 +144,12 @@ function Install-Solarized ([string] $theme) {
     }
 }
 
+####################################################################################################
+#                                                                                                  #
+#                                         Global variables                                         #
+#                                                                                                  #
+####################################################################################################
+$installedPackages = Get-InstalledPackages
 # Install choco if necessary.
 if ((Check-Command choco) -ne $true) {
   Install-Choco
@@ -154,16 +159,15 @@ if ((Check-Command choco) -ne $true) {
 #                                           Installation                                           #
 #                                                                                                  #
 ####################################################################################################
-$installedPackages = Get-InstalledPackages
-Install-Package '7zip' $installedPackages
-Install-Package 'cmake' $installedPackages
-Install-Package 'git' $installedPackages
-Install-Package 'googlechrome' $installedPackages
-Install-Package 'nodejs' $installedPackages
-Install-Package 'python2' $installedPackages
-Install-Package 'vim' $installedPackages
-Install-Package 'nuget.commandline' $InstalledPackages
-# Install-Package 'vcredist140' $installedPackages # Test if this works instead of visual studio
+Install-Package '7zip'
+Install-Package 'cmake'
+Install-Package 'git'
+Install-Package 'googlechrome'
+Install-Package 'nodejs'
+Install-Package 'python2'
+Install-Package 'vim'
+Install-Package 'nuget.commandline'
+# Install-Package 'vcredist140' # Test if this works instead of visual studio
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
