@@ -41,13 +41,16 @@ function Select-Item ([string[]] $options, [string] $property = 'Item') {
   }
 }
 
-# Install a code-completion engine for vim
+# Install a code-completion engine for vim, Requires Visual Studio with C++.
 # Link: https://github.com/Valloric/YouCompleteMe
 function Install-YouCompleteMe {
+  Install-Package '7zip'
+  Install-Package 'cmake'
   # this only works for 64 bit machines.
   # TODO resolve requirements from https://github.com/Valloric/YouCompleteMe#windows
   $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
   $env:Path+= ";$($env:ProgramFiles)\7-Zip"
+  python C:\Users\Robert\.vim\plugged\YouCompleteMe\install.py
 }
 
 # Install a plugin manager for vim
@@ -159,15 +162,12 @@ if ((Check-Command choco) -ne $true) {
 #                                           Installation                                           #
 #                                                                                                  #
 ####################################################################################################
-Install-Package '7zip'
-Install-Package 'cmake'
 Install-Package 'git'
 Install-Package 'googlechrome'
 Install-Package 'nodejs'
 Install-Package 'python2'
 Install-Package 'vim'
 Install-Package 'nuget.commandline'
-# Install-Package 'vcredist140' # Test if this works instead of visual studio
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
@@ -192,6 +192,7 @@ if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Write-Host 'Plug not found, starting installation.' -ForegroundColor yellow
   Install-Plug
   vim +PlugInstall +qall
+  #Install-YouCompleteMe # Uncomment if you have visual studio with C++
 }
 ## Check for updates in chocolatey
 #cup all -y
