@@ -46,6 +46,7 @@ function Select-Item ([string[]] $options, [string] $property = 'Item') {
 # Install a code-completion engine for vim
 # Link: https://github.com/Valloric/YouCompleteMe
 function Install-YouCompleteMe {
+  Write-Host 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe'''
   Install-Package 'vcbuildtools'
   Reload-Path
   Install-Package '7zip'
@@ -57,12 +58,14 @@ function Install-YouCompleteMe {
 }
 
 function Install-TernForVim {
+  Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim'''
   npm install $HOME\.vim\plugged\tern_for_vim
 }
 
 # Install a plugin manager for vim
 # Link: https://github.com/junegunn/vim-plug
 function Install-Plug {
+  Write-Host 'Installing Vim plugin manager ''https://github.com/junegunn/vim-plug'''
   Create-DirectoryIfNotFound "$HOME\.vim" {
     Create-DirectoryIfNotFound "$HOME\.vim\autoload" {
       Invoke-WebRequest -Uri "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" -OutFile "$HOME\.vim\autoload\plug.vim"
@@ -77,6 +80,7 @@ function Check-Command($cmdname) {
 
 # Gets the installed choco packages
 function Get-InstalledPackages {
+  Write-Host 'Getting installed packages' -ForegroundColor Yellow
   # Gets the packages names
   $packages = (choco list --local-only) | % { $_.Split(' ') | select -first 1 }
   # if packages is not null
@@ -114,6 +118,7 @@ function Install-Package ([string] $package, [bool] $prompt = $false) {
 # Installs the choco package manager
 # Source: https://chocolatey.org/
 function Install-Choco {
+  Write-Host 'Installing Choco' -ForegroundColor Yellow
   if (Get-ExecutionPolicy -eq 'Restricted') {
     Set-ExecutionPolicy AllSigned
   }
@@ -154,29 +159,24 @@ function Install-Solarized ([string] $theme) {
     }
 }
 
-####################################################################################################
-#                                                                                                  #
-#                                         Global variables                                         #
-#                                                                                                  #
-####################################################################################################
-$installedPackages = Get-InstalledPackages
 # Install choco if necessary.
 if ((Check-Command choco) -ne $true) {
   Install-Choco
 }
+$installedPackages = Get-InstalledPackages
 ####################################################################################################
 #                                                                                                  #
 #                                           Installation                                           #
 #                                                                                                  #
 ####################################################################################################
+Install-Package 'conemu'
+Install-Package 'dotnetcore'
 Install-Package 'git'
 Install-Package 'googlechrome'
 Install-Package 'nodejs'
+Install-Package 'nuget.commandline'
 Install-Package 'python2'
 Install-Package 'vim'
-Install-Package 'nuget.commandline'
-Install-Package 'dotnetcore'
-Install-Package 'conemu'
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
@@ -198,7 +198,6 @@ Copy-Home '.\visualStudio\.vsvimrc'
 ####################################################################################################
   # Run vim, install plugins and quit vim
 if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
-  Write-Host 'Plug not found, starting installation.' -ForegroundColor yellow
   Install-Plug
   vim +PlugInstall +qall
   Install-YouCompleteMe
