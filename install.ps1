@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 # Create the directory if it's not found
 function Create-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
   if (!(Test-Path $path)) {
