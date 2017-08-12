@@ -168,6 +168,7 @@ Install-Package 'nodejs'
 Install-Package 'python2'
 Install-Package 'vim'
 Install-Package 'nuget.commandline'
+Install-Package 'conemu'
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
