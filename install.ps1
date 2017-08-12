@@ -41,15 +41,16 @@ function Select-Item ([string[]] $options, [string] $property = 'Item') {
   }
 }
 
-# Install a code-completion engine for vim, Requires Visual Studio with C++.
+# Install a code-completion engine for vim
 # Link: https://github.com/Valloric/YouCompleteMe
 function Install-YouCompleteMe {
+  Install-Package 'vcbuildtools'
+  Reload-Path
   Install-Package '7zip'
-  Install-Package 'cmake'
-  # this only works for 64 bit machines.
-  # TODO resolve requirements from https://github.com/Valloric/YouCompleteMe#windows
-  $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
   $env:Path+= ";$($env:ProgramFiles)\7-Zip"
+  Install-Package 'cmake'
+  $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
+  # this only works for 64 bit machines.
   python C:\Users\Robert\.vim\plugged\YouCompleteMe\install.py
 }
 
@@ -193,7 +194,7 @@ if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Write-Host 'Plug not found, starting installation.' -ForegroundColor yellow
   Install-Plug
   vim +PlugInstall +qall
-  #Install-YouCompleteMe # Uncomment if you have visual studio with C++
+  Install-YouCompleteMe
 }
 ## Check for updates in chocolatey
 #cup all -y
