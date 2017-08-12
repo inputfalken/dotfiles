@@ -203,3 +203,6 @@ if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
 }
 ## Check for updates in chocolatey
 #cup all -y
+# PLay sound when finished
+Write-Host 'Script Finished!' -ForegroundColor Green
+(New-Object System.Media.SoundPlayer "$env:windir\Media\tada.wav").play()
