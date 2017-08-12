@@ -54,6 +54,10 @@ function Install-YouCompleteMe {
   python C:\Users\Robert\.vim\plugged\YouCompleteMe\install.py
 }
 
+function Install-TernForVim {
+  npm install $HOME\.vim\plugged\tern_for_vim
+}
+
 # Install a plugin manager for vim
 # Link: https://github.com/junegunn/vim-plug
 function Install-Plug {
@@ -195,6 +199,7 @@ if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Install-Plug
   vim +PlugInstall +qall
   Install-YouCompleteMe
+  Install-TernForVim
 }
 ## Check for updates in chocolatey
 #cup all -y
