@@ -174,8 +174,6 @@ Install-Package 'nodejs'
 Install-Package 'nuget.commandline'
 Install-Package 'python2'
 Install-Package 'vim'
-Install-Package 'visualstudio2017community'
-Install-Package 'resharper'
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
@@ -187,6 +185,7 @@ if (!(Check-Command Import-Module posh-git)) {
 }
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
+Copy-Item '.\ConEmu.xml' $env:APPDATA
 ####################################################################################################
 #                                                                                                  #
 #                                   Copy files to home directory                                   #
