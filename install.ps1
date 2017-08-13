@@ -172,6 +172,7 @@ Install-Package 'nuget.commandline'
 Install-Package 'python2'
 Install-Package 'vim'
 Install-Package 'visualstudio2017community'
+Install-Package 'resharper'
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
