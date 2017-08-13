@@ -46,19 +46,16 @@ function Select-Item ([string[]] $options, [string] $property = 'Item') {
 # Install a code-completion engine for vim
 # Link: https://github.com/Valloric/YouCompleteMe
 function Install-YouCompleteMe ([string] $dir) {
-  Write-Host 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe'''
-  Install-Package 'vcbuildtools'
-  Reload-Path
+  Write-Host 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe''' -ForegroundColor Yellow
   Install-Package '7zip'
   $env:Path+= ";$($env:ProgramFiles)\7-Zip"
   Install-Package 'cmake'
   $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
-  # this only works for 64 bit machines.
   python $dir\install.py
 }
 
 function Install-TernForVim ([string] $dir) {
-  Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim'''
+  Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''' -ForegroundColor Yellow
   npm install $dir
 }
 
@@ -119,9 +116,6 @@ function Install-Package ([string] $package, [bool] $prompt = $false) {
 # Source: https://chocolatey.org/
 function Install-Choco {
   Write-Host 'Installing Choco' -ForegroundColor Yellow
-  if (Get-ExecutionPolicy -eq 'Restricted') {
-    Set-ExecutionPolicy AllSigned
-  }
   # Execute the choco installation script.
   iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
   Reload-Path
@@ -177,13 +171,18 @@ Install-Package 'nodejs'
 Install-Package 'nuget.commandline'
 Install-Package 'python2'
 Install-Package 'vim'
+Install-Package 'visualstudio2017community'
 Reload-Path
 ####################################################################################################
 #                                                                                                  #
-#                                         Install posh-git                                         #
+#                                         Setup PowerShell                                         #
 #                                                                                                  #
 ####################################################################################################
-PowerShellGet\Install-Module posh-git -Force -Scope CurrentUser
+if (!(Check-Command Import-Module posh-git)) {
+  PowerShellGet\Install-Module posh-git -Force -Scope CurrentUser
+}
+Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
+Unblock-File -Path $PROFILE
 ####################################################################################################
 #                                                                                                  #
 #                                   Copy files to home directory                                   #
