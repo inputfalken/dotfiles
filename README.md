@@ -6,3 +6,6 @@
 
 ### Requirements ###
  * Visual Studio 2017 using 'Desktop development with C++'.
+
+## Ubuntu ##
+TODO
