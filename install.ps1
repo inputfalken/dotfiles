@@ -56,7 +56,10 @@ function Install-YouCompleteMe ([string] $dir) {
 
 function Install-TernForVim ([string] $dir) {
   Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''' -ForegroundColor Yellow
-  npm install $dir
+  Push-Location
+  cd $dir
+  npm install
+  Pop-Location
 }
 
 # Install a plugin manager for vim
