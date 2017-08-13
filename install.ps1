@@ -184,6 +184,7 @@ if (!(Check-Command Import-Module posh-git)) {
 }
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
+Copy-Item '.\ConEmu.xml' $env:APPDATA
 ####################################################################################################
 #                                                                                                  #
 #                                   Copy files to home directory                                   #
