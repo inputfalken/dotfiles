@@ -45,7 +45,7 @@ function Select-Item ([string[]] $options, [string] $property = 'Item') {
 
 # Install a code-completion engine for vim
 # Link: https://github.com/Valloric/YouCompleteMe
-function Install-YouCompleteMe {
+function Install-YouCompleteMe ([string] $dir) {
   Write-Host 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe'''
   Install-Package 'vcbuildtools'
   Reload-Path
@@ -54,12 +54,12 @@ function Install-YouCompleteMe {
   Install-Package 'cmake'
   $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
   # this only works for 64 bit machines.
-  python C:\Users\Robert\.vim\plugged\YouCompleteMe\install.py
+  python $dir\install.py
 }
 
-function Install-TernForVim {
+function Install-TernForVim ([string] $dir) {
   Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim'''
-  npm install $HOME\.vim\plugged\tern_for_vim
+  npm install $dir
 }
 
 # Install a plugin manager for vim
@@ -200,8 +200,8 @@ Copy-Home '.\visualStudio\.vsvimrc'
 if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Install-Plug
   vim +PlugInstall +qall
-  Install-YouCompleteMe
-  Install-TernForVim
+  Install-YouCompleteMe "$HOME\.vim\plugged\YouCompleteMe"
+  Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
 }
 ## Check for updates in chocolatey
 #cup all -y
