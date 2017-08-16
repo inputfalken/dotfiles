@@ -4,7 +4,7 @@
 set encoding=utf-8
 set fileencoding=utf-8
 "============================================================================
-" spellcheck when writing commit logs
+" spellcheck when writing commit messages
 "============================================================================
 autocmd filetype svn,*commit* setlocal spell
 "============================================================================
@@ -13,7 +13,7 @@ autocmd filetype svn,*commit* setlocal spell
 let mapleader=" "
 let maplocalleader=" "
 "============================================================================
-" Set runetimepath
+" Set runtimepath
 "============================================================================
 set rtp+=~/.vim
 "============================================================================
@@ -23,12 +23,7 @@ set path+=**
 "============================================================================
 " Paste last yanked item
 "============================================================================
-noremap <Leader>p "0p
 noremap <Leader>P "0P
-"============================================================================
-" Quote Selection
-"============================================================================
-vnoremap <Leader>" c"<C-r>""<Esc>
 "============================================================================
 " Enter normal mode from insert mode
 "============================================================================
@@ -45,11 +40,6 @@ nnoremap j gj
 nnoremap k gk
 "============================================================================
 nmap <silent>  <BS>  :nohlsearch<CR>
-"============================================================================
-" Cycle through history in Command-Line Window
-"============================================================================
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
 "============================================================================
 " Use arrow keys to navigate after a :vimgrep or :helpgrep
 "============================================================================
@@ -135,6 +125,7 @@ endfunction
 augroup powershell
   autocmd!
   autocmd FileType ps1 xnoremap <leader>i :<C-W> call EvaluatePowershellSelection()<CR>
+  autocmd FileType ps1 set foldmethod=syntax
 augroup END
 "============================================================================
 " For virtual lines, helps when text is wrapped
@@ -161,13 +152,6 @@ filetype indent on
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " For those buffers that are only a few lines
 nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
-"============================================================================
-" .NET Core
-"============================================================================
-autocmd FileType cs nmap <leader>R :!dotnet run<CR>
-autocmd FileType cs nmap <leader>B :!dotnet build<CR>
-autocmd FileType fsharp nmap <leader>R :!dotnet run<CR>
-autocmd FileType fsharp nmap <leader>B :!dotnet build<CR>
 "============================================================================
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
