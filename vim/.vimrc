@@ -31,7 +31,7 @@ inoremap jk <esc>
 "============================================================================
 " Make Y behave as D, C
 "============================================================================
-map Y y
+nnoremap Y y
 noremap Y y$
 "============================================================================
 " Move by line on the screen rather than by line in the file
@@ -39,14 +39,14 @@ noremap Y y$
 nnoremap j gj
 nnoremap k gk
 "============================================================================
-nmap <silent>  <BS>  :nohlsearch<CR>
+nnoremap <silent>  <BS>  :nohlsearch<CR>
 "============================================================================
 " Use arrow keys to navigate after a :vimgrep or :helpgrep
 "============================================================================
-nmap <silent> <RIGHT>         :cnext<CR>
-nmap <silent> <RIGHT><RIGHT>  :cnfile<CR><C-G>
-nmap <silent> <LEFT>          :cprev<CR>
-nmap <silent> <LEFT><LEFT>    :cpfile<CR><C-G>
+nnoremap <silent> <RIGHT>         :cnext<CR>
+nnoremap <silent> <RIGHT><RIGHT>  :cnfile<CR><C-G>
+nnoremap <silent> <LEFT>          :cprev<CR>
+nnoremap <silent> <LEFT><LEFT>    :cpfile<CR><C-G>
 "============================================================================
 " Navigate buffer list
 "============================================================================
@@ -57,8 +57,8 @@ nnoremap <silent> ]B :blast<CR>
 "============================================================================
 " Vimrc
 "============================================================================
-nmap <silent> <leader>ev :e $HOME/.vimrc<CR>
-nmap <silent> <leader>sv :so $HOME/.vimrc<CR>
+nnoremap <silent> <leader>ev :e $HOME/.vimrc<CR>
+nnoremap <silent> <leader>sv :so $HOME/.vimrc<CR>
 nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
 " Abberviations
@@ -147,7 +147,7 @@ filetype plugin on
 filetype indent on
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " For those buffers that are only a few lines
-nmap <silent> <leader>sw :execute ":resize " . line('$')<cr>
+nnoremap <silent> <leader>sw :execute ":resize " . line('$')<cr>
 "============================================================================
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
