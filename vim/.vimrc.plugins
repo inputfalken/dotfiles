@@ -20,7 +20,6 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/syntastic'
 Plug 'ternjs/tern_for_vim', {'do': 'npm install'}
 Plug 'tmux-plugins/vim-tmux'
-"Plug 'chase/vim-ansible-yaml'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -67,11 +66,9 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<Up>', '<c-p>']
 let g:ycm_key_list_select_completion = ['<Down>', '<c-n>']
 let g:ycm_use_ultisnips_completer = 1
-
 "============================================================================
 " Javascript
 "============================================================================
-let g:jsx_ext_required = 0 " Lets the repo mxw/vim-jsx be used for javascript extensions
 autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with ternjs
 autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
@@ -79,7 +76,6 @@ autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif " Close vim if only nerdtree is open.
 "============================================================================
 " Load syntastic settings
 "============================================================================
