@@ -108,17 +108,13 @@ set smartcase     " Ignore case if search pattern is all lowercase, case-sensiti
 set hlsearch      " Highlight search terms
 set incsearch     " Show search matches as you type
 "============================================================================
-" Interactive powershell
+" Interactive Powershell
 "============================================================================
-" Currently only works on windows and requires Dispatch plugin
+" Currently only works on windows.
 function! EvaluatePowershellSelection()
   let tempDirectory = $TEMP
-  " Improvement: name file with current timestamp or UID, resolves having multiple
-  " vim editors using the same file.
-  " Improvement: use whatif flag so the evaluation dosn't do anything stupid.
   let fileName = "evalPowershell.ps1"
   let filePath = tempDirectory . "\\" . fileName
-  echom filePath
   silent! execute "'<,'>write! " . filePath
   execute "!powershell " . filePath
 endfunction
