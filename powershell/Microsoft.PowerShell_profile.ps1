@@ -74,3 +74,27 @@ function Invoke-Speech {
     }
 }
 new-alias -name out-voice -value Invoke-Speech
+
+function Clear-Solution {
+  $solution = (Get-ChildItem *.sln)
+  if ($solution) {
+    $expectedType = 'FileInfo'
+    $type = $solution.GetType()
+    if ($type.Name -eq $expectedType) {
+      $counter = 0
+      Get-ChildItem -Recurse -Directory | where { $_.Name -eq 'bin' -or $_.Name -eq 'obj' } | % {
+        $fullName = $_.FullName
+        Write-Host "Removing directory $fullName"
+        Remove-Item $fullName -Force -Recurse
+        $counter++
+      }
+      Write-Host $(if ($counter -eq 0) { "Found no directories" } else { "Removed $counter directories"})
+    } else {
+      $invalidType = "Expected the type '$expectedType' but got '$($type.Name)'."
+      throw $invalidType
+    }
+  } else {
+    $noSolutionFilePresent = "Could not find a solution file in directory '$(Resolve-Path .\)'."
+    throw $noSolutionFilePresent
+  }
+}
