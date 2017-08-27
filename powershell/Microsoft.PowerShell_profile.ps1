@@ -64,3 +64,13 @@ function Exec {
     }
     while ($true)
 }
+
+function Invoke-Speech {
+  param([Parameter(ValueFromPipeline=$true)][string] $say)
+    $voice = New-Object -ComObject SAPI.SPVoice
+    $voice.Rate = -3
+    process {
+      $voice.Speak($say) | out-null
+    }
+}
+new-alias -name out-voice -value Invoke-Speech
