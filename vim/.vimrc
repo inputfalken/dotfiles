@@ -162,3 +162,7 @@ source $HOME/.vimrc.plugins
 if !exists("g:syntax_on")
   syntax enable
 endif
+"============================================================================
+" Good Sources
+"============================================================================
+" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
