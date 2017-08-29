@@ -29,6 +29,13 @@ noremap <Leader>P "0P
 "============================================================================
 inoremap jk <esc>
 "============================================================================
+" Completion
+"============================================================================
+inoremap <nul> <C-X><C-O> " Maps Omnicompletion to CTRL-space.
+inoremap <C-F> <C-X><C-F> " Maps file completion to CTRL-F.
+map <leader>fc /\v^[<=>]{7}( .*\|$)<cr> " Find merge conflict markers
+set dictionary=spell " Complete words from the spelling dict.
+"============================================================================
 " Make Y behave as D, C
 "============================================================================
 nnoremap Y y
@@ -38,10 +45,6 @@ noremap Y y$
 "============================================================================
 nnoremap j gj
 nnoremap k gk
-"============================================================================
-nnoremap <silent>  <BS>  :nohlsearch<CR>
-"============================================================================
-" Use arrow keys to navigate after a :vimgrep or :helpgrep
 "============================================================================
 nnoremap <silent> <RIGHT>         :cnext<CR>
 nnoremap <silent> <RIGHT><RIGHT>  :cnfile<CR><C-G>
@@ -61,25 +64,12 @@ nnoremap <silent> <leader>ev :e $HOME/.vimrc<CR>
 nnoremap <silent> <leader>sv :so $HOME/.vimrc<CR>
 nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
-" Abberviations
+" Menu completion
 "============================================================================
-" Make :help appear in a full-screen tab, instead of a window
-"============================================================================
-augroup HelpInTabs
-  autocmd!
-  autocmd BufEnter  *.txt   call HelpInNewTab()
-augroup END
-
-function! HelpInNewTab ()
-  if &buftype == 'help'
-    execute "normal \<C-W>T"
-  endif
-endfunction
-"============================================================================
-" When completing, show all options, insert common prefix, then iterate
-"============================================================================
-set wildmenu
-set wildmode=longest:full,full
+set suffixes+=.dll,.vs " Don't autocomplete these filetypes
+set wildmenu "wmnu:  enhanced ex command completion
+set wildmode=longest:full,list:full "wim:   helps wildmenu auto-completion
+set wildignore+=*/node_modules/**
 "============================================================================
 " Indent Settings
 "============================================================================
@@ -107,10 +97,11 @@ set ignorecase    " Ignore case when searching
 set smartcase     " Ignore case if search pattern is all lowercase, case-sensitive otherwise
 set hlsearch      " Highlight search terms
 set incsearch     " Show search matches as you type
+set lazyredraw    " Will not redraw the screen while running macros (goes faster)
 "============================================================================
 " Interactive Powershell
 "============================================================================
-" Currently only works on windows.
+" Only works on windows.
 function! EvaluatePowershellSelection()
   let tempDirectory = $TEMP
   let fileName = "evalPowershell.ps1"
@@ -123,12 +114,7 @@ augroup powershell
   autocmd FileType ps1 xnoremap <leader>i :<C-W> call EvaluatePowershellSelection()<CR>
   autocmd FileType ps1 set foldmethod=syntax
 augroup END
-"============================================================================
-" For virtual lines, helps when text is wrapped
-" nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
-" nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
-" set nrformats=alpha " Set increment numbers in decimal
-"============================================================================
+
 set backspace=indent,eol,start " Allow backspacing over everything in insert mode
 set eol " Add newline to end of file everytime you save the file.
 set title                " Change the terminal's title
@@ -145,9 +131,8 @@ set mousehide " Hide the mouse pointer while typing
 filetype on
 filetype plugin on
 filetype indent on
-" Shrink the current window to fit the number of lines in the buffer.  Useful
-" For those buffers that are only a few lines
-nnoremap <silent> <leader>sw :execute ":resize " . line('$')<cr>
+"============================================================================
+" Spell stuff
 "============================================================================
 " If you enable set spell the completion will be used. Example :set spell
 " spelllang=sv,en
@@ -160,9 +145,6 @@ set complete+=kspell " enable word completion for dictionary
 " Load plugins & plugin settings
 "============================================================================
 source $HOME/.vimrc.plugins
-"============================================================================
-" Spell stuff
-"============================================================================
 "Spell files are in GDrive do the following to set it up.
 "$ rmdir ~/.vim/spell
 "$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
