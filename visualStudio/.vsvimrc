@@ -29,8 +29,7 @@ inoremap jk <esc>
 nnoremap <Leader>ev :vsplit<CR> :edit ~/.vsvimrc<CR>
 nnoremap <Leader>so :source ~/.vsvimrc<CR>
 nnoremap X "_X
-nnoremap Y y
-nnoremap Y y$
+map Y y$
 nnoremap j gj
 nnoremap k gk
 noremap x "_x
