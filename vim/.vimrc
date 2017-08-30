@@ -38,8 +38,7 @@ set dictionary=spell " Complete words from the spelling dict.
 "============================================================================
 " Make Y behave as D, C
 "============================================================================
-nnoremap Y y
-noremap Y y$
+map Y y$ " Fix for legacy vi inconsistency
 "============================================================================
 " Move by line on the screen rather than by line in the file
 "============================================================================
