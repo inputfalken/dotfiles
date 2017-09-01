@@ -164,4 +164,5 @@ endif
 "============================================================================
 " Good Sources
 "============================================================================
-" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
+" https://github.com/whiteinge/dotfiles
+" https://github.com/christoomey/dotfiles
