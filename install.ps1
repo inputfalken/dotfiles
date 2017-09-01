@@ -194,6 +194,7 @@ Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
 Copy-Home '.\git\.gitconfig'
 Copy-Home '.\git\.gitignore_global'
 Copy-Home '.\tern\.tern-project'
+Copy-Home '.\vim\.gvimrc'
 Copy-Home '.\vim\.vimrc'
 Copy-Home '.\vim\.vimrc.omnisharp'
 Copy-Home '.\vim\.vimrc.plugins'
