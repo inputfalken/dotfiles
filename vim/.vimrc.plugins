@@ -34,6 +34,9 @@ Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
 call plug#end()
 set background=dark
+if has('unix')
+  colorscheme solarized8_dark
+endif
 "============================================================================
 " UltiSnips
 "============================================================================
