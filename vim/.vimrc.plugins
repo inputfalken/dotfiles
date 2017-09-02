@@ -32,11 +32,17 @@ Plug 'rhysd/vim-gfm-syntax'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 set background=dark
 if has('unix')
   colorscheme solarized8_dark
 endif
+"============================================================================
+" Airline
+"============================================================================
+let g:airline_theme='solarized'
 "============================================================================
 " UltiSnips
 "============================================================================
