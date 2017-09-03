@@ -29,12 +29,10 @@ noremap <Leader>P "0P
 "============================================================================
 inoremap jk <esc>
 "============================================================================
-" Completion
-"============================================================================
-inoremap <nul> <C-X><C-O> " Maps Omnicompletion to CTRL-space.
-inoremap <C-F> <C-X><C-F> " Maps file completion to CTRL-F.
-map <leader>fc /\v^[<=>]{7}( .*\|$)<cr> " Find merge conflict markers
-set dictionary=spell " Complete words from the spelling dict.
+" Find merge conflict markers
+map <leader>fc /\v^[<=>]{7}( .*\|$)<cr>
+" Complete words from the spelling dict.
+set dictionary=spell
 "============================================================================
 " Make Y behave as D, C
 "============================================================================
@@ -65,38 +63,54 @@ nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
 " Menu completion
 "============================================================================
-set suffixes+=.dll,.vs " Don't autocomplete these filetypes
-set wildmenu "wmnu:  enhanced ex command completion
-set wildmode=longest:full,list:full "wim:   helps wildmenu auto-completion
+" Don't autocomplete these filetypes
+set suffixes+=.dll,.vs
+"wmnu:  enhanced ex command completion
+set wildmenu
+"wim:   helps wildmenu auto-completion
+set wildmode=longest:full,list:full
 set wildignore+=*/node_modules/**
 "============================================================================
 " Indent Settings
 "============================================================================
-set copyindent    " Copy the previous indentation on autoindenting
+" Copy the previous indentation on autoindenting
+set copyindent
 set expandtab
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
 set autoindent
-set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'
+" Use multiple of shiftwidth when indenting with '<' and '>'
+set shiftround
 "============================================================================
 " Line Settings
 "============================================================================
-set number          " Enable line numbers
-set relativenumber  " Changes the line number where the cursor are to zero
-set nowrap          " Don't wrap lines
-set nocursorline    " Wont higlight current line
-set nocursorcolumn  " Wont make cursor to column
+"" Enable line numbers
+set number
+" Changes the line number where the cursor are to zero
+set relativenumber
+" Don't wrap lines
+set nowrap
+" Wont higlight current line
+set nocursorline
+" Wont make cursor to column
+set nocursorcolumn
 set scrolloff=5
 "============================================================================
 " Search Settings
 "============================================================================
-set showmatch     " Set show matching parenthesis
-set ignorecase    " Ignore case when searching
-set smartcase     " Ignore case if search pattern is all lowercase, case-sensitive otherwise
-set hlsearch      " Highlight search terms
-set incsearch     " Show search matches as you type
-set lazyredraw    " Will not redraw the screen while running macros (goes faster)
+" Set show matching parenthesis
+set showmatch
+" Ignore case when searching
+set ignorecase
+" Ignore case if search pattern is all lowercase, case-sensitive otherwise
+set smartcase
+" Highlight search terms
+set hlsearch
+" Show search matches as you type
+set incsearch
+" Will not redraw the screen while running macros (goes faster)
+set lazyredraw
 "============================================================================
 " Interactive Powershell
 "============================================================================
@@ -114,19 +128,26 @@ augroup powershell
   autocmd FileType ps1 set foldmethod=syntax
 augroup END
 
-set backspace=indent,eol,start " Allow backspacing over everything in insert mode
-set eol " Add newline to end of file everytime you save the file.
-set title                " Change the terminal's title
+" Allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+" Add newline to end of file everytime you save the file.
+set eol
+" Change the terminal's title
+set title
 set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
-set ruler        " Show where you are in file
-set matchpairs+=<:> " Add an extra matchpair
-set cpoptions+=$ " Adds a dollarsign where the change option is applied
+" Show where you are in file
+set ruler
+" Add an extra matchpair
+set matchpairs+=<:>
+" Adds a dollarsign where the change option is applied
+set cpoptions+=$
 " Highlight the current line and column
 " Don't do this - It makes window redraws painfully slow
 " Show the current mode
 set showmode
-set mousehide " Hide the mouse pointer while typing
+" Hide the mouse pointer while typing
+set mousehide
 filetype on
 filetype plugin on
 filetype indent on
@@ -139,7 +160,8 @@ filetype indent on
 " Disable unsafe commands.
 " http://andrew.stwrt.ca/posts/project-specific-vimrc/
 set secure
-set complete+=kspell " enable word completion for dictionary
+" Enable word completion for dictionary
+set complete+=kspell
 "============================================================================
 " Load plugins & plugin settings
 "============================================================================
