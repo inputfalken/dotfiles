@@ -1,5 +1,5 @@
 [user]
-  email = inputfalken@gmail.com
+  email = 
   name = Robert Andersson
 [diff]
   tool = vimdiff
@@ -8,8 +8,18 @@
 [alias]
   lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
   d = difftool
-  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
+  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|development' | xargs -n 1 git branch -d"
 [core]
-  autocrlf = false
+  autocrlf = true
   editor = 'C:/Program Files (x86)/vim/vim80/vim.exe'
   excludesfile = ~/.gitignore_global
+  ignorecase = true
+  safecrlf = warn
+[pull]
+  rebase = true
+[log]
+  follow = true
+[merge]
+  renormalize = true
+[branch]
+  autosetuprebase = always
