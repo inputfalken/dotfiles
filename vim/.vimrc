@@ -76,7 +76,7 @@ nnoremap <leader>ev :vsplit $HOME/.vimrc<CR>
 "============================================================================
 " Menu completion
 "============================================================================
-" Don't autocomplete these filetypes
+" Don't autocomplete these file types
 set suffixes+=.dll,.vs
 "wmnu:  enhanced ex command completion
 set wildmenu
@@ -86,14 +86,14 @@ set wildignore+=*/node_modules/**
 "============================================================================
 " Indent Settings
 "============================================================================
-" Copy the previous indentation on autoindenting
+" Copy the previous indentation on auto indenting
 set copyindent
 set expandtab
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
 set autoindent
-" Use multiple of shiftwidth when indenting with '<' and '>'
+" Use multiple of shift width when indenting with '<' and '>'
 set shiftround
 "============================================================================
 " Line Settings
@@ -104,7 +104,7 @@ set number
 set relativenumber
 " Don't wrap lines
 set nowrap
-" Wont higlight current line
+" Wont highlight current line
 set nocursorline
 " Wont make cursor to column
 set nocursorcolumn
@@ -125,15 +125,15 @@ set incsearch
 " Will not redraw the screen while running macros (goes faster)
 set lazyredraw
 "============================================================================
-" Interactive Powershell
+" Interactive PowerShell
 "============================================================================
 " Only works on windows.
 function! EvaluatePowershellSelection()
   let tempDirectory = $TEMP
-  let fileName = "evalPowershell.ps1"
+  let fileName = "evalPowerShell.ps1"
   let filePath = tempDirectory . "\\" . fileName
   silent! execute "'<,'>write! " . filePath
-  execute "!powershell " . filePath
+  execute "!PowerShell " . filePath
 endfunction
 augroup powershell
   autocmd!
@@ -143,7 +143,7 @@ augroup END
 
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-" Add newline to end of file everytime you save the file.
+" Add newline to end of file every time you save the file.
 set eol
 " Change the terminal's title
 set title
@@ -179,7 +179,7 @@ set complete+=kspell
 " Load plugins & plugin settings
 "============================================================================
 source $HOME/.vimrc.plugins
-"Spell files are in GDrive do the following to set it up.
+"Spell files are in Google drive do the following to set it up.
 "$ rmdir ~/.vim/spell
 "$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
 "============================================================================
