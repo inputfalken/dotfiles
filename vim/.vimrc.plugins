@@ -34,11 +34,17 @@ Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-repeat'
+Plug 'luochen1990/rainbow'
 call plug#end()
 set background=dark
 if has('unix')
   colorscheme solarized8_dark
 endif
+"============================================================================
+" Rainbow
+"============================================================================
+let g:rainbow_active = 1
 "============================================================================
 " Airline
 "============================================================================
