@@ -16,7 +16,8 @@ set incsearch
 set smartcase     " Ignore case if search pattern is all lowercase, case-sensitive otherwise
 "===================================================================================================
 set backspace=indent,eol,start
-set clipboard=unnamed
+" Yanks to the clipboard
+set clipboard+=unnamed
 set scrolloff=5
 set vsvim_useeditordefaults
 set vsvim_useeditorindent
