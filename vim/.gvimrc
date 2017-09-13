@@ -4,5 +4,5 @@ set guioptions-=T  "remove toolbar
 set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=L  "remove left-hand scroll bar
 au GUIEnter * simalt ~x
-colorscheme solarized8_dark
-source $HOME\.vimrc
+colorscheme jellybeans
+let g:airline_theme='jellybeans'
