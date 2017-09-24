@@ -181,7 +181,10 @@ Reload-Path
 #                                                                                                  #
 ####################################################################################################
 if (!(Check-Command Import-Module posh-git)) {
-  PowerShellGet\Install-Module posh-git -Force -Scope CurrentUser
+  PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
+}
+if (!(Check-Command Import-Module z)) {
+  PowerShellGet\Install-Module z -Scope CurrentUser -AllowClobber -Force
 }
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
