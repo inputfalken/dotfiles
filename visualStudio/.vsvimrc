@@ -97,6 +97,7 @@ vnoremap <Leader>iv :vsc ReSharper.ReSharper_IntroVariable<CR>
  "Formating & Folding
 "===================================================================================================
 nnoremap <Leader>rc :vsc ReSharper.ReSharper_ReformatCode<CR>
+nnoremap <Leader>rC :vsc ReSharper.ReSharper_CleanupCode<CR>
 nnoremap <Leader>zf :vsc Edit.CollapseCurrentRegion<CR>
 "===================================================================================================
  "Git
