@@ -136,6 +136,18 @@ function Copy-Home ([string] $file) {
 # Test a condition for a command
 function Test-Any() { process { $true; break } end { $false } }
 
+#Install PowerShell modules.
+function Install-PowerShellModule ([string] $module) {
+  if (!(Get-Module -ListAvailable -Name $module)) {
+    PowerShellGet\Install-Module -Name $module -Scope CurrentUser -AllowClobber -Force
+  } else {
+    Write-Host -NoNewLine 'Module '
+    Write-Host -NoNewLine $module -ForegroundColor yellow
+    Write-Host -NoNewLine ' is already installed, skipping installment.'
+    Write-Host
+  }
+}
+
 # Install Solarized-Dark
 # From https://github.com/neilpa/cmd-colors-solarized solarized
 function Install-Solarized ([string] $theme) {
@@ -179,12 +191,8 @@ Reload-Path
 #                                         Setup PowerShell                                         #
 #                                                                                                  #
 ####################################################################################################
-if (!(Check-Command Import-Module posh-git)) {
-  PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
-}
-if (!(Check-Command Import-Module z)) {
-  PowerShellGet\Install-Module z -Scope CurrentUser -AllowClobber -Force
-}
+Install-PowerShellModule 'posh-git'
+Install-PowerShellModule 'z'
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
 Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
