@@ -76,6 +76,8 @@ function Invoke-Speech {
 new-alias -name out-voice -value Invoke-Speech
 
 function Clear-Solution {
+  [cmdletbinding(SupportsShouldProcess=$True)]
+  Param()
   $solution = (Get-ChildItem *.sln)
   if ($solution) {
     $expectedType = 'FileInfo'
@@ -84,11 +86,13 @@ function Clear-Solution {
       $counter = 0
       Get-ChildItem -Recurse -Directory | where { $_.Name -eq 'bin' -or $_.Name -eq 'obj' } | % {
         $fullName = $_.FullName
-        Write-Host "Removing directory $fullName"
-        Remove-Item $fullName -Force -Recurse
         $counter++
+        if ($PSCmdlet.ShouldProcess($fullName, 'Remove-Item')) {
+          Write-Host "Removing $fullName"
+          Remove-Item $fullName -Force -Recurse
+        }
       }
-      Write-Host $(if ($counter -eq 0) { "Found no directories" } else { "Removed $counter directories"})
+      Write-Host $(if ($counter -eq 0) { "Found no directories." } else { "Found $counter directories."})
     } else {
       $invalidType = "Expected the type '$expectedType' but got '$($type.Name)'."
       throw $invalidType
@@ -115,4 +119,10 @@ function Compile-YCM {
   $env:Path+= ";$($env:ProgramFiles)\7-Zip"
   $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
   python "$directory\install.py"
+}
+
+# Chocolatey profile
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+  Import-Module "$ChocolateyProfile"
 }
