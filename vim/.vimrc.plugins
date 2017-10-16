@@ -85,5 +85,9 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 "============================================================================
 " Load syntastic settings
 "============================================================================
-source $HOME/.vimrc.syntastic
-source $HOME/.vimrc.omnisharp
+if filereadable($HOME . "/.vimrc.syntastic")
+  source $HOME/.vimrc.syntastic
+endif
+if filereadable($HOME . "/.vimrc.omnisharp")
+  source $HOME/.vimrc.omnisharp
+endif

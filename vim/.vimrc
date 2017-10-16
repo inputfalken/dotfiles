@@ -165,10 +165,9 @@ set complete+=kspell
 "============================================================================
 " Load plugins & plugin settings
 "============================================================================
-if filereadable($HOME . "/.vimrc.plugins")
+if filereadable($HOME . "./.vimrc.plugins")
   source $HOME/.vimrc.plugins
 endif
-
 "Spell files are in Google drive do the following to set it up.
 "$ rmdir ~/.vim/spell
 "$ ln -s ~/Dropbox/vim/spell ~/.vim/spell
