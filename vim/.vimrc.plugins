@@ -36,6 +36,7 @@ Plug 'PProvost/vim-ps1'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-unimpaired'
 Plug 'luochen1990/rainbow'
 call plug#end()
 set background=dark
