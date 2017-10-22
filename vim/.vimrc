@@ -185,6 +185,8 @@ endif
 if !exists("g:syntax_on")
   syntax enable
 endif
+
+command JsonPretty execute "%!python -m json.tool"
 "============================================================================
 " Good Sources
 "============================================================================
