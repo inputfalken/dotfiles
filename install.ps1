@@ -172,11 +172,13 @@ if ((Check-Command choco) -ne $true) {
   Install-Choco
 }
 $installedPackages = Get-InstalledPackages
+
 ####################################################################################################
 #                                                                                                  #
 #                                           Installation                                           #
 #                                                                                                  #
 ####################################################################################################
+
 Install-Package 'conemu'
 Install-Package 'dotnetcore'
 Install-Package 'git'
@@ -186,21 +188,25 @@ Install-Package 'nuget.commandline'
 Install-Package 'python2'
 Install-Package 'vim'
 Reload-Path
+
 ####################################################################################################
 #                                                                                                  #
 #                                         Setup PowerShell                                         #
 #                                                                                                  #
 ####################################################################################################
+
 Install-PowerShellModule 'posh-git'
 Install-PowerShellModule 'z'
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
 Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
+
 ####################################################################################################
 #                                                                                                  #
 #                                   Copy files to home directory                                   #
 #                                                                                                  #
 ####################################################################################################
+
 Copy-Home '.\git\.gitconfig'
 Copy-Home '.\git\.gitignore_global'
 Copy-Home '.\tern\.tern-project'
@@ -210,12 +216,14 @@ Copy-Home '.\vim\.vimrc.omnisharp'
 Copy-Home '.\vim\.vimrc.plugins'
 Copy-Home '.\vim\.vimrc.syntastic'
 Copy-Home '.\visualStudio\.vsvimrc'
+
 ####################################################################################################
 #                                                                                                  #
 #                                            Setup Vim                                             #
 #                                                                                                  #
 ####################################################################################################
-  # Run vim, install plugins and quit vim
+
+# Run vim, install plugins and quit vim
 if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Install-Plug
   vim +PlugInstall +qall
