@@ -181,6 +181,7 @@ $installedPackages = Get-InstalledPackages
 
 Install-Package 'conemu'
 Install-Package 'dotnetcore'
+Install-Package 'dotnetcore-sdk'
 Install-Package 'git'
 Install-Package 'googlechrome'
 Install-Package 'nodejs'
