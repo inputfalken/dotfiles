@@ -186,6 +186,7 @@ Install-Package 'git'
 Install-Package 'googlechrome'
 Install-Package 'nodejs'
 Install-Package 'nuget.commandline'
+Install-Package 'postman'
 Install-Package 'python2'
 Install-Package 'vim'
 Reload-Path
