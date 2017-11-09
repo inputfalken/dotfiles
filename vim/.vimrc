@@ -188,6 +188,10 @@ endif
 
 command JsonPretty execute "%!python -m json.tool"
 "============================================================================
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+"============================================================================
+cmap w!! w !sudo tee > /dev/null %
+"============================================================================
 " Good Sources
 "============================================================================
 " https://github.com/whiteinge/dotfiles
