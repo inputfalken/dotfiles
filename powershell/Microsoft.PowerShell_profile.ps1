@@ -75,8 +75,39 @@ function Invoke-Speech {
 }
 new-alias -name out-voice -value Invoke-Speech
 
-function Secure-Copy ([string] $address, [string] $rPath, [string] $lpath) {
-  scp "$($address):$($rPath)" $lpath
+Enum PathType {
+  Directory = 0
+  File = 1
+}
+
+function Secure-Copy ([string] $address, [string] $remotePath, [string] $localPath, [PathType] $pathType) {
+  if ($pathType -eq [PathType]::File) {
+    scp "$($address):$($remotePath)" $localPath
+  } elseif ($pathType -eq [PathType]::Directory) {
+    scp -r "$($address):$($remotePath)" $localPath
+  } else {
+    throw 'Enum not supported.'
+  }
+  if ($?) {
+    Write-Host "Successfully copied '$remotePath' -> '$localPath'" -ForeGroundColor Green
+  } else {
+    throw "scp exit code: $lastexitcode"
+  }
+}
+
+function Secure-Transfer ([string] $address, [string] $remotePath, [string] $localPath, [PathType] $pathType) {
+  if ($pathType -eq [PathType]::File) {
+    scp $localPath "$($address):$($remotePath)"
+  } elseif ($pathType -eq [PathType]::Directory) {
+    scp -r $localPath "$($address):$($remotePath)"
+  } else {
+    throw 'Enum not supported.'
+  }
+  if ($?) {
+    Write-Host "Successfully copied '$remotePath' -> '$localPath'" -ForeGroundColor Green
+  } else {
+    throw "scp exit code: $lastexitcode"
+  }
 }
 
 function Clear-Solution {
