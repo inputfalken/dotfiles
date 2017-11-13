@@ -75,6 +75,10 @@ function Invoke-Speech {
 }
 new-alias -name out-voice -value Invoke-Speech
 
+function Secure-Copy ([string] $address, [string] $rPath, [string] $lpath) {
+  scp "$($address):$($rPath)" $lpath
+}
+
 function Clear-Solution {
   [cmdletbinding(SupportsShouldProcess=$True)]
   Param()
