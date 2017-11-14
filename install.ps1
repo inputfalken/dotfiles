@@ -1,3 +1,7 @@
+param(
+  [Parameter(Mandatory=$true)]
+  [string] $mailAddress
+)
 $ErrorActionPreference = "Stop"
 
 # Create the directory if it's not found
@@ -210,6 +214,7 @@ Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
 ####################################################################################################
 
 Copy-Home '.\git\.gitconfig'
+git config --global user.email $mailAddress
 Copy-Home '.\git\.gitignore_global'
 Copy-Home '.\tern\.tern-project'
 Copy-Home '.\vim\.gvimrc'
