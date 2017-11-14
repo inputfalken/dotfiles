@@ -38,6 +38,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
 Plug 'luochen1990/rainbow'
+Plug 'mtscout6/syntastic-local-eslint.vim'
 call plug#end()
 set background=dark
 if has('unix')
