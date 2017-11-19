@@ -63,28 +63,26 @@ nnoremap <Leader>bp :vsc Debug.ToggleBreakpoint<CR>
 nnoremap <Leader>ts :vsc ReSharper.ReSharper_UnitTestRunSolution<CR>
 
 "===================================================================================================
-" Toggle Bookmark & Go To Next Or Previous BookMark In Solution
-"===================================================================================================
-
-nnoremap <Leader>bm :vsc Edit.ToggleBookmark<CR>
-nnoremap gB :vsc Edit.NextBookmark<CR>
-nnoremap gb :vsc Edit.NextBookmark<CR>
-
-"===================================================================================================
 " Templating
 "===================================================================================================
+
 vnoremap <leader>s :vsc ReSharper.ReSharper_SurroundWith<CR>
 
 "===================================================================================================
-" Go to definitions
+" Navigation
 "===================================================================================================
 
 nnoremap gR :vsc ReSharper.ReSharper_GotoRelatedFiles <return>
 nnoremap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
 nnoremap gf :vsc ReSharper.ReSharper_GotoFile<CR>
-nnoremap gi :vsc ReSharper.ReSharper_GotoImplementation<CR>
+nnoremap gi :vsc ReSharper.ReSharper_GotoImplementations<CR>
 nnoremap gm :vsc ReSharper.ReSharper_GotoFileMember<CR>
 nnoremap gr :vsc ReSharper.ReSharper_GotoRecentFiles <CR>
+nnoremap fu :vsc ReSharper.ReSharper_FindUsages<CR>
+nnoremap <Leader>bm :vsc Edit.ToggleBookmark<CR>
+nnoremap gB :vsc Edit.NextBookmark<CR>
+nnoremap gb :vsc Edit.NextBookmark<CR>
+
 
 "===================================================================================================
 " Package manager
@@ -113,6 +111,7 @@ vnoremap <Leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
 vnoremap <Leader>if :vsc ReSharper.ReSharper_IntroduceField<CR>
 vnoremap <Leader>ip :vsc ReSharper.ReSharper_IntroParameter<CR>
 vnoremap <Leader>iv :vsc ReSharper.ReSharper_IntroVariable<CR>
+nnoremap <Leader>ic :vsc ReSharper.ReSharper_InlineVariable<CR>
 
 "===================================================================================================
 " Formating & Folding
