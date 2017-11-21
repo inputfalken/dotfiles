@@ -111,7 +111,7 @@ vnoremap <Leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
 vnoremap <Leader>if :vsc ReSharper.ReSharper_IntroduceField<CR>
 vnoremap <Leader>ip :vsc ReSharper.ReSharper_IntroParameter<CR>
 vnoremap <Leader>iv :vsc ReSharper.ReSharper_IntroVariable<CR>
-nnoremap <Leader>ic :vsc ReSharper.ReSharper_InlineVariable<CR>
+nnoremap <Leader>il :vsc ReSharper.ReSharper_InlineVariable<CR>
 
 "===================================================================================================
 " Formating & Folding
