@@ -1,0 +1,147 @@
+"===================================================================================================
+"                                                                                                  "
+"      This file is used by Visual Studio plugin 'VsVim' source: https://github.cedpar/VsVim       "
+"                                                                                                  "
+"===================================================================================================
+
+"===================================================================================================
+" General Settings
+"===================================================================================================
+
+let mapleader=" "
+
+"===================================================================================================
+ "Search Settings
+"===================================================================================================
+
+set backspace=indent,eol,start
+set clipboard+=unnamed
+set cursorline
+set hlsearch
+set ignorecase
+set incsearch
+set scrolloff=5
+set smartcase
+set vsvim_useeditordefaults
+set vsvim_useeditorindent
+set whichwrap=b,s,<,>,h,l
+
+"===================================================================================================
+" Bindings
+"===================================================================================================
+
+inoremap jk <esc>
+map Y y$
+nnoremap <Leader>ev :vsplit<CR> :edit ~/.vsvimrc<CR>
+nnoremap <Leader>so :source ~/.vsvimrc<CR>
+nnoremap X "_X
+nnoremap j gj
+nnoremap k gk
+noremap x "_x
+
+"===================================================================================================
+" Track jumps accross session
+"===================================================================================================
+
+nnoremap <C-I> :vsc View.NavigateForward<CR>
+nnoremap <C-O> :vsc View.NavigateBackward<CR>
+
+"===================================================================================================
+" Build, Debugging And Run
+"===================================================================================================
+
+nnoremap <Leader>B :vsc Build.BuildSolution<CR>
+nnoremap <Leader>D :vsc Debug.Start<CR>
+nnoremap <Leader>R :vsc Debug.StartWithoutDebugging<CR>
+nnoremap <Leader>bp :vsc Debug.ToggleBreakpoint<CR>
+
+"===================================================================================================
+" Test
+"===================================================================================================
+
+"TODO add unit test context binding.
+nnoremap <Leader>ts :vsc ReSharper.ReSharper_UnitTestRunSolution<CR>
+
+"===================================================================================================
+" Templating
+"===================================================================================================
+
+vnoremap <leader>s :vsc ReSharper.ReSharper_SurroundWith<CR>
+
+"===================================================================================================
+" Navigation
+"===================================================================================================
+
+nnoremap gR :vsc ReSharper.ReSharper_GotoRelatedFiles <return>
+nnoremap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
+nnoremap gf :vsc ReSharper.ReSharper_GotoFile<CR>
+nnoremap gi :vsc ReSharper.ReSharper_GotoImplementations<CR>
+nnoremap gm :vsc ReSharper.ReSharper_GotoFileMember<CR>
+nnoremap gr :vsc ReSharper.ReSharper_GotoRecentFiles <CR>
+nnoremap fu :vsc ReSharper.ReSharper_FindUsages<CR>
+nnoremap <Leader>bm :vsc Edit.ToggleBookmark<CR>
+nnoremap gB :vsc Edit.NextBookmark<CR>
+nnoremap gb :vsc Edit.NextBookmark<CR>
+
+
+"===================================================================================================
+" Package manager
+"===================================================================================================
+
+nnoremap <Leader>pm :vsc View.PackageManagerConsole<CR>
+
+"===================================================================================================
+" Go to errors
+"===================================================================================================
+
+nnoremap <C-E> :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
+nnoremap gE :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
+nnoremap ge :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
+
+"===================================================================================================
+" Refactorings
+"===================================================================================================
+
+nnoremap <Leader>ac :vsc Project.AddClass<CR>
+nnoremap <Leader>ai :vsc Project.AddInterface<CR>
+nnoremap <Leader>ar :vsc Project.AddReference<CR>
+nnoremap <Leader>ei :vsc ReSharper.ReSharper_VSRefactor_ExtractInterface<CR>
+nnoremap <Leader>r :vsc ReSharper.ReSharper_Rename<CR>
+vnoremap <Leader>em :vsc ReSharper.ReSharper_ExtractMethod<CR>
+vnoremap <Leader>if :vsc ReSharper.ReSharper_IntroduceField<CR>
+vnoremap <Leader>ip :vsc ReSharper.ReSharper_IntroParameter<CR>
+vnoremap <Leader>iv :vsc ReSharper.ReSharper_IntroVariable<CR>
+nnoremap <Leader>il :vsc ReSharper.ReSharper_InlineVariable<CR>
+
+"===================================================================================================
+" Formating & Folding
+"===================================================================================================
+
+nnoremap <Leader>rC :vsc ReSharper.ReSharper_CleanupCode<CR>
+nnoremap <Leader>rc :vsc ReSharper.ReSharper_ReformatCode<CR>
+nnoremap <Leader>zf :vsc Edit.CollapseCurrentRegion<CR>
+
+"===================================================================================================
+" Unbinded Useful Commands
+"===================================================================================================
+" Team.Git.ShowGraph
+" File.ViewHistory
+" View.PackageManagerConsole
+"===================================================================================================
+ "Good sources
+"===================================================================================================
+" Found many vsvimrc files on github:
+" https://github.com/BruceKpersonal/.vim/blob/master/.vsvimrc
+" https://github.com/StanislawSwierc/Profile/blob/d268cc58366fa8d6a347b3e98bd4daff8257d212/_vsvimrc
+" https://github.com/aburok/mysettings/blob/master/Vim/_vsvimrc
+" https://github.com/aburok/mysettings/blob/master/VisualStudio/vscommands.txt
+" https://github.com/bab491/vimscripts/blob/master/_vsvimrc
+" https://github.com/cakn/vimfiles/blob/master/_vsvimrc
+" https://github.com/jaredpar/VsVim/wiki/Settings-Reference
+" https://github.com/potz/dotfiles/blob/401ff11fafdb80c927387a471cacc5a5a2b53c28/.vsvimrc
+" https://github.com/psibar/dotfiles/blob/master/vim/_vsvimrc
+" https://github.com/pwnb0t/dotfiles/blob/master/.vsvimrc
+"===================================================================================================
+" Tips
+"===================================================================================================
+" To Find VS Commands Go To Options -> Enviroment -> Keyboard

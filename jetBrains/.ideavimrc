@@ -1,0 +1,38 @@
+let mapleader=" "
+map Y y
+noremap Y y$
+noremap x "_x
+noremap X "_X
+nnoremap j gj
+nnoremap k gk
+inoremap jk <esc>
+
+set cursorline
+set smartcase
+set scrolloff=5
+set undolevels=100
+set relativenumber
+set incsearch
+
+noremap <Leader>rc :action ReformatCode<CR>
+noremap <Leader>bm :action ToggleBookmark<CR>
+noremap gb :action GotoNextBookmark<CR>
+noremap gB :action GotoPreviousBookmark<CR>
+
+noremap ge :action ReSharperGotoNextErrorInSolution<CR>
+noremap gE :action ReSharperGotoPrevErrorInSolution<CR>
+
+noremap <Leader>re :action RenameElement<CR>
+noremap <Leader>em :action ExtractMethod<CR>
+noremap <Leader>if :action IntroduceField<CR>
+noremap <Leader>iv :action IntroduceVariable<CR>
+
+noremap <Leader>cr :action CollapseRegion<CR>
+
+noremap <Leader>B :action build<CR>
+noremap <Leader>R :action Run<CR>
+noremap <Leader>D :action Debug<CR>
+
+noremap <Leader>bp :action ToggleLineBreakpoint<CR>
+noremap <Leader>Gcwb :action Git.CompareWithBranch<CR>
+noremap <Leader>ta :action RiderUnitTestRunSolutionAction<CR>
