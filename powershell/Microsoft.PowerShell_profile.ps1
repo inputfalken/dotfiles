@@ -1,3 +1,7 @@
+# Sets the outputencoding to UTF8 so Vim works with XTerm.
+# NOTE this however affects all commands. A solution would be to find a way to only use this encoding for Vim.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 Import-Module posh-git
 Set-PSReadlineOption -EditMode vi
 

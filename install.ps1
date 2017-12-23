@@ -193,6 +193,8 @@ Install-Package 'nuget.commandline'
 Install-Package 'postman'
 Install-Package 'python2'
 Install-Package 'vim'
+Install-Package 'ruby'
+Install-Package 'googledrive'
 Reload-Path
 
 ####################################################################################################
@@ -235,8 +237,9 @@ if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
   Install-Plug
   vim +PlugInstall +qall
   Install-YouCompleteMe "$HOME\.vim\plugged\YouCompleteMe"
-  Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
+#  Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
 }
+
 ## Check for updates in chocolatey
 #cup all -y
 # Play sound when finished
