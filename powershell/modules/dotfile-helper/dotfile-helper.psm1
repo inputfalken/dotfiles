@@ -77,7 +77,7 @@ function Save-GitConfig {
   .SYNOPSIS
   Saves the .Vimrc file to the dotfiles directory.
 #>
-function Save-Config {
+function Save-VimConfig {
   [CmdletBinding()]
   param (
     [System.IO.DirectoryInfo] $dotfiles = "$HOME\dotfiles",
@@ -89,7 +89,7 @@ function Save-Config {
   Save-Dotfile $dotfiles $commitMessage $pushRepo $sourceFile $targetFile
 }
 
-function Save-PluginsConfig {
+function Save-VimPluginsConfig {
   [CmdletBinding()]
   param (
     [System.IO.DirectoryInfo] $dotfiles = "$HOME\dotfiles",
