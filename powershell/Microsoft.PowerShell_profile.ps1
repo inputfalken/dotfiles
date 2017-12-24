@@ -25,7 +25,7 @@ function Tail-File {
     param(
         [Parameter(Position=0,Mandatory=1)][string]$path
     )
-      Get-Content $path -Wait
+    Get-Content $path -Wait
 }
 
 <#
