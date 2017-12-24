@@ -3,11 +3,12 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 Import-Module posh-git
+Import-Module dotfile-helper
 Set-PSReadlineOption -EditMode vi
 
 <#
 .SYNOPSIS
-Reloads the System Envrionmental variable PATH
+  Reloads the System Envrionmental variable PATH
 #>
 function Reload-Path {
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -29,10 +30,10 @@ function Tail-File {
 
 <#
 .SYNOPSIS
-Recompiles the vim plugin 'YouCompleteMe' this is useful when updating YouCompleteMe.
-In order for this function to work; you need to have 7-Zip and CMake installed.
+  Recompiles the vim plugin 'YouCompleteMe' this is useful when updating YouCompleteMe.
+  In order for this function to work; you need to have 7-Zip and CMake installed.
 .EXAMPLE
-Compile-YCM "$HOME\.vim\plugged\YouCompleteMe"
+  Compile-YCM "$HOME\.vim\plugged\YouCompleteMe"
 #>
 function Compile-YCM {
   [CmdletBinding()]
