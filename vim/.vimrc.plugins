@@ -59,11 +59,14 @@ let g:vim_markdown_fenced_languages = ['csharp=cs']
 " Rainbow
 "============================================================================
 let g:rainbow_active = 1
+nmap <silent> gE <Plug>(ale_previous_wrap)
+nmap <silent> ge <Plug>(ale_next_wrap)
 "============================================================================
 " Airline
 "============================================================================
 let g:airline_theme='jellybeans'
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#ale#enabled = 1
 "============================================================================
 " UltiSnips
 "============================================================================
@@ -81,11 +84,6 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<Up>', '<c-p>']
 let g:ycm_key_list_select_completion = ['<Down>', '<c-n>']
 let g:ycm_use_ultisnips_completer = 1
-"============================================================================
-" Javascript
-"============================================================================
-autocmd FileType javascript noremap gd :TernDef<CR> " Go to definition with ternjs
-autocmd FileType javascript noremap <leader>r :TernRename<CR>
 "============================================================================
 " Run nerdtree if a directory is targeted
 "============================================================================
