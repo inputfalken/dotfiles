@@ -1,6 +1,3 @@
-[user]
-  email = 
-  name = Robert Andersson
 [diff]
   tool = vimdiff
 [push]
@@ -23,3 +20,12 @@
   renormalize = true
 [branch]
   autosetuprebase = always
+[color "diff"]
+	new = green bold
+[color "status"]
+	updated = green bold
+[color "branch"]
+	current = green bold
+[user]
+	name = Name
+	email = Email
