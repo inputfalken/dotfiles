@@ -5,7 +5,6 @@ Plug 'fsharp/vim-fsharp', {
       \}
 Plug 'SirVer/ultisnips'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'wkentaro/conque.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dag/vim-fish'
 Plug 'honza/vim-snippets'
@@ -24,7 +23,6 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'rafi/awesome-vim-colorschemes'
 Plug 'othree/csscomplete.vim'
 Plug 'vim-jp/syntax-vim-ex'
 Plug 'robbles/logstash.vim'
@@ -35,11 +33,11 @@ Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'nanotech/jellybeans.vim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
 Plug 'luochen1990/rainbow'
 call plug#end()
-set background=dark
 if !has("gui_running")
   if has("win32")
     set term=xterm
@@ -48,6 +46,7 @@ if !has("gui_running")
     let &t_AF="\e[38;5;%dm"
     inoremap <Char-0x07F> <BS>
     nnoremap <Char-0x07F> <BS>
+    set background=dark
     colorscheme jellybeans
   endif
 endif
