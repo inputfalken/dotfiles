@@ -140,12 +140,35 @@ function Copy-Home ([string] $file) {
 # Test a condition for a command
 function Test-Any() { process { $true; break } end { $false } }
 
-#Install PowerShell modules.
-function Install-PowerShellModule ([string] $module) {
-  if (!(Get-Module -ListAvailable -Name $module)) {
+# Installs a PowerShell module
+# First attempts to find a local module and then add/override it.
+# If no local module is found it attempts to see if the module allready exists,
+# if module exists nothing is done otherwise an attempt is made to locate it online and then install it.
+function Install-PowerShellModule {
+  param(
+    [Parameter(Position=0)][string] $module,
+    [Parameter(Position=1)][string] $localModules = "./powershell/modules/$module"
+  )
+
+  function Is-Local () {
+    Write-Host "Looking localy for PowerShell module '$module'." -ForegroundColor Yellow
+    Test-Path $localModules
+  }
+  function Is-Installed () {
+    Write-Host "Looking if PowerShell module '$module' is installed." -ForegroundColor Yellow
+    !(Get-Module -ListAvailable -Name $module)
+  }
+  if (Is-Local) {
+    $profileDirectory = '~\Documents\WindowsPowerShell\Modules'
+    Copy-Item -Recurse -Force -Path $localModules -Destination "$profileDirectory\modules"
+
+    if ($?) { Write-Host "Successfully installed module '$module'." -Green }
+    else { Write-Host "Failed to install module '$module'." -Red }
+  }
+  elseif (Is-Installed) {
     PowerShellGet\Install-Module -Name $module -Scope CurrentUser -AllowClobber -Force
   } else {
-    Write-Host -NoNewLine 'Module '
+    Write-Host -NoNewLine 'Online PowerShell module '
     Write-Host -NoNewLine $module -ForegroundColor yellow
     Write-Host -NoNewLine ' is already installed, skipping installment.'
     Write-Host
@@ -205,6 +228,7 @@ Reload-Path
 
 Install-PowerShellModule 'posh-git'
 Install-PowerShellModule 'z'
+Install-PowerShellModule 'dotfile-helper'
 Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
 Unblock-File -Path $PROFILE
 Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
