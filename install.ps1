@@ -95,7 +95,7 @@ function Install-PowerShellModule {
 if (!(Check-Command choco)) {
   Install-Chocolatey
 }
-$installedPackages = Get-ChocolateyPackages
+$installedPackages = (Get-ChocolateyPackages | Select-Object -ExpandProperty Package)
 
 ####################################################################################################
 #                                                                                                  #
