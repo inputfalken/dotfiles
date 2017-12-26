@@ -14,6 +14,25 @@ function Reload-Path {
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+<#
+.SYNOPSIS
+  Lists the choco packages installed.
+#>
+function Get-ChocolateyPackages {
+  Write-Host 'Getting installed packages' -ForegroundColor Yellow
+  # Gets the packages names
+  $packages = (choco list --local-only) | % { $_.Split(' ') | select -first 1 }
+  # if packages is not null
+  if ($packages) {
+    # Remove the last item where it says the amount of installed packages.
+    $packages = $packages[1..($packages.length - 2)]
+    return $packages
+  } else {
+    # Return empty array if $packages is null
+    return ,@()
+  }
+}
+
 function Create-Link ($target, $link) {
   New-Item -Path $link -ItemType SymbolicLink -Value $target
 }
