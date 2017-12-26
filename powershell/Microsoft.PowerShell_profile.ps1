@@ -16,20 +16,40 @@ function Reload-Path {
 
 <#
 .SYNOPSIS
-  Lists the choco packages installed.
+  Lists choco packages name and version.
+  Returns an array of PSCustomObject with properties:
+  * Package
+  * Version
 #>
 function Get-ChocolateyPackages {
+  function Take-While() {
+    param ( [scriptblock]$pred = $(throw "Need a predicate") )
+      begin {
+        $take = $true
+      }
+    process {
+      if ( $take ) {
+        $take = & $pred $_
+          if ( $take ) {
+            $_
+          }
+      }
+    }
+  }
   Write-Host 'Getting installed packages' -ForegroundColor Yellow
   # Gets the packages names
-  $packages = (choco list --local-only) | % { $_.Split(' ') | select -first 1 }
-  # if packages is not null
+  $packages = choco list --local-only
+  # if packages is not null.
   if ($packages) {
-    # Remove the last item where it says the amount of installed packages.
-    $packages = $packages[1..($packages.length - 2)]
-    return $packages
+    # Get rid of redundant info,
+    $packages = $packages | Take-While { $args[0] -NotMatch '\d\spackages\sinstalled\.' }
+    $packages | % {
+      $split = $_.Split(' ')
+      [PSCustomObject] @{ Package=$split[0] ; Version=$split[1] }
+    } | Sort-Object Package
   } else {
     # Return empty array if $packages is null
-    return ,@()
+    @()
   }
 }
 
