@@ -1,4 +1,3 @@
-
 # Prompts user for y/n input.
 function Confirm-Option ([string] $message) {
   while  (1) {

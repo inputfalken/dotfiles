@@ -1,9 +1,14 @@
-# Sets the outputencoding to UTF8 so Vim works with XTerm.
+# Sets the outputencoding to UTF8 so Vim works with XTerm when a ConEmu session is active.
 # NOTE this however affects all commands. A solution would be to find a way to only use this encoding for Vim.
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+if ($env:ConEmuBuild){
+  [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+}
 
 Import-Module posh-git
 Import-Module dotfile-helper
+Import-Module Get-ChildItemColor
+Set-Alias ls Get-ChildItemColorFormatWide -option AllScope
+
 Set-PSReadlineOption -EditMode vi
 
 <#
