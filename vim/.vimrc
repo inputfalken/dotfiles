@@ -46,18 +46,6 @@ map Y y$ " Fix for legacy vi inconsistency
 nnoremap j gj
 nnoremap k gk
 "============================================================================
-nnoremap <silent> <RIGHT>         :cnext<CR>
-nnoremap <silent> <RIGHT><RIGHT>  :cnfile<CR><C-G>
-nnoremap <silent> <LEFT>          :cprev<CR>
-nnoremap <silent> <LEFT><LEFT>    :cpfile<CR><C-G>
-"============================================================================
-" Navigate buffer list
-"============================================================================
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
-"============================================================================
 " Vimrc
 "============================================================================
 nnoremap <silent> <leader>ev :e $HOME/.vimrc<CR>
