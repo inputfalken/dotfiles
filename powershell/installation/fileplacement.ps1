@@ -17,8 +17,8 @@ function Setup-Files {
 
   function Setup-GitConfig {
     Copy-Home '.\git\.gitconfig'
-    git config --global user.email $gitEmail
-    git config --global user.name $gitName
+    Exec { git config --global user.email $gitEmail }
+    Exec { git config --global user.name $gitName }
   }
 
   function Setup-PowerShellProfile {

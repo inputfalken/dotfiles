@@ -11,14 +11,14 @@ function Setup-Vim {
     Write-Host 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe''' -ForegroundColor Yellow
     $env:Path+= ";$($env:ProgramFiles)\7-Zip"
     $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
-    python $dir\install.py
+    Exec { python $dir\install.py }
   }
 
   function Install-TernForVim ([string] $dir) {
     Write-Host 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''.' -ForegroundColor Yellow
     try {
       Push-Location $dir
-      npm install
+      Exec { npm install }
       Pop-Location
     }
     catch {
@@ -50,7 +50,7 @@ function Setup-Vim {
       # Run vim, install plugins and quit vim
       if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
         Install-Plug
-        vim +PlugInstall +qall
+        Exec { vim +PlugInstall +qall }
         Install-YouCompleteMe "$HOME\.vim\plugged\YouCompleteMe"
         #Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
       }
