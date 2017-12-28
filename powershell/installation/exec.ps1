@@ -30,8 +30,7 @@ function Exec {
     #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
-        [scriptblock]$cmd,
+        [Parameter(Mandatory = $true)][scriptblock]$cmd,
         [string]$errorMessage = ($msgs.error_bad_command -f $cmd),
         [int]$maxRetries = 0,
         [string]$retryTriggerErrorPattern = $null,

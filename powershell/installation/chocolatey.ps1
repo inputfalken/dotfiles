@@ -28,28 +28,21 @@ function Setup-Chocolatey {
 
   # Install a chocolatey package.
   function Install-ChocolateyPackage ([string] $package, [bool] $prompt = $false) {
-    try {
-      if (Get-Command choco) {
-        if ($installedPackages -contains $package) {
-          Write-Host -NoNewLine 'Package '
-          Write-Host -NoNewLine $package -ForegroundColor yellow
-          Write-Host -NoNewLine ' is already installed, skipping installment.'
-          Write-Host
-        } else {
-          # If prompt and the confirmation is false.
-          if ($prompt -and !(Confirm-Option "Would you like to install package '$package'?")) {
-            return
-          }
-          choco install $package -y
-        }
+    if ($installedPackages -contains $package) {
+      Write-Host -NoNewLine 'Package '
+      Write-Host -NoNewLine $package -ForegroundColor yellow
+      Write-Host -NoNewLine ' is already installed, skipping installment.'
+      Write-Host
+    } else {
+      # If prompt and the confirmation is false.
+      if ($prompt -and !(Confirm-Option "Would you like to install package '$package'?")) {
+        return
       }
-    }
-    catch {
-      throw "Package manager 'Chocolatey' could not be found."
+      Exec {  choco install $package -y  }
     }
   }
   Install-Chocolatey
-  $installedPackages = (Get-ChocolateyPackages | Select-Object -ExpandProperty Package)
+  $installedPackages = Exec { Get-ChocolateyPackages | Select-Object -ExpandProperty Package }
   Install-ChocolateyPackage 'conemu'
   Install-ChocolateyPackage 'dotnetcore'
   Install-ChocolateyPackage 'dotnetcore-sdk'
