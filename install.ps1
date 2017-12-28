@@ -18,8 +18,6 @@ $ErrorActionPreference = "Stop"
 . .\powershell\installation\chocolatey.ps1
 Setup-Chocolatey
 
-npm install jsonlint -g
-
 . ./powershell/installation/powershellmodules.ps1
 Setup-PowerShellModules
 
