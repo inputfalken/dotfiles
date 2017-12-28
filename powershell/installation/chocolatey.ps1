@@ -5,13 +5,8 @@
 ####################################################################################################
 
 
-
 function Setup-Chocolatey {
-  # Check if the command exists.
-  function Check-Command($cmdname) {
-    return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
-  }
-
+  . .\utils.ps1
   # Installs the choco package manager
   # Source: https://chocolatey.org/
   function Install-Chocolatey {
