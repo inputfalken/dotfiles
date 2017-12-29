@@ -8,7 +8,11 @@ function Setup-Linters {
   . .\utils.ps1
 
   function Install-JsonLint {
-    Exec { npm install jsonlint -g }
+    if (Check-Command jsonlint) {
+      Write-Host 'Command ''JsonLint'' allready exists, skipping installation.'
+    } else {
+      Exec { npm install jsonlint -g }
+    }
   }
 
   function Install-XmlLint {
@@ -49,4 +53,6 @@ function Setup-Linters {
       Pop-Location
     }
   }
+
+  Install-XmlLint C:\tools\xml
 }
