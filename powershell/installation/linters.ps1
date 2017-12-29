@@ -5,24 +5,34 @@
 ####################################################################################################
 
 function Setup-Linters {
-  . .\utils.ps1
+  . $PSScriptRoot\utils.ps1
+
+  function Install-Linter {
+    param (
+      [Parameter(Mandatory=1)][string]$cmd,
+      [Parameter(Mandatory=1)][ScriptBlock] $linterMissing,
+    )
+    $linterExits = {
+      Write-Host "Linter '$cmdname' allready exists, skipping installation."
+    }
+    Command-Exists $cmdname $linterExits $linterMissing
+  }
 
   function Install-JsonLint {
-    if (Check-Command jsonlint) {
-      Write-Host 'Command ''JsonLint'' allready exists, skipping installation.'
-    } else {
+    Install-Linter -CmdName JsonLint -LinterMissing {
       Exec { npm install jsonlint -g }
     }
   }
+  
+  # TODO Add Markdown linter installation through gem
 
   function Install-XmlLint {
     [CmdletBinding()]
     param (
       [Parameter(Position=0,Mandatory=1)][string]$installationDirectory
     )
-    if (Check-Command xmllint) {
-      Write-Host 'Command ''xmllint'' allready exists, skipping installation.'
-    } else {
+
+    Install-Linter -CmdName xmllint -LinterMissing {
       Push-Location $installationDirectory
 
       $downloads = @(
@@ -53,6 +63,6 @@ function Setup-Linters {
       Pop-Location
     }
   }
-
   Install-XmlLint C:\tools\xml
+  Install-JsonLint
 }
