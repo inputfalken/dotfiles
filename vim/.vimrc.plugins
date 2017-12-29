@@ -50,6 +50,9 @@ if !empty($ConEmuBuild)
   nnoremap <Char-0x07F> <BS>
   set background=dark
   colorscheme jellybeans
+else
+  " Turn of Airline since it looks bad.
+  autocmd VimEnter * AirlineToggle
 endif
 "============================================================================
 " Markdown
