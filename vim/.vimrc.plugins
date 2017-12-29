@@ -50,6 +50,12 @@ if !empty($ConEmuBuild)
   nnoremap <Char-0x07F> <BS>
   set background=dark
   colorscheme jellybeans
+  "==========================================================================
+  " Airline
+  "==========================================================================
+  let g:airline_theme='jellybeans'
+  let g:airline_powerline_fonts = 1
+  let g:airline#extensions#ale#enabled = 1
 else
   " Turn of Airline since it looks bad.
   autocmd VimEnter * AirlineToggle
@@ -64,12 +70,6 @@ let g:vim_markdown_fenced_languages = ['csharp=cs']
 let g:rainbow_active = 1
 nmap <silent> gE <Plug>(ale_previous_wrap)
 nmap <silent> ge <Plug>(ale_next_wrap)
-"============================================================================
-" Airline
-"============================================================================
-let g:airline_theme='jellybeans'
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#ale#enabled = 1
 "============================================================================
 " UltiSnips
 "============================================================================
