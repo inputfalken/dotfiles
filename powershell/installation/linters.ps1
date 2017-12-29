@@ -23,7 +23,7 @@ function Setup-Linters {
       Exec { npm install jsonlint -g }
     }
   }
-  
+
   # TODO Add Markdown linter installation through gem
 
   function Install-XmlLint {

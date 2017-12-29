@@ -10,15 +10,15 @@ function Setup-Chocolatey {
   # Installs the choco package manager
   # Source: https://chocolatey.org/
   function Install-Chocolatey {
-    Command-Exists choco -OnSuccess {
+    Command-Exists choco -WhenExisting {
       Write-Host 'Package manager Chocolatey is allready installed.'
-    } -OnFailure {
+    } -WhenMissing {
       Write-Host 'Installing package manager Chocolatey.' -ForegroundColor Yellow
       # Execute the choco installation script.
       iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
       Reload-Path
-    }
-  } > $null # Redirect boolean output to null.
+    } > $null # Redirect the output to null
+  }
 
   # Install a chocolatey package.
   function Install-ChocolateyPackage ([string] $package, [bool] $prompt = $false) {

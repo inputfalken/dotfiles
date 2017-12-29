@@ -8,15 +8,15 @@
   function Command-Exists {
     param (
       [Parameter(Mandatory=1)][string]$cmd,
-      [Parameter(Mandatory=0)][ScriptBlock] $onSuccess = {},
-      [Parameter(Mandatory=0)][ScriptBlock] $onFailure = {}
+      [Parameter(Mandatory=0)][ScriptBlock] $whenExisting = {},
+      [Parameter(Mandatory=0)][ScriptBlock] $whenMissing = {}
     )
 
     $result = [bool](Get-Command -Name $cmd -ErrorAction SilentlyContinue)
     if ($result) {
-      $onSuccess.Invoke()
+      $whenExisting.Invoke()
     } else {
-      $onFailure.Invoke()
+      $whenMissing.Invoke()
     }
     $result
   }
