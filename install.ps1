@@ -10,7 +10,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-. .\powershell\installation\exec.ps1
+. .\powershell\installation\utils.ps1
 . .\powershell\Microsoft.PowerShell_profile.ps1
 . .\powershell\installation\input.ps1
 
