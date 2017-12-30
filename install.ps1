@@ -15,17 +15,20 @@ $ErrorActionPreference = "Stop"
 . .\powershell\installation\input.ps1
 
 
-. .\powershell\installation\chocolatey.ps1
+. .\powershell\installation\setup-chocolatey.ps1
 Setup-Chocolatey
 
-. ./powershell/installation/powershellmodules.ps1
+. ./powershell/installation/setup-powershellmodules.ps1
 Setup-PowerShellModules
 
-. .\powershell\installation\vim.ps1
+. .\powershell\installation\setup-vim.ps1
 Setup-Vim
 
-. .\powershell\installation\fileplacement.ps1
+. .\powershell\installation\setup-files.ps1
 Setup-Files
+
+. .\powershell\installation\setup-linters.ps1
+Setup-Linters
 
 ## Check for updates in chocolatey
 #cup all -y

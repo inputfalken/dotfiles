@@ -11,12 +11,12 @@ function Setup-Linters {
     [CmdletBinding()]
     param (
       [Parameter(Mandatory=1)][string]$cmd,
-      [Parameter(Mandatory=1)][ScriptBlock] $linterMissing,
+      [Parameter(Mandatory=1)][ScriptBlock] $linterMissing
     )
     $linterExits = {
-      Write-Host "Linter '$cmdname' allready exists, skipping installation."
+      Write-Host "Linter '$cmd' allready exists, skipping installation."
     }
-    Command-Exists $cmdname $linterExits $linterMissing
+    Command-Exists $cmd $linterExits $linterMissing
   }
 
   function Install-JsonLint {
@@ -64,19 +64,17 @@ function Setup-Linters {
     Pop-Location
   }
 
-  Install-Linter -CmdName xmllint -LinterMissing {
+  Install-Linter -Cmd xmllint -LinterMissing {
     Install-XmlLint C:\tools\xml
   }
 
-  Install-Linter -CmdName JsonLint -LinterMissing {
+  Install-Linter -Cmd JsonLint -LinterMissing {
     Install-JsonLint
   }
 
-  Command-Exists -Cmd gem
-  -WhenExisting {
-    Install-Linter -CmdName mdl -LinterMissing { Install-MardownLintTool }
-  }
-  -WhenMissing {
+  Command-Exists -Cmd gem -WhenExisting {
+    Install-Linter -Cmd mdl -LinterMissing { Install-MardownLintTool }
+  } -WhenMissing {
     Write-Host "Package manager 'Gem' does not exist"
   }
 }
