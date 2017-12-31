@@ -7,18 +7,6 @@
 function Setup-Linters {
   . $PSScriptRoot\utils.ps1
 
-  function Install-Linter {
-    [CmdletBinding()]
-    param (
-      [Parameter(Mandatory=1)][string]$cmd,
-      [Parameter(Mandatory=1)][ScriptBlock] $linterMissing
-    )
-    $linterExits = {
-      Write-Host "Linter '$cmd' allready exists, skipping installation."
-    }
-    Command-Exists $cmd $linterExits $linterMissing
-  }
-
   function Install-JsonLint {
     [CmdletBinding()]
     param ()
@@ -26,7 +14,7 @@ function Setup-Linters {
   }
 
   function Install-MardownLintTool {
-    Exec { gem install mdl } 
+    Exec { gem install mdl }
   }
 
   function Install-XmlLint {
@@ -44,7 +32,7 @@ function Setup-Linters {
     ) |
       ForEach-Object { Invoke-WebRequest -Uri $_.Uri -OutFile $_.FileName ; $_ } |
       Select-Object -ExpandProperty FileName | Get-Item |
-      ForEach-Object { Start-MpScan -ScanPath $_ -ScanType Custom -Verbose ; $_  } |
+      ForEach-Object { Start-MpScan -ScanPath $_ -ScanType Custom ; $_  } |
       ForEach-Object { Expand-Archive -Path $_.FullName -DestinationPath $_.BaseName ; $_  } |
       ForEach-Object { Remove-Item -Path $_.FullName ; Get-Item $_.BaseName }
 
@@ -52,9 +40,9 @@ function Setup-Linters {
       ForEach-Object { Get-ChildItem -Filter 'bin' -Recurse } |
       ForEach-Object { Get-ChildItem $_.FullName } |
       Select-Object -ExpandProperty FullName |
-      ForEach-Object { Move-Item -Path $_ -Destination . -Verbose }
+      ForEach-Object { Move-Item -Path $_ -Destination . }
 
-    $downloads | Remove-Item -Force -Recurse -Verbose
+    $downloads | Remove-Item -Force -Recurse
 
     $oldpath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
     $location = (Get-Location).Path
@@ -64,17 +52,17 @@ function Setup-Linters {
     Pop-Location
   }
 
-  Install-Linter -Cmd xmllint -LinterMissing {
-    Install-XmlLint C:\tools\xml
+  When-Command -Cmd xmllint -NotFound {
+    Install-XmlLint -InstallationDirectory C:\tools\xml -Verbose
   }
 
-  Install-Linter -Cmd JsonLint -LinterMissing {
-    Install-JsonLint
+  When-Command -Cmd JsonLint -NotFound {
+    Install-JsonLint -Verbose
   }
 
-  Command-Exists -Cmd gem -WhenExisting {
-    Install-Linter -Cmd mdl -LinterMissing { Install-MardownLintTool }
-  } -WhenMissing {
+  When-Command -Cmd gem -Found {
+    When-Command -Cmd mdl -NotFound { Install-MardownLintTool }
+  } -NotFound {
     Write-Host "Package manager 'Gem' does not exist"
   }
 }
