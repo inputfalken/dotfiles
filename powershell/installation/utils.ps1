@@ -5,20 +5,19 @@
 ####################################################################################################
 
   # Check if the command exists.
-function Command-Exists {
+function When-Command {
   param (
     [Parameter(Mandatory=1)][string]$cmd,
-    [Parameter(Mandatory=0)][ScriptBlock] $whenExisting = { Write-Host "Command '$cmd' allready exists." },
-    [Parameter(Mandatory=0)][ScriptBlock] $whenMissing = { Write-Host "Command '$cmd' does not exist." }
+    [Parameter(Mandatory=0)][ScriptBlock] $found = { Write-Host "Command '$cmd' allready exists." },
+    [Parameter(Mandatory=0)][ScriptBlock] $notFound = { Write-Host "Command '$cmd' was not found." }
   )
 
   $result = [bool](Get-Command -Name $cmd -ErrorAction SilentlyContinue)
   if ($result) {
-    $whenExisting.Invoke()
+    $found.Invoke()
   } else {
-    $whenMissing.Invoke()
+    $notFound.Invoke()
   }
-  $result
 }
 
 # Taken from https://raw.githubusercontent.com/psake/psake/master/src/public/Exec.ps1
