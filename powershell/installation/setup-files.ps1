@@ -5,41 +5,23 @@
 ####################################################################################################
 
 function Setup-Files {
-# Copies the $file to the home directory.
-  function Copy-Home ([string] $file) {
-    Write-Host -NoNewLine 'Copying '
-    Write-Host -NoNewLine $File -ForegroundColor yellow
-    Write-Host -NoNewLine ' to '
-    Write-Host -NoNewLine $HOME -ForegroundColor yellow
-    Write-Host
-    Copy-Item ".\$file" $HOME
-  }
+  [CmdletBinding()]
+  param()
 
-  function Setup-GitConfig {
-    Copy-Home '.\git\.gitconfig'
-    Exec { git config --global user.email $gitEmail }
-    Exec { git config --global user.name $gitName }
-  }
+  Get-ChildItem -Path '.\vim' -File `
+    | Copy-Item -Destination $HOME -ErrorAction Stop
 
-  function Setup-PowerShellProfile {
-    # Copy PowerShell Profile.
-    Copy-Item '.\powershell\Microsoft.PowerShell_profile.ps1' $PROFILE
-    Unblock-File -Path $PROFILE
-  }
+  Get-ChildItem -Path '.\git' -File `
+    | Copy-Item -Destination $HOME -ErrorAction Stop
 
-  # Copy ConEmu settings.
+  Copy-Item `
+    -Path '.\powershell\Microsoft.PowerShell_profile.ps1' `
+    -Destination $PROFILE  `
+    -PassThru `
+    -ErrorAction Stop `
+    | Unblock-File
+
   Copy-Item '.\conemu\ConEmu.xml' $env:APPDATA
-
-  # Copy files to home directory
-  Copy-Home '.\git\.gitignore_global'
-  Copy-Home '.\tern\.tern-project'
-  Copy-Home '.\vim\.gvimrc'
-  Copy-Home '.\vim\.vimrc'
-  Copy-Home '.\vim\.vimrc.omnisharp'
-  Copy-Home '.\vim\.vimrc.plugins'
-  Copy-Home '.\vim\.vimrc.syntastic'
-  Copy-Home '.\visualStudio\.vsvimrc'
-
-  Setup-PowerShellProfile
-  Setup-GitConfig
+  Copy-Item -Path '.\tern\.tern-project' -Destination $HOME
+  Copy-Item -Path '.\visualStudio\.vsvimrc' -Destination $HOME
 }

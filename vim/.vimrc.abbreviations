@@ -1,0 +1,29 @@
+"============================================================================
+" Abolish
+"============================================================================
+
+function! CreateAbbreviations()
+   Abolish {hon,col}our{,s,ed,ing}                       {}or{}
+   Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}  {despe,sepa}rat{}
+   Abolish decleration                                    declaration
+   Abolish im                                             I'm
+   Abolish powershell                                     PowerShell
+   Abolish succes{,fully,ful,full}                        success{,fully,ful,ful}
+   Abolish sucess{,fully,ful,full}                        success{,fully,ful,ful}
+   Abolish suces{,fully,ful,full}                         success{,fully,ful,ful}
+   Abolish t{eh,ehn}                                      t{he,hen}
+   Abolish en{e,}qu{ery,iery,eueries,eryies}              en{qui}{ry,ries}
+   Abolish {,un}nec{ce,ces,e}sar{y,ily}                   {}nec{es}sar{}
+   Abolish temp{ary,oary}                                 temporary
+   Abolish seperat{e,es,ed,ing,ely,ion,ions,or}           separat{}
+   Abolish rec{co,com,o}mend{,s,ed,ing,ation}             rec{om}mend{}
+   Abolish {,ir}releven{ce,cy,t,tly}                      {}relevan{}
+   Abolish persistan{ce,t,tly}                            persisten{}
+   Abolish {les,compar,compari}sion{,s}                   {les,compari,compari}son{}
+   Abolish {,in}consistan{cy,cies,t,tly}                  {}consisten{}
+endfunction
+
+augroup abolish
+  " If Abolish comand exists after all ',
+  autocmd VimEnter * if exists(':Abolish') | call CreateAbbreviations()
+augroup END

@@ -1,94 +1,137 @@
 call plug#begin('~/.vim/plugged')
-Plug 'fsharp/vim-fsharp', {
-      \ 'for': 'fsharp',
-      \ 'do':  'make fsautocomplete',
-      \}
-Plug 'SirVer/ultisnips'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dag/vim-fish'
-Plug 'honza/vim-snippets'
-Plug 'junegunn/vim-easy-align'
-Plug 'metakirby5/codi.vim'
-Plug 'MaxMEllon/vim-jsx-pretty'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'othree/html5.vim'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'pangloss/vim-javascript'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'ternjs/tern_for_vim', {'do': 'npm install'}
-Plug 'tmux-plugins/vim-tmux'
-Plug 'w0rp/ale'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
-Plug 'othree/csscomplete.vim'
-Plug 'vim-jp/syntax-vim-ex'
-Plug 'robbles/logstash.vim'
+Plug 'challenger-deep-theme/vim'
 Plug 'elzr/vim-json'
-Plug 'rhysd/vim-gfm-syntax'
-Plug 'OmniSharp/omnisharp-vim'
-Plug 'Valloric/YouCompleteMe'
+Plug 'godlygeek/tabular'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'honza/vim-snippets'
+Plug 'iCyMind/NeoSolarized'
+Plug 'joshdick/onedark.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'kassio/neoterm'
+Plug 'luochen1990/rainbow'
+Plug 'martinda/Jenkinsfile-vim-syntax'
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'metakirby5/codi.vim'
+Plug 'mhartington/oceanic-next'
+Plug 'mhinz/vim-janah'
+Plug 'morhetz/gruvbox'
+Plug 'nanotech/jellybeans.vim'
+Plug 'othree/csscomplete.vim'
+Plug 'othree/html5.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
 Plug 'PProvost/vim-ps1'
+Plug 'rakr/vim-one'
+Plug 'rhysd/vim-gfm-syntax'
+Plug 'robbles/logstash.vim'
+if has('nvim')
+  Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
+  Plug 'roxma/nvim-completion-manager'
+  Plug 'calebeby/ncm-css'
+  Plug 'fgrsnau/ncm-otherbuf'
+else
+  Plug 'Valloric/YouCompleteMe'
+endif
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Shougo/neco-vim'
+Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'nanotech/jellybeans.vim'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-unimpaired'
-Plug 'luochen1990/rainbow'
+Plug 'vim-jp/syntax-vim-ex'
+Plug 'vim-scripts/Flex-Development-Support'
+Plug 'w0rp/ale'
 call plug#end()
 
-
-" If ConEmuSession
-if !empty($ConEmuBuild)
+if !empty($ConEmuBuild) && !has('nvim')
   set term=xterm
   set t_Co=256
   let &t_AB="\e[48;5;%dm"
   let &t_AF="\e[38;5;%dm"
   inoremap <Char-0x07F> <BS>
   nnoremap <Char-0x07F> <BS>
-  set background=dark
-  colorscheme jellybeans
-  "==========================================================================
-  " Airline
-  "==========================================================================
-  let g:airline_theme='jellybeans'
-  let g:airline_powerline_fonts = 1
-  let g:airline#extensions#ale#enabled = 1
-else
-  " Turn of Airline since it looks bad.
-  autocmd VimEnter * AirlineToggle
+  if filereadable($HOME . './.vimrc.plugins.vim')
+    source $HOME/.vimrc.plugins.vim
+  endif
+elseif has('vim')
+  if filereadable($HOME . './.vimrc.plugins.vim')
+    source $HOME/.vimrc.plugins.vim
+  endif
+elseif has('nvim')
+  if filereadable($HOME . './.vimrc.plugins.neovim')
+    source $HOME/.vimrc.plugins.neovim
+  endif
 endif
+
+"============================================================================
+" Fugitive
+"============================================================================
+
+command! Gfilehistory :vsplit | Glog | copen
+
 "============================================================================
 " Markdown
 "============================================================================
+
 let g:vim_markdown_fenced_languages = ['csharp=cs']
+
 "============================================================================
 " Rainbow
 "============================================================================
+
 let g:rainbow_active = 1
+
+"============================================================================
+" Flex development
+"============================================================================
+
+autocmd BufNewFile,BufRead *.mxml setfiletype mxml
+autocmd BufNewFile,BufRead *.mxml set expandtab
+autocmd BufNewFile,BufRead *.as setfiletype actionscript
+
+"============================================================================
+" Ale
+"============================================================================
+
 nmap <silent> gE <Plug>(ale_previous_wrap)
 nmap <silent> ge <Plug>(ale_next_wrap)
+let g:ale_linters = {
+      \   'mxml': ['xmllint'],
+      \}
+" Enable completion where available.
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_completion_enabled = 1
+let g:ale_vim_vint_executable = 'C:\Python36\Scripts\vint.exe'
+let g:airline#extensions#ale#enabled = 1
+
 "============================================================================
 " UltiSnips
 "============================================================================
-let g:UltiSnipsExpandTrigger="<Tab>"
+
+let g:UltiSnipsExpandTrigger='<Tab>'
 let g:UltiSnips_javascript = {
       \ 'keyword-spacing': 'always',
       \ 'semi': 'never',
       \ 'space-before-function-paren': 'always',
       \ }
+
 "============================================================================
-" YouCompleteMe
+" NerdTree
 "============================================================================
-let g:ycm_filetype_blacklist = {}
-let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_key_list_previous_completion = ['<Up>', '<c-p>']
-let g:ycm_key_list_select_completion = ['<Down>', '<c-n>']
-let g:ycm_use_ultisnips_completer = 1
-"============================================================================
-" Run nerdtree if a directory is targeted
-"============================================================================
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+
+augroup nerdTree
+  autocmd StdinReadPre * let s:std_in=1
+  autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+augroup END
+
+
+if filereadable($HOME . './.vimrc.abbreviations')
+  source $HOME/.vimrc.abbreviations
+endif

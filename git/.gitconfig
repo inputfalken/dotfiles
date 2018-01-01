@@ -1,17 +1,25 @@
 [diff]
   tool = vimdiff
+[diff "csharp"]
+    xfuncname = ^[ \\t]*(((static|public|internal|private|protected|new|virtual|sealed|override|unsafe|async|partial)[ \\t]+)*[][<>@.~_[:alnum:]]+[ \\t]+[<>@._[:alnum:]]+[ \\t]*\\(.*\\))[ \\t]*$
 [push]
   default = simple
 [alias]
   lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
   d = difftool
-  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|development' | xargs -n 1 git branch -d"
+  ls = "log --oneline"
+  bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+  ours = "!f() { git checkout --ours ${@-.} && git add ${@-.}; }; f"
+  theirs = "!f() { git checkout --theirs ${@-.} && git add ${@-.}; }; f"
+  lf = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]\" --decorate --numstat"
 [core]
   autocrlf = true
-  editor = 'C:/Program Files (x86)/vim/vim80/vim.exe'
+  editor = ~/editor.sh
   excludesfile = ~/.gitignore_global
   ignorecase = true
   safecrlf = warn
+  pager = diff-so-fancy | less --tabs=4 -RFX
+  attributesfile = ~/.gitattributes
 [pull]
   rebase = true
 [log]
@@ -21,11 +29,25 @@
 [branch]
   autosetuprebase = always
 [color "diff"]
-	new = green bold
+  new = green bold
+  meta = yellow
+  frag = magenta bold
+  commit = yellow bold
+  old = red bold
+  whitespace = red reverse
 [color "status"]
-	updated = green bold
+  updated = green bold
 [color "branch"]
-	current = green bold
+  current = green bold
 [user]
-	name = Name
-	email = Email
+  name = Name
+  email = Email
+[rerere]
+  enabled = true
+[color]
+  ui = true
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22

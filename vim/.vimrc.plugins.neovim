@@ -1,0 +1,68 @@
+"============================================================================
+" Colorscheme & Airline config
+"============================================================================
+
+augroup airlineSettings
+  let g:airline_powerline_fonts = 0
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline_symbols.linenr = ''
+  let g:airline_symbols.maxlinenr = 'LN'
+  let g:airline_symbols.branch = '฿'
+augroup END
+
+function! SetColorScheme()
+  " The get() function will fall back to 'default' if the variable has not yet been set.
+  let l:current_scheme = get(g:, 'colors_name', 'default')
+  if l:current_scheme !=# 'one' && filereadable($HOME .'/.vim/plugged/onedark.vim/colors/onedark.vim')
+    set background=dark
+    colorscheme one
+    let g:airline_theme = 'onedark'
+  endif
+endfunction
+
+call SetColorScheme()
+
+"============================================================================
+" Terminal Settings
+"============================================================================
+
+augroup terminalSettings
+  if (has('termguicolors'))
+    set termguicolors
+  else
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  " PowerShell argument color
+  let g:terminal_color_8 = '#6D7380'
+  " Disable line numbers in terminals.
+  autocmd TermOpen * set norelativenumber nonumber
+augroup END
+
+"============================================================================
+" Neoterm
+"============================================================================
+
+" Eof in windows
+let g:neoterm_eof = "\r"
+" Set shell to PowerShell Core.
+let g:neoterm_shell = 'pwsh'
+command! PowerShell Tnew
+command! PowerShellHorizontal botright Tnew | resize 70
+command! PowerShellVertical vertical Tnew
+command! PowerShellTab tabnew | Tnew
+
+"============================================================================
+" Python paths
+"============================================================================
+
+let g:python3_host_prog='C:\Python36\python.exe'
+let g:python_host_prog='C:\Python27\python.exe'
+
+"============================================================================
+" Neovim Completion Manager
+"============================================================================
+
+let g:cm_refresh_length = [[1,1],[7,1]]
+let g:cm_completed_snippet_enable = 1
