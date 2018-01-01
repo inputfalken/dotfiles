@@ -7,7 +7,7 @@ if ($env:ConEmuBuild){
 Import-Module posh-git
 Import-Module dotfile-helper
 Import-Module Get-ChildItemColor
-Import-Module util-functions
+Import-Module util-functions 3> $null
 
 Set-Alias ls Get-ChildItemColorFormatWide -option AllScope
 Set-PSReadlineOption -EditMode vi
