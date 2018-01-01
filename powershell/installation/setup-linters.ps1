@@ -5,7 +5,6 @@
 ####################################################################################################
 
 function Setup-Linters {
-  . $PSScriptRoot\utils.ps1
 
   function Install-JsonLint {
     [CmdletBinding()]

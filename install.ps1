@@ -10,15 +10,14 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-. .\powershell\installation\utils.ps1
-. .\powershell\Microsoft.PowerShell_profile.ps1
+. .\powershell\modules\util-functions\util-functions.ps1
 . .\powershell\installation\input.ps1
 
 
 . .\powershell\installation\setup-chocolatey.ps1
 Setup-Chocolatey
 
-. ./powershell/installation/setup-powershellmodules.ps1
+. .\powershell\installation\setup-powershellmodules.ps1
 Setup-PowerShellModules
 
 . .\powershell\installation\setup-vim.ps1

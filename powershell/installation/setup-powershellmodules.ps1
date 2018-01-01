@@ -60,6 +60,7 @@ function Setup-PowerShellModules {
   }
   Install-PowerShellModule 'posh-git'
   Install-PowerShellModule 'z'
-  Install-LocalPowerShellModule 'dotfile-helper'
   Install-PowerShellModule 'Get-ChildItemColor'
+  Install-LocalPowerShellModule 'dotfile-helper'
+  Install-LocalPowerShellModule 'util-functions'
 }

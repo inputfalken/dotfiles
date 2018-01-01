@@ -6,7 +6,6 @@
 
 
 function Setup-Chocolatey {
-  . $PSScriptRoot\utils.ps1
   # Installs the choco package manager
   # Source: https://chocolatey.org/
   function Install-Chocolatey {
