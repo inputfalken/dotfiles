@@ -1,6 +1,8 @@
 " To turn off error beeping and flashing in Vim, do this:
 set visualbell
 set t_vb=
+" Lets you change buffers without saving them
+set hidden
 
 "============================================================================
 " Set encoding.
