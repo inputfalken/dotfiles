@@ -39,16 +39,14 @@ Plug 'tpope/vim-unimpaired'
 Plug 'luochen1990/rainbow'
 call plug#end()
 
-
-" If ConEmuSession
-if !empty($ConEmuBuild)
+" If ConEmuSession without NeoVim
+if !empty($ConEmuBuild) && !has('nvim')
   set term=xterm
   set t_Co=256
   let &t_AB="\e[48;5;%dm"
   let &t_AF="\e[38;5;%dm"
   inoremap <Char-0x07F> <BS>
   nnoremap <Char-0x07F> <BS>
-  set background=dark
   colorscheme jellybeans
   "==========================================================================
   " Airline
@@ -56,6 +54,7 @@ if !empty($ConEmuBuild)
   let g:airline_theme='jellybeans'
   let g:airline_powerline_fonts = 1
   let g:airline#extensions#ale#enabled = 1
+  set background=dark
 else
   " Turn of Airline since it looks bad.
   autocmd VimEnter * AirlineToggle
