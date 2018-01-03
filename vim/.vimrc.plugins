@@ -59,35 +59,45 @@ else
   " Turn of Airline since it looks bad.
   autocmd VimEnter * AirlineToggle
 endif
+
 "============================================================================
 " Markdown
 "============================================================================
+
 let g:vim_markdown_fenced_languages = ['csharp=cs']
+
 "============================================================================
 " Rainbow
 "============================================================================
+
 let g:rainbow_active = 1
 nmap <silent> gE <Plug>(ale_previous_wrap)
 nmap <silent> ge <Plug>(ale_next_wrap)
+
 "============================================================================
 " UltiSnips
 "============================================================================
+
 let g:UltiSnipsExpandTrigger="<Tab>"
 let g:UltiSnips_javascript = {
       \ 'keyword-spacing': 'always',
       \ 'semi': 'never',
       \ 'space-before-function-paren': 'always',
       \ }
+
 "============================================================================
 " YouCompleteMe
 "============================================================================
+
 let g:ycm_filetype_blacklist = {}
 let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<Up>', '<c-p>']
 let g:ycm_key_list_select_completion = ['<Down>', '<c-n>']
 let g:ycm_use_ultisnips_completer = 1
+
 "============================================================================
 " Run nerdtree if a directory is targeted
 "============================================================================
+
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
