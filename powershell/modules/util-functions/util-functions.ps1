@@ -6,6 +6,7 @@
 
   # Check if the command exists.
 function When-Command {
+  [CmdletBinding()]
   param (
     [Parameter(Mandatory=1)][string]$cmd,
     [Parameter(Mandatory=0)][ScriptBlock] $found = { Write-Host "Command '$cmd' allready exists." },
