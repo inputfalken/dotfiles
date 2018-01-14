@@ -15,22 +15,21 @@ $ErrorActionPreference = "Stop"
 
 
 . .\powershell\installation\setup-chocolatey.ps1
-Setup-Chocolatey
+Setup-Chocolatey -Verbose
 
 . .\powershell\installation\setup-powershellmodules.ps1
-Setup-PowerShellModules
+Setup-PowerShellModules -Verbose
 
 . .\powershell\installation\setup-vim.ps1
-Setup-Vim
+Setup-Vim -Verbose
 
 . .\powershell\installation\setup-files.ps1
-Setup-Files
+Setup-Files -Verbose
 
 . .\powershell\installation\setup-linters.ps1
-Setup-Linters
+Setup-Linters -Verbose
 
 ## Check for updates in chocolatey
 #cup all -y
 # Play sound when finished
 Write-Host 'Script Finished!' -ForegroundColor Green
-(New-Object System.Media.SoundPlayer "$env:windir\Media\tada.wav").play()

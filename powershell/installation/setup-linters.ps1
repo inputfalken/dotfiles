@@ -5,6 +5,8 @@
 ####################################################################################################
 
 function Setup-Linters {
+  [CmdletBinding()]
+  param()
 
   function Install-JsonLint {
     [CmdletBinding()]
