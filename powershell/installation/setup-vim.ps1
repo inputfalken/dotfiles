@@ -14,7 +14,7 @@ function Setup-Vim {
   param(
     [string] $dir
   )
-    Write-Verbose 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe''' -ForegroundColor Yellow
+    Write-Verbose 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe'''
     $env:Path+= ";$($env:ProgramFiles)\7-Zip"
     $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
     Exec { python $dir\install.py }
@@ -25,7 +25,7 @@ function Setup-Vim {
     param(
       [string] $dir
     )
-    Write-Verbose 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''.' -ForegroundColor Yellow
+    Write-Verbose 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''.'
     try {
       Push-Location $dir
       Exec { npm install }
@@ -57,19 +57,14 @@ function Setup-Vim {
     }
   }
 
-  try {
-    # TODO, use 'When-Command' cmdlet
-    if (Get-Command vim) {
-      # Run vim, install plugins and quit vim
-      if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
-        Install-Plug
-        Exec { vim +PlugInstall +qall }
-        Install-YouCompleteMe "$HOME\.vim\plugged\YouCompleteMe"
-        #Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
-      }
+  # TODO, use 'When-Command' cmdlet
+  if (Get-Command vim) {
+    # Run vim, install plugins and quit vim
+    if (!(Test-Path "$HOME\.vim\autoload\plug.vim")) {
+      Install-Plug
+      Exec { vim +PlugInstall +qall }
+      Install-YouCompleteMe "$HOME\.vim\plugged\YouCompleteMe"
+      #Install-TernForVim "$HOME\.vim\plugged\tern_for_vim"
     }
-  }
-  catch {
-    throw "Could not find editor vim"
   }
 }
