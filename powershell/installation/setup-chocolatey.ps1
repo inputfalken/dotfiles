@@ -51,5 +51,6 @@ function Setup-Chocolatey {
   Install-ChocolateyPackage 'googledrive'
   Install-ChocolateyPackage '7zip'
   Install-ChocolateyPackage 'cmake'
+  Install-ChocolateyPackage 'powershell-core'
   Reload-Path
 }
