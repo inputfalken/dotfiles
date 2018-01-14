@@ -5,34 +5,35 @@
 ####################################################################################################
 
 function Setup-PowerShellModules {
+  [System.IO.DirectoryInfo] $profileDirectory = ([System.IO.FileInfo] $PROFILE).DirectoryName
+  [System.IO.DirectoryInfo] $profileModules = "$profileDirectory\Modules"
+
   function Install-LocalPowerShellModule {
       param(
         [Parameter(Position=0, Mandatory=1)][string] $module,
-        [Parameter(Position=1)][string] $localModules = "./powershell/modules/$module"
+        [Parameter(Position=1)][string] $dotfilesModules = "./powershell/modules/$module"
       )
-
-      if (Test-Path $localModules) {
+      if (Test-Path $dotfilesModules) {
         try {
-          $profileDirectory = '~\Documents\WindowsPowerShell\Modules'
-          Copy-Item -Recurse -Force -Path $localModules -Destination "$profileDirectory"
+
+          Copy-Item -Recurse -Force -Path $dotfilesModules -Destination $profileModules
           Write-Host "Successfully installed module '$module'." -ForegroundColor Green
         }
         catch {
           Write-Host "Failed to install module '$module'." -ForegroundColor -Red
         }
       } else {
-        Write-Host "Path '$localModules' not found" -ForegroundColor Red
+        Write-Host "Path '$dotfilesModules' not found" -ForegroundColor Red
       }
   }
 
-# Installs a PowerShell module
-# First attempts to find a local module and then add/override it.
-# If no local module is found it attempts to see if the module allready exists,
-# if module exists nothing is done otherwise an attempt is made to locate it online and then install it.
+  # Installs a PowerShell module
+  # First attempts to find a local module and then add/override it.
+  # If no local module is found it attempts to see if the module allready exists,
+  # if module exists nothing is done otherwise an attempt is made to locate it online and then install it.
   function Install-PowerShellModule {
     param(
-      [Parameter(Position=0)][string] $module,
-      [Parameter(Position=1)][string] $localModules = "./powershell/modules/$module"
+      [Parameter(Position=0)][string] $module
     )
     function Is-Installed () {
       Write-Host "Looking if PowerShell module '$module' is installed."
