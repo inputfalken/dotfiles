@@ -16,6 +16,9 @@ set fileencoding=utf-8
 "============================================================================
 
 autocmd filetype svn,*commit* setlocal spell
+autocmd BufNewFile,BufRead *.fsproj set filetype=xml
+autocmd BufNewFile,BufRead *.csproj set filetype=xml
+
 
 "============================================================================
 " Set leader key
