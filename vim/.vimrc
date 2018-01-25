@@ -15,10 +15,13 @@ set fileencoding=utf-8
 " spellcheck when writing commit messages
 "============================================================================
 
-autocmd filetype svn,*commit* setlocal spell
-autocmd BufNewFile,BufRead *.fsproj set filetype=xml
-autocmd BufNewFile,BufRead *.csproj set filetype=xml
+augroup FileRules
+  autocmd filetype svn,*commit* setlocal spell
+  autocmd BufNewFile,BufRead *.fsproj set filetype=xml
+  autocmd BufNewFile,BufRead *.csproj set filetype=xml
+augroup end
 
+command! JsonPretty execute "%!python -m json.tool"
 
 "============================================================================
 " Set leader key
@@ -100,6 +103,9 @@ set tabstop=2
 set shiftwidth=2
 set softtabstop=2
 set autoindent
+filetype on
+filetype plugin on
+filetype indent on
 " Use multiple of shift width when indenting with '<' and '>'
 set shiftround
 
@@ -174,9 +180,6 @@ set cpoptions+=$
 set showmode
 " Hide the mouse pointer while typing
 set mousehide
-filetype on
-filetype plugin on
-filetype indent on
 
 "============================================================================
 " Spell stuff
@@ -220,7 +223,6 @@ if !exists("g:syntax_on")
   syntax enable
 endif
 
-command JsonPretty execute "%!python -m json.tool"
 
 "============================================================================
 " Allow saving of files as sudo when I forgot to start vim using sudo.
