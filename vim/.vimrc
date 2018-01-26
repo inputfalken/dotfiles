@@ -4,6 +4,9 @@ set t_vb=
 " Lets you change buffers without saving them
 set hidden
 
+autocmd GUIEnter * set vb t_vb=
+autocmd VimEnter * set vb t_vb=
+
 "============================================================================
 " Set encoding.
 "============================================================================
