@@ -36,7 +36,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'nanotech/jellybeans.vim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-speeddating'
 Plug 'luochen1990/rainbow'
+Plug 'vim-scripts/Flex-Development-Support'
 call plug#end()
 
 " If ConEmuSession without NeoVim
@@ -73,6 +75,7 @@ let g:vim_markdown_fenced_languages = ['csharp=cs']
 let g:rainbow_active = 1
 nmap <silent> gE <Plug>(ale_previous_wrap)
 nmap <silent> ge <Plug>(ale_next_wrap)
+let g:ale_linters = {'mxml': ['xmllint']}
 
 "============================================================================
 " UltiSnips
