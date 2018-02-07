@@ -51,5 +51,7 @@ function Setup-Chocolatey {
   Install-ChocolateyPackage '7zip'
   Install-ChocolateyPackage 'cmake'
   Install-ChocolateyPackage 'powershell-core'
+  Install-ChocolateyPackage 'jdk8'
+  Install-ChocolateyPackage 'slack'
   Reload-Path
 }
