@@ -21,8 +21,13 @@ set fileencoding=utf-8
 autocmd filetype svn,*commit* setlocal spell
 
 " Flex Development
-au BufNewFile,BufRead *.mxml setfiletype mxml
-au BufNewFile,BufRead *.as setfiletype actionscript
+autocmd BufNewFile,BufRead *.mxml setfiletype mxml
+autocmd BufNewFile,BufRead *.as setfiletype actionscript
+
+" Handle *.csproj, *.fsproj, web.config as xml
+autocmd BufNewFile,BufRead *.fsproj setfiletype xml
+autocmd BufNewFile,BufRead *.csproj setfiletype xml
+autocmd BufNewFile,BufRead web.config setfiletype xml
 
 "============================================================================
 " Set leader key
