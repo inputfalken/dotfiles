@@ -5,7 +5,8 @@ $exportModuleMemberParams = @{
         'Reload-Path',
         'Exec',
         'Tail-File',
-        'Get-ChocolateyPackages'
+        'Get-ChocolateyPackges',
+        'Clear-DotnetProject'
     )
 }
 Export-ModuleMember @exportModuleMemberParams

@@ -157,3 +157,30 @@ function Tail-File {
     )
     Get-Content $path -Wait
 }
+
+<#
+.SYNOPSIS
+  Deletes 'bin' and 'obj' directories by recursivly searching for them
+  from the '-Path' argument whose default valuse is the current directory.
+#>
+function Clear-DotnetProject {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Position=0, Mandatory=0)]$path = (Resolve-Path '.\')
+  )
+  # This is a safety check to make sure that you are either in a solution folder or a project foler.
+  if ((Get-ChildItem -Path $path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
+     # Sadly the `-Exclude` flag is broken for recursive searches.
+     # In order to ignore folder you need to look at fullpath.
+     Get-ChildItem -Path $path -Directory -Recurse |
+     Where-Object { $_.Fullname -notlike '*node_modules*' } |
+     Where-Object { $_.Fullname -notlike '*jspm_packages*' } |
+     Where-Object { $_.Fullname -notlike '*packages*' } |
+     Select-Object BaseName,FullName |
+     Where-Object { $_.BaseName -eq 'obj' -or $_.BaseName -eq 'bin' } |
+     Select-Object -ExpandProperty FullName |
+     Remove-Item -Force -Recurse
+  } else {
+    Write-Host "This cmdlet needs to be called in a solution or project directory." -ForegroundColor Yellow
+  }
+}
