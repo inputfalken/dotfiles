@@ -160,27 +160,68 @@ function Tail-File {
 
 <#
 .SYNOPSIS
-  Deletes 'bin' and 'obj' directories by recursivly searching for them
-  from the '-Path' argument whose default valuse is the current directory.
+  Deletes 'bin' and 'obj' directories by recursively searching for them
+  from the '-Path' argument whose default value is the current directory.
 #>
 function Clear-DotnetProject {
   [CmdletBinding()]
   Param(
-    [Parameter(Position=0, Mandatory=0)]$path = (Resolve-Path '.\')
+    [Parameter(Position=0, Mandatory=0)]$path = (Resolve-Path '.\'),
+    [Parameter(Position=1, Mandatory=0)]$prompt = $true
   )
-  # This is a safety check to make sure that you are either in a solution folder or a project foler.
+  # This is a safety check to make sure that you are either in a solution folder or a project folder.
   if ((Get-ChildItem -Path $path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
+    $include = @('bin', 'obj')
      # Sadly the `-Exclude` flag is broken for recursive searches.
-     # In order to ignore folder you need to look at fullpath.
-     Get-ChildItem -Path $path -Directory -Recurse |
-     Where-Object { $_.Fullname -notlike '*node_modules*' } |
-     Where-Object { $_.Fullname -notlike '*jspm_packages*' } |
-     Where-Object { $_.Fullname -notlike '*packages*' } |
-     Select-Object BaseName,FullName |
-     Where-Object { $_.BaseName -eq 'obj' -or $_.BaseName -eq 'bin' } |
-     Select-Object -ExpandProperty FullName |
-     Remove-Item -Force -Recurse
+     # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
+     $directories = Get-ChildItem -Path $path -Include $include -Directory -Recurse |
+                    Where-Object { $_.Fullname -notlike '*node_modules*' } |
+                    Where-Object { $_.Fullname -notlike '*jspm_packages*' } |
+                    Where-Object { $_.Fullname -notlike '*packages*' }
+
+     if ($directories.Length -gt 0) {
+        $summary = $directories |
+                   Group-Object -Property FullName |
+                   Format-Table @{L='Directories Found'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
+                   Out-String
+
+        function Confirm-Option ([string] $message) {
+          while  (1) {
+            Write-Host $message -NoNewLine -ForegroundColor yellow
+            Write-Host ' [y/n] ' -NoNewLine -ForegroundColor magenta
+            switch((Read-Host).ToLower()) {
+              'y' { return $true }
+              'yes' { return $true }
+              'n' { return $false }
+              'no' { return $false }
+            }
+          }
+        }
+
+        Write-Host $summary
+        if (!$prompt -Or (Confirm-Option 'Would you like to remove the directories found?')) {
+          $count = 0
+          $directories | ForEach-Object {
+            try {
+              Remove-Item -Path $_ -Force -Recurse -ErrorAction Stop
+              $count++
+            }
+            catch {
+              Write-Host $_ -ForegroundColor Red
+            }
+          }
+
+          $statusColor = if ($count -eq $directories.Length) {'Green'} elseif ($count -lt ($directories.Length / 2)) { 'Red' } else { 'Yellow' }
+          Write-Host -NoNewLine "Successfully removed" -ForegroundColor White
+          Write-Host -NoNewLine " [$count/$($directories.Length)] " -ForegroundColor $statusColor
+          Write-Host -NoNewLine "directories."  -ForegroundColor White
+        }
+     } else {
+      [Func[string, string, string]] $delegate = { param($resultSoFar, $next); "'$resultSoFar'" + ", '$next'" }
+      $includeCommaSeperated = [Linq.Enumerable]::Aggregate([string[]]$include, $delegate)
+      Write-Host "No directories found matching any of: ($includeCommaSeperated)." -ForegroundColor Yellow
+    }
   } else {
-    Write-Host "This cmdlet needs to be called in a solution or project directory." -ForegroundColor Yellow
+    Write-Host "This function needs to be called in a solution or project directory." -ForegroundColor Red
   }
 }
