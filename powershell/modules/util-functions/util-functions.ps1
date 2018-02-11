@@ -182,13 +182,13 @@ function Clear-DotnetProject {
      if ($directories.Length -gt 0) {
         $summary = $directories |
                    Group-Object -Property FullName |
-                   Format-Table @{L='Directories Found'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
+                   Format-Table @{L='Directories'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
                    Out-String
 
         function Confirm-Option ([string] $message) {
           while  (1) {
-            Write-Host $message -NoNewLine -ForegroundColor yellow
-            Write-Host ' [y/n] ' -NoNewLine -ForegroundColor magenta
+            Write-Host $message -NoNewLine -ForegroundColor Yellow
+            Write-Host ' [y/n] ' -NoNewLine -ForegroundColor Magenta
             switch((Read-Host).ToLower()) {
               'y' { return $true }
               'yes' { return $true }
@@ -199,7 +199,8 @@ function Clear-DotnetProject {
         }
 
         Write-Host $summary
-        if (!$prompt -Or (Confirm-Option 'Would you like to remove the directories found?')) {
+
+        if (!$prompt -Or (Confirm-Option "Would you like to remove the directories found?")) {
           $count = 0
           $directories | ForEach-Object {
             try {
@@ -210,16 +211,17 @@ function Clear-DotnetProject {
               Write-Host $_ -ForegroundColor Red
             }
           }
-
-          $statusColor = if ($count -eq $directories.Length) {'Green'} elseif ($count -lt ($directories.Length / 2)) { 'Red' } else { 'Yellow' }
-          Write-Host -NoNewLine "Successfully removed" -ForegroundColor White
-          Write-Host -NoNewLine " [$count/$($directories.Length)] " -ForegroundColor $statusColor
-          Write-Host -NoNewLine "directories."  -ForegroundColor White
+          if ($count -gt 0) {
+            $statusColor = if ($count -eq $directories.Length) {'Green'} elseif ($count -lt ($directories.Length / 2)) { 'Red' } else { 'Yellow' }
+            Write-Host -NoNewLine 'Removed' -ForegroundColor White
+            Write-Host -NoNewLine " [$count/$($directories.Length)] " -ForegroundColor $statusColor
+            Write-Host -NoNewLine "directories." -ForegroundColor White
+          }
         }
      } else {
       [Func[string, string, string]] $delegate = { param($resultSoFar, $next); "'$resultSoFar'" + ", '$next'" }
       $includeCommaSeperated = [Linq.Enumerable]::Aggregate([string[]]$include, $delegate)
-      Write-Host "No directories found matching any of: ($includeCommaSeperated)." -ForegroundColor Yellow
+      Write-Host "No directory found matching any of: ($includeCommaSeperated)." -ForegroundColor White
     }
   } else {
     Write-Host "This function needs to be called in a solution or project directory." -ForegroundColor Red
