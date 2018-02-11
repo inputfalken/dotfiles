@@ -169,7 +169,7 @@ function Clear-DotnetProject {
     [Parameter(Position=0, Mandatory=0)]$path = (Resolve-Path '.\'),
     [Parameter(Position=1, Mandatory=0)]$prompt = $true
   )
-  # This is a safety check to make sure that you are either in a solution folder or a project folder.
+  # This is a safety check to make sure that you are either in a solution or project directory.
   if ((Get-ChildItem -Path $path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
     $include = @('bin', 'obj')
      # Sadly the `-Exclude` flag is broken for recursive searches.
