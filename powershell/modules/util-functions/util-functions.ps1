@@ -166,15 +166,15 @@ function Tail-File {
 function Clear-DotnetProject {
   [CmdletBinding()]
   Param(
-    [Parameter(Position=0, Mandatory=0)]$path = (Resolve-Path '.\'),
-    [Parameter(Position=1, Mandatory=0)]$prompt = $true
+    [Parameter(Position=0, Mandatory=0)][string]$Path = (Resolve-Path '.\'),
+    [Parameter(Position=1, Mandatory=0)][switch]$Force = $false
   )
-  # This is a safety check to make sure that you are either in a solution or project directory.
-  if ((Get-ChildItem -Path $path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
+  # This is a safety check to make sure that you are either in a solution folder or a project folder.
+  if ((Get-ChildItem -Path $Path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
     $include = @('bin', 'obj')
      # Sadly the `-Exclude` flag is broken for recursive searches.
      # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-     $directories = Get-ChildItem -Path $path -Include $include -Directory -Recurse |
+     $directories = Get-ChildItem -Path $Path -Include $include -Directory -Recurse |
                     Where-Object { $_.Fullname -notlike '*node_modules*' } |
                     Where-Object { $_.Fullname -notlike '*jspm_packages*' } |
                     Where-Object { $_.Fullname -notlike '*packages*' }
@@ -200,7 +200,7 @@ function Clear-DotnetProject {
 
         Write-Host $summary
 
-        if (!$prompt -Or (Confirm-Option "Would you like to remove the directories found?")) {
+        if ($Force -Or (Confirm-Option "Would you like to remove the directories found?")) {
           $count = 0
           $directories | ForEach-Object {
             try {
