@@ -201,7 +201,6 @@ function Clear-DotnetProject {
     $directories = Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
     Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
 
-
     if ($directories.length -gt 0) {
       $summary = $directories |
       Group-Object -Property FullName |
