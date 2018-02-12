@@ -181,8 +181,7 @@ function Clear-DotnetProject {
 
      if ($directories.Length -gt 0) {
         $summary = $directories |
-                   Group-Object -Property FullName |
-                   Format-Table @{L='Directories'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
+                   Format-Table @{L='Directories'; E={"$($_.Parent)\$($_.BaseName)"}}, @{L='Written' ; E={$_.LastWriteTime}}, @{L='Created' ; E={$_.CreationTime}} |
                    Out-String
 
         function Confirm-Option ([string] $message) {
