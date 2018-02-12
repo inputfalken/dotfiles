@@ -169,19 +169,43 @@ function Clear-DotnetProject {
     [Parameter(Position=0, Mandatory=0)][string]$Path = (Resolve-Path '.\'),
     [Parameter(Position=1, Mandatory=0)][switch]$Force = $false
   )
+
+  $acceptedFileExtensions = @('.csproj', '.sln', '.fsproj')
+
+  function Create-CommaSeperatedString ([string[]] $strings) {
+    [Func[string, string, string]] $delegate = { param($resultSoFar, $next); "$resultSoFar" + ", $next" }
+    [Linq.Enumerable]::Aggregate([string[]]$strings, $delegate)
+  }
+
   # This is a safety check to make sure that you are either in a solution folder or a project folder.
-  if ((Get-ChildItem -Path $Path -File | Where-Object { $_.Extension -eq '.sln' -or $_.Extension -eq '.csproj' -or $_.Extension -eq '.fsproj' }).Length -gt 0) {
-    $include = @('bin', 'obj')
-     # Sadly the `-Exclude` flag is broken for recursive searches.
+  if ((Get-ChildItem -Path $Path -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).Length -gt 0) {
+    $includes = @('bin', 'obj')
+    $excludes = @('*node_modules*', '*jspm_packages*','*packages*'  )
+
+    function Test-All {
+      [CmdletBinding()]
+        param(
+            [Parameter(Mandatory=$true)] $Condition,
+            [Parameter(Mandatory=$true, ValueFromPipeline=$true)] $InputObject
+        )
+
+      begin { $result = $true }
+      process {
+        if (-not (& $Condition $InputObject)) { $result = $false }
+      }
+      end { $result }
+    }
+
+     # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
      # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-     $directories = Get-ChildItem -Path $Path -Include $include -Directory -Recurse |
-                    Where-Object { $_.Fullname -notlike '*node_modules*' } |
-                    Where-Object { $_.Fullname -notlike '*jspm_packages*' } |
-                    Where-Object { $_.Fullname -notlike '*packages*' }
+     $directories = Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
+                    Where-Object { $file = $_ ; $excludes | Test-All { $file -notlike $_ } }
+
 
      if ($directories.Length -gt 0) {
         $summary = $directories |
-                   Format-Table @{L='Directories'; E={"$($_.Parent)\$($_.BaseName)"}}, @{L='Written' ; E={$_.LastWriteTime}}, @{L='Created' ; E={$_.CreationTime}} |
+                   Group-Object -Property FullName |
+                   Format-Table @{L='Directories'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
                    Out-String
 
         function Confirm-Option ([string] $message) {
@@ -218,11 +242,9 @@ function Clear-DotnetProject {
           }
         }
      } else {
-      [Func[string, string, string]] $delegate = { param($resultSoFar, $next); "'$resultSoFar'" + ", '$next'" }
-      $includeCommaSeperated = [Linq.Enumerable]::Aggregate([string[]]$include, $delegate)
-      Write-Host "No directory found matching any of: ($includeCommaSeperated)." -ForegroundColor White
+      Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
     }
   } else {
-    Write-Host "This function needs to be called in a solution or project directory." -ForegroundColor Red
+    Write-Host "No file found matching any file extension of: ($(Create-CommaSeperatedString $acceptedFileExtensions))" -ForegroundColor White
   }
 }
