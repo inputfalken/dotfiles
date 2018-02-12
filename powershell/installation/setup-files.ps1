@@ -11,7 +11,7 @@ function Setup-Files {
   function Copy-Home {
     [CmdletBinding()]
     param(
-      [string] $file
+      [string]$file
     )
     Copy-Item ".\$file" $HOME -Verbose
   }

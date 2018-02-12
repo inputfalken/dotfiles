@@ -10,20 +10,20 @@ function Setup-Vim {
   # Install a code-completion engine for vim
   # Link: https://github.com/Valloric/YouCompleteMe
   function Install-YouCompleteMe {
-  [CmdletBinding()]
-  param(
-    [string] $dir
-  )
+    [CmdletBinding()]
+    param(
+      [string]$dir
+    )
     Write-Verbose 'Installing Vim plugin ''https://github.com/Valloric/YouCompleteMe'''
-    $env:Path+= ";$($env:ProgramFiles)\7-Zip"
-    $env:Path+= ";$($env:ProgramFiles)\CMake\bin"
+    $env:Path += ";$($env:ProgramFiles)\7-Zip"
+    $env:Path += ";$($env:ProgramFiles)\CMake\bin"
     Exec { python $dir\install.py }
   }
 
-  function Install-TernForVim  {
+  function Install-TernForVim {
     [CmdletBinding()]
     param(
-      [string] $dir
+      [string]$dir
     )
     Write-Verbose 'Installing Vim plugin ''https://github.com/ternjs/tern_for_vim''.'
     try {
@@ -42,7 +42,7 @@ function Setup-Vim {
     [CmdletBinding()]
     param()
     # Create the directory if it's not found
-    function Create-DirectoryIfNotFound ([string] $path, [scriptblock] $function) {
+    function Create-DirectoryIfNotFound ([string]$path,[scriptblock]$function) {
       if (!(Test-Path $path)) {
         New-Item -ItemType Directory -Force -Path $path
       }

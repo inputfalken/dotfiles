@@ -8,14 +8,14 @@ function Setup-PowerShellModules {
   [CmdletBinding()]
   param()
 
-  [System.IO.DirectoryInfo] $profileDirectory = ([System.IO.FileInfo] $PROFILE).DirectoryName
-  [System.IO.DirectoryInfo] $profileModules = "$profileDirectory\Modules"
+  [System.IO.DirectoryInfo]$profileDirectory = ([System.IO.FileInfo]$PROFILE).DirectoryName
+  [System.IO.DirectoryInfo]$profileModules = "$profileDirectory\Modules"
 
   function Install-LocalPowerShellModule {
     [CmdletBinding()]
     param(
-      [Parameter(Position=0, Mandatory=1)][string] $module,
-      [Parameter(Position=1)][string] $dotfilesModules = "./powershell/modules/$module"
+      [Parameter(Position = 0,Mandatory = 1)] [string]$module,
+      [Parameter(Position = 1)] [string]$dotfilesModules = "./powershell/modules/$module"
     )
     Copy-Item -Recurse -Force -Path $dotfilesModules -Destination $profileModules
   }
@@ -27,7 +27,7 @@ function Setup-PowerShellModules {
   function Install-PowerShellModule {
     [CmdletBinding()]
     param(
-      [Parameter(Position=0)][string] $module
+      [Parameter(Position = 0)] [string]$module
     )
 
     function Is-Installed () {
@@ -40,7 +40,7 @@ function Setup-PowerShellModules {
       if ($modules.length -gt 1) {
         Write-Verbose "Update added for module '$module'."
         Write-Verbose "Removing old versions of module '$module'."
-        $oldModules = $modules[1..$modules.Length] | Select-Object -ExpandProperty Path | Remove-Item -Force -Recurse
+        $oldModules = $modules[1..$modules.length] | Select-Object -ExpandProperty Path | Remove-Item -Force -Recurse
       } else {
         Write-Verbose "No update found for module '$module'."
       }

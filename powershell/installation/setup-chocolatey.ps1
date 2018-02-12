@@ -16,13 +16,13 @@ function Setup-Chocolatey {
     } -NotFound {
       Write-Verbose 'Installing package manager Chocolatey.'
       # Execute the choco installation script.
-      iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+      Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
       Reload-Path
     }
   }
 
   # Install a chocolatey package.
-  function Install-ChocolateyPackage ([string] $package, [bool] $prompt = $false) {
+  function Install-ChocolateyPackage ([string]$package,[bool]$prompt = $false) {
     if ($installedPackages -contains $package) {
       Write-Verbose "Package $package is already installed, skipping installment."
     } else {
@@ -30,7 +30,7 @@ function Setup-Chocolatey {
       if ($prompt -and !(Confirm-Option "Would you like to install package '$package'?")) {
         return
       }
-      Exec {  choco install $package -y  }
+      Exec { choco install $package -y }
     }
   }
 

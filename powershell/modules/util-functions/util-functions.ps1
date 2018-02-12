@@ -4,13 +4,13 @@
 #                                                                                                  #
 ####################################################################################################
 
-  # Check if the command exists.
+# Check if the command exists.
 function When-Command {
   [CmdletBinding()]
-  param (
-    [Parameter(Mandatory=1)][string]$cmd,
-    [Parameter(Mandatory=0)][ScriptBlock] $found = { Write-Host "Command '$cmd' allready exists." },
-    [Parameter(Mandatory=0)][ScriptBlock] $notFound = { Write-Host "Command '$cmd' was not found." }
+  param(
+    [Parameter(Mandatory = 1)] [string]$cmd,
+    [Parameter(Mandatory = 0)] [scriptblock]$found = { Write-Host "Command '$cmd' allready exists." },
+    [Parameter(Mandatory = 0)] [scriptblock]$notFound = { Write-Host "Command '$cmd' was not found." }
   )
 
   $result = [bool](Get-Command -Name $cmd -ErrorAction SilentlyContinue)
@@ -23,7 +23,7 @@ function When-Command {
 
 # Taken from https://raw.githubusercontent.com/psake/psake/master/src/public/Exec.ps1
 function Exec {
-    <#
+<#
         .SYNOPSIS
         Helper function for executing command-line programs.
 
@@ -51,56 +51,56 @@ function Exec {
         .EXAMPLE
         exec { svn info $repository_trunk } "Error executing SVN. Please verify SVN command-line client is installed"
     #>
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)][scriptblock]$cmd,
-        [string]$errorMessage = ($msgs.error_bad_command -f $cmd),
-        [int]$maxRetries = 0,
-        [string]$retryTriggerErrorPattern = $null,
-        [string]$workingDirectory = $null
-    )
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)] [scriptblock]$cmd,
+    [string]$errorMessage = ($msgs.error_bad_command -f $cmd),
+    [int]$maxRetries = 0,
+    [string]$retryTriggerErrorPattern = $null,
+    [string]$workingDirectory = $null
+  )
 
-    if ($workingDirectory) {
-        Push-Location -Path $workingDirectory
+  if ($workingDirectory) {
+    Push-Location -Path $workingDirectory
+  }
+
+  $tryCount = 1
+
+  do {
+    try {
+      $global:lastexitcode = 0
+      & $cmd
+      if ($lastexitcode -ne 0) {
+        throw "Exec: $errorMessage"
+      }
+      break
     }
+    catch [exception]{
+      if ($tryCount -gt $maxRetries) {
+        throw $_
+      }
 
-    $tryCount = 1
+      if ($retryTriggerErrorPattern -ne $null) {
+        $isMatch = [regex]::IsMatch($_.Exception.Message,$retryTriggerErrorPattern)
 
-    do {
-        try {
-            $global:lastexitcode = 0
-            & $cmd
-            if ($lastexitcode -ne 0) {
-                throw "Exec: $errorMessage"
-            }
-            break
+        if ($isMatch -eq $false) {
+          throw $_
         }
-        catch [Exception] {
-            if ($tryCount -gt $maxRetries) {
-                throw $_
-            }
+      }
 
-            if ($retryTriggerErrorPattern -ne $null) {
-                $isMatch = [regex]::IsMatch($_.Exception.Message, $retryTriggerErrorPattern)
+      "Try $tryCount failed, retrying again in 1 second..."
 
-                if ($isMatch -eq $false) {
-                    throw $_
-                }
-            }
+      $tryCount++
 
-            "Try $tryCount failed, retrying again in 1 second..."
-
-            $tryCount++
-
-            [System.Threading.Thread]::Sleep([System.TimeSpan]::FromSeconds(1))
-        }
-        finally {
-            if ($workingDirectory) {
-                Pop-Location
-            }
-        }
+      [System.Threading.Thread]::Sleep([System.TimeSpan]::FromSeconds(1))
     }
-    while ($true)
+    finally {
+      if ($workingDirectory) {
+        Pop-Location
+      }
+    }
+  }
+  while ($true)
 }
 
 <#
@@ -119,17 +119,17 @@ function Reload-Path {
   * Version
 #>
 function Get-ChocolateyPackages {
-  function Take-While() {
-    param ( [scriptblock]$pred = $(throw "Need a predicate") )
-      begin {
-        $take = $true
-      }
+  function Take-While () {
+    param([scriptblock]$pred = $(throw "Need a predicate"))
+    begin {
+      $take = $true
+    }
     process {
-      if ( $take ) {
+      if ($take) {
         $take = & $pred $_
-          if ( $take ) {
-            $_
-          }
+        if ($take) {
+          $_
+        }
       }
     }
   }
@@ -139,10 +139,10 @@ function Get-ChocolateyPackages {
   # if packages is not null.
   if ($packages) {
     # Get rid of redundant info,
-    $packages = $packages | Take-While { $args[0] -NotMatch '\d\spackages\sinstalled\.' }
-    $packages | % {
+    $packages = $packages | Take-While { $args[0] -notmatch '\d\spackages\sinstalled\.' }
+    $packages | ForEach-Object {
       $split = $_.Split(' ')
-      [PSCustomObject] @{ Package=$split[0] ; Version=$split[1] }
+      [pscustomobject]@{ Package = $split[0]; Version = $split[1] }
     } | Sort-Object Package
   } else {
     # Return empty array if $packages is null
@@ -151,11 +151,11 @@ function Get-ChocolateyPackages {
 }
 
 function Tail-File {
-    [CmdletBinding()]
-    param(
-        [Parameter(Position=0,Mandatory=1)][string]$path
-    )
-    Get-Content $path -Wait
+  [CmdletBinding()]
+  param(
+    [Parameter(Position = 0,Mandatory = 1)] [string]$path
+  )
+  Get-Content $path -Wait
 }
 
 <#
@@ -165,29 +165,29 @@ function Tail-File {
 #>
 function Clear-DotnetProject {
   [CmdletBinding()]
-  Param(
-    [Parameter(Position=0, Mandatory=0)][string]$Path = (Resolve-Path '.\'),
-    [Parameter(Position=1, Mandatory=0)][switch]$Force = $false
+  param(
+    [Parameter(Position = 0,Mandatory = 0)] [string]$Path = (Resolve-Path '.\'),
+    [Parameter(Position = 1,Mandatory = 0)] [switch]$Force = $false
   )
 
-  $acceptedFileExtensions = @('.csproj', '.sln', '.fsproj')
+  $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
 
-  function Create-CommaSeperatedString ([string[]] $strings) {
-    [Func[string, string, string]] $delegate = { param($resultSoFar, $next); "$resultSoFar" + ", $next" }
-    [Linq.Enumerable]::Aggregate([string[]]$strings, $delegate)
+  function Create-CommaSeperatedString ([string[]]$strings) {
+    [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
+    [Linq.Enumerable]::Aggregate([string[]]$strings,$delegate)
   }
 
   # This is a safety check to make sure that you are either in a solution folder or a project folder.
-  if ((Get-ChildItem -Path $Path -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).Length -gt 0) {
-    $includes = @('bin', 'obj')
-    $excludes = @('*node_modules*', '*jspm_packages*','*packages*'  )
+  if ((Get-ChildItem -Path $Path -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
+    $includes = @( 'bin','obj')
+    $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
 
     function Test-All {
       [CmdletBinding()]
-        param(
-            [Parameter(Mandatory=$true)] $Condition,
-            [Parameter(Mandatory=$true, ValueFromPipeline=$true)] $InputObject
-        )
+      param(
+        [Parameter(Mandatory = $true)] $Condition,
+        [Parameter(Mandatory = $true,ValueFromPipeline = $true)] $InputObject
+      )
 
       begin { $result = $true }
       process {
@@ -196,52 +196,52 @@ function Clear-DotnetProject {
       end { $result }
     }
 
-     # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
-     # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-     $directories = Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
-                    Where-Object { $file = $_ ; $excludes | Test-All { $file -notlike $_ } }
+    # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
+    # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
+    $directories = Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
+    Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
 
 
-     if ($directories.Length -gt 0) {
-        $summary = $directories |
-                   Group-Object -Property FullName |
-                   Format-Table @{L='Directories'; E={"$($_.Group.Parent)\$($_.Group.BaseName)"}}, @{L='Written' ; E={$_.Group.LastWriteTime}}, @{L='Created' ; E={$_.Group.CreationTime}} |
-                   Out-String
+    if ($directories.length -gt 0) {
+      $summary = $directories |
+      Group-Object -Property FullName |
+      Format-Table @{ L = 'Directories'; E = { "$($_.Group.Parent)\$($_.Group.BaseName)" } },@{ L = 'Written'; E = { $_.Group.LastWriteTime } },@{ L = 'Created'; E = { $_.Group.CreationTime } } |
+      Out-String
 
-        function Confirm-Option ([string] $message) {
-          while  (1) {
-            Write-Host $message -NoNewLine -ForegroundColor Yellow
-            Write-Host ' [y/n] ' -NoNewLine -ForegroundColor Magenta
-            switch((Read-Host).ToLower()) {
-              'y' { return $true }
-              'yes' { return $true }
-              'n' { return $false }
-              'no' { return $false }
-            }
+      function Confirm-Option ([string]$message) {
+        while (1) {
+          Write-Host $message -NoNewline -ForegroundColor Yellow
+          Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+          switch ((Read-Host).ToLower()) {
+            'y' { return $true }
+            'yes' { return $true }
+            'n' { return $false }
+            'no' { return $false }
           }
         }
+      }
 
-        Write-Host $summary
+      Write-Host $summary
 
-        if ($Force -Or (Confirm-Option "Would you like to remove the directories found?")) {
-          $count = 0
-          $directories | ForEach-Object {
-            try {
-              Remove-Item -Path $_ -Force -Recurse -ErrorAction Stop
-              $count++
-            }
-            catch {
-              Write-Host $_ -ForegroundColor Red
-            }
+      if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
+        $count = 0
+        $directories | ForEach-Object {
+          try {
+            Remove-Item -Path $_ -Force -Recurse -ErrorAction Stop
+            $count++
           }
-          if ($count -gt 0) {
-            $statusColor = if ($count -eq $directories.Length) {'Green'} elseif ($count -lt ($directories.Length / 2)) { 'Red' } else { 'Yellow' }
-            Write-Host -NoNewLine 'Removed' -ForegroundColor White
-            Write-Host -NoNewLine " [$count/$($directories.Length)] " -ForegroundColor $statusColor
-            Write-Host -NoNewLine "directories." -ForegroundColor White
+          catch {
+            Write-Host $_ -ForegroundColor Red
           }
         }
-     } else {
+        if ($count -gt 0) {
+          $statusColor = if ($count -eq $directories.length) { 'Green' } elseif ($count -lt ($directories.length / 2)) { 'Red' } else { 'Yellow' }
+          Write-Host -NoNewline 'Removed' -ForegroundColor White
+          Write-Host -NoNewline " [$count/$($directories.Length)] " -ForegroundColor $statusColor
+          Write-Host -NoNewline "directories." -ForegroundColor White
+        }
+      }
+    } else {
       Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
     }
   } else {
