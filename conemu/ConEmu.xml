@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <key name="Software">
 	<key name="ConEmu">
-		<key name=".Vanilla" modified="2018-02-02 21:34:49" build="180131">
+		<key name=".Vanilla" modified="2018-02-12 23:32:37" build="180131">
 			<value name="StartType" type="hex" data="02"/>
 			<value name="CmdLine" type="string" data=""/>
 			<value name="StartTasksFile" type="string" data=""/>
@@ -99,9 +99,10 @@
 			<value name="JumpListAutoUpdate" type="hex" data="01"/>
 			<value name="SaveCmdHistory" type="hex" data="01"/>
 			<value name="CmdLineHistory" type="multi">
-				<line data="{PowerShell::Core}"/>
-				<line data="{PowerShell::V5 (Admin)}"/>
 				<line data="{PowerShell::Core (Admin)}"/>
+				<line data="{PowerShell::V5 (Admin)}"/>
+				<line data="{PowerShell::Core}"/>
+				<line data="{Group6}"/>
 			</value>
 			<value name="SingleInstance" type="hex" data="00"/>
 			<value name="ShowHelpTooltips" type="hex" data="01"/>
@@ -156,12 +157,12 @@
 			<value name="AutoSaveSizePos" type="hex" data="01"/>
 			<value name="Cascaded" type="hex" data="01"/>
 			<value name="IntegralSize" type="hex" data="00"/>
-			<value name="WindowMode" type="dword" data="00000521"/>
-			<value name="ConWnd X" type="long" data="3520"/>
-			<value name="ConWnd Y" type="long" data="200"/>
-			<value name="LastMonitor" type="string" data="2560,200,4480,1280"/>
-			<value name="ConWnd Width" type="dword" data="00000049"/>
-			<value name="ConWnd Height" type="dword" data="00000012"/>
+			<value name="WindowMode" type="dword" data="00000520"/>
+			<value name="ConWnd X" type="long" data="0"/>
+			<value name="ConWnd Y" type="long" data="0"/>
+			<value name="LastMonitor" type="string" data="0,0,2560,1440"/>
+			<value name="ConWnd Width" type="dword" data="0000009f"/>
+			<value name="ConWnd Height" type="dword" data="00000026"/>
 			<value name="16bit Height" type="ulong" data="0"/>
 			<value name="QuakeStyle" type="hex" data="00"/>
 			<value name="Restore2ActiveMon" type="hex" data="00"/>
@@ -600,8 +601,8 @@
 				<value name="WndDragKey" type="dword" data="00121101"/>
 				<value name="CloseToRightKey" type="dword" data="00000000"/>
 			</key>
-			<key name="Tasks" modified="2018-01-23 10:04:07" build="171226">
-				<value name="Count" type="long" data="5"/>
+			<key name="Tasks" modified="2018-02-04 15:16:56" build="180131">
+				<value name="Count" type="long" data="6"/>
 				<key name="Task1" modified="2018-02-02 21:00:23" build="180131">
 					<value name="Name" type="string" data="{PowerShell::Core}"/>
 					<value name="Flags" type="dword" data="00000004"/>
@@ -611,12 +612,12 @@
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
 				</key>
-				<key name="Task2" modified="2018-01-23 10:04:07" build="171226">
+				<key name="Task2" modified="2018-02-12 23:32:33" build="180131">
 					<value name="Name" type="string" data="{PowerShell::Core (Admin)}"/>
 					<value name="Flags" type="dword" data="00000004"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
-					<value name="Cmd1" type="string" data="C:\Program Files\PowerShell\6.0.0\pwsh.exe -new_console:a"/>
+					<value name="Cmd1" type="string" data="C:\Program Files\PowerShell\6.0.1\pwsh.exe -new_console:a"/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
 				</key>
@@ -648,12 +649,12 @@
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
 				</key>
-				<key name="Task6" modified="2018-01-22 12:26:03" build="171226">
-					<value name="Name" type="string" data="{Bash::Git bash}"/>
+				<key name="Task6" modified="2018-02-04 15:22:59" build="180131">
+					<value name="Name" type="string" data="{Group6}"/>
 					<value name="Flags" type="dword" data="00000004"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
-					<value name="Cmd1" type="string" data='set "PATH=%ConEmuDir%\..\Git\usr\bin;%PATH%" &amp; "%ConEmuDir%\..\Git\git-cmd.exe" --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p'/>
+					<value name="Cmd1" type="string" data="C:\Program Files (x86)\vim\vim80\gvim.exe -new_console:s50H"/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
 				</key>
