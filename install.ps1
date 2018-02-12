@@ -5,8 +5,8 @@
 ####################################################################################################
 
 param(
-  [Parameter(Position=0, Mandatory=$true)][string] $gitEmail,
-  [Parameter(Position=1, Mandatory=$true)][string] $gitName
+  [Parameter(Position = 0,Mandatory = $true)] [string]$gitEmail,
+  [Parameter(Position = 1,Mandatory = $true)] [string]$gitName
 )
 $ErrorActionPreference = "Stop"
 
