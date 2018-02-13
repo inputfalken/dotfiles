@@ -206,7 +206,8 @@ function Clear-DotnetProject {
         Where-Object { Test-Path -LiteralPath $_ } |
         Get-Item
       } else {
-        throw 'You need to call this cmdlet with -PersistPaths before you can use this flag.'
+        Write-Host 'You need to call this cmdlet with -PersistPaths before you can use this flag.' -ForegroundColor Red
+        return
       }
     } else {
       Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
