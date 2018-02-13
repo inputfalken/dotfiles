@@ -166,11 +166,14 @@ function Tail-File {
 function Clear-DotnetProject {
   [CmdletBinding()]
   param(
-    [Parameter(Position = 0,Mandatory = 0)] [string]$Path = (Resolve-Path '.\'),
-    [Parameter(Position = 1,Mandatory = 0)] [switch]$Force = $false
+    [Parameter(Position = 0, Mandatory = 0)] [string]$Path = (Resolve-Path '.\'),
+    [Parameter(Position = 1, Mandatory = 0)] [switch]$Force = $false,
+    [Parameter(Position = 2, Mandatory = 0)] [switch]$UsePersistedPaths = $false,
+    [Parameter(Position = 3, Mandatory = 0)] [switch]$PersistPaths = $false
   )
 
   $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
+  $persistFilePath = "$($env:TEMP)\$($path -replace '\w:\\' -replace '\\', '-').json"
 
   function Create-CommaSeperatedString ([string[]]$Strings) {
     [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
@@ -196,11 +199,22 @@ function Clear-DotnetProject {
       end { $result }
     }
 
+
+    $directories = if ($UsePersistedPaths) {
+      if (Test-Path -LiteralPath $persistFilePath) {
+        (Get-Content -Raw -Path $persistFilePath | ConvertFrom-Json).FullName |
+        Where-Object { Test-Path -LiteralPath $_ } |
+        Get-Item
+      } else {
+        throw 'You need to call this cmdlet with -PersistPaths before you can use this flag.'
+      }
+    } else {
+      Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
+      Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
+    }
+
     # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
     # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-    $directories = Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
-    Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
-
     if ($directories.length -gt 0) {
       $summary = $directories |
       Group-Object -Property FullName |
@@ -221,6 +235,13 @@ function Clear-DotnetProject {
       }
 
       Write-Host $summary
+
+      if ($PersistPaths) {
+        $directories |
+        Select-Object -Property FullName |
+        ConvertTo-Json |
+        Out-File -FilePath $persistFilePath -ErrorAction Stop
+      }
 
       if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
         $count = 0
