@@ -210,12 +210,12 @@ function Clear-DotnetProject {
         return
       }
     } else {
+      # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
+      # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
       Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
       Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
     }
 
-    # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
-    # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
     if ($directories.length -gt 0) {
       $summary = $directories |
       Group-Object -Property FullName |
