@@ -172,9 +172,9 @@ function Clear-DotnetProject {
 
   $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
 
-  function Create-CommaSeperatedString ([string[]]$strings) {
+  function Create-CommaSeperatedString ([string[]]$Strings) {
     [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
-    [Linq.Enumerable]::Aggregate([string[]]$strings,$delegate)
+    [Linq.Enumerable]::Aggregate([string[]]$Strings,$delegate)
   }
 
   # This is a safety check to make sure that you are either in a solution folder or a project folder.
@@ -207,9 +207,9 @@ function Clear-DotnetProject {
       Format-Table @{ L = 'Directories'; E = { "$($_.Group.Parent)\$($_.Group.BaseName)" } },@{ L = 'Written'; E = { $_.Group.LastWriteTime } },@{ L = 'Created'; E = { $_.Group.CreationTime } } |
       Out-String
 
-      function Confirm-Option ([string]$message) {
-        while (1) {
-          Write-Host $message -NoNewline -ForegroundColor Yellow
+      function Confirm-Option ([string]$Message) {
+        while ($true) {
+          Write-Host $Message -NoNewline -ForegroundColor Yellow
           Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
           switch ((Read-Host).ToLower()) {
             'y' { return $true }
