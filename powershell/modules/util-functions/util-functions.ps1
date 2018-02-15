@@ -166,14 +166,15 @@ function Tail-File {
 function Clear-DotnetProject {
   [CmdletBinding()]
   param(
-    [Parameter(Position = 0, Mandatory = 0)] [string]$Path = (Resolve-Path '.\'),
+    [Parameter(Position = 0, Mandatory = 0)] [string]$Path = '.\',
     [Parameter(Position = 1, Mandatory = 0)] [switch]$Force = $false,
     [Parameter(Position = 2, Mandatory = 0)] [switch]$UsePersistedPaths = $false,
     [Parameter(Position = 3, Mandatory = 0)] [switch]$PersistPaths = $false
   )
 
+  $resolvedPath = (Resolve-Path $Path)
   $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
-  $persistFilePath = "$($env:TEMP)\$($path -replace '\w:\\' -replace '\\', '-').json"
+  $persistFilePath = "$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json"
 
   function Create-CommaSeperatedString ([string[]]$Strings) {
     [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
@@ -181,7 +182,7 @@ function Clear-DotnetProject {
   }
 
   # This is a safety check to make sure that you are either in a solution folder or a project folder.
-  if ((Get-ChildItem -Path $Path -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
+  if ((Get-ChildItem -Path $resolvedPath -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
     $includes = @( 'bin','obj')
     $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
 
@@ -212,7 +213,7 @@ function Clear-DotnetProject {
     } else {
       # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
       # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-      Get-ChildItem -Path $Path -Include $includes -Directory -Recurse |
+      Get-ChildItem -Path $resolvedPath -Include $includes -Directory -Recurse |
       Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
     }
 
