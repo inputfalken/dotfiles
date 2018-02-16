@@ -172,7 +172,7 @@ function Clear-DotnetProject {
     [Parameter(Position = 3, Mandatory = 0)] [switch]$PersistPaths = $false
   )
 
-  $resolvedPath = (Resolve-Path $Path)
+  $resolvedPath = (Resolve-Path $Path -ErrorAction Stop)
   $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
   $persistFilePath = "$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json"
 
