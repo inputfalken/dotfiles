@@ -174,7 +174,7 @@ function Clear-DotnetProject {
 
   $resolvedPath = (Resolve-Path $Path -ErrorAction Stop)
   $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
-  $persistFilePath = "$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json"
+  $persistFilePath = ("$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json").ToLower()
 
   function Create-CommaSeperatedString ([string[]]$Strings) {
     [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
@@ -182,7 +182,7 @@ function Clear-DotnetProject {
   }
 
   # This is a safety check to make sure that you are either in a solution folder or a project folder.
-  if ((Get-ChildItem -Path $resolvedPath -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
+  if ((Get-ChildItem -LiteralPath $resolvedPath -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
     $includes = @( 'bin','obj')
     $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
 
@@ -200,10 +200,9 @@ function Clear-DotnetProject {
       end { $result }
     }
 
-
     $directories = if ($UsePersistedPaths) {
       if (Test-Path -LiteralPath $persistFilePath) {
-        (Get-Content -Raw -Path $persistFilePath | ConvertFrom-Json).FullName |
+        (Get-Content -Raw -LiteralPath $persistFilePath | ConvertFrom-Json).FullName |
         Where-Object { Test-Path -LiteralPath $_ } |
         Get-Item
       } else {
@@ -213,15 +212,26 @@ function Clear-DotnetProject {
     } else {
       # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
       # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
+      # NOTE this cannot use `-LiteralPath` since the search query contains wildcards.
       Get-ChildItem -Path $resolvedPath -Include $includes -Directory -Recurse |
       Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
     }
 
     if ($directories.length -gt 0) {
-      $summary = $directories |
-      Group-Object -Property FullName |
-      Format-Table @{ L = 'Directories'; E = { "$($_.Group.Parent)\$($_.Group.BaseName)" } },@{ L = 'Written'; E = { $_.Group.LastWriteTime } },@{ L = 'Created'; E = { $_.Group.CreationTime } } |
-      Out-String
+
+      if (!$Force) {
+        $summary = $directories |
+        Format-Table @{ L = 'Directory'; E = { "$($_.Parent)\$($_.BaseName)" } },@{ L = 'Written'; E = { $_.LastWriteTime } },@{ L = 'Created'; E = { $_.CreationTime } } |
+        Out-String |
+        Write-Host -ForegroundColor White
+      }
+
+      if ($PersistPaths) {
+        $directories |
+        Select-Object -Property FullName |
+        ConvertTo-Json -Compress |
+        Out-File -LiteralPath $persistFilePath -ErrorAction Stop
+      }
 
       function Confirm-Option ([string]$Message) {
         while ($true) {
@@ -236,20 +246,11 @@ function Clear-DotnetProject {
         }
       }
 
-      Write-Host $summary
-
-      if ($PersistPaths) {
-        $directories |
-        Select-Object -Property FullName |
-        ConvertTo-Json |
-        Out-File -FilePath $persistFilePath -ErrorAction Stop
-      }
-
       if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
         $count = 0
         $directories | ForEach-Object {
           try {
-            Remove-Item -Path $_ -Force -Recurse -ErrorAction Stop
+            Remove-Item -LiteralPath $_.FullName -Force -Recurse -ErrorAction Stop
             $count++
           }
           catch {
