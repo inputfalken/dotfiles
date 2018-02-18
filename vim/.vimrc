@@ -258,7 +258,10 @@ abbreviate enquires enquiries
 abbreviate Enquires Enquiries
 abbreviate enquries enquiries
 abbreviate Enquries Enquiries
+abbreviate im I'm
 abbreviate invoce invoke
+abbreviate nuget NuGet
+abbreviate Nuget NuGet
 abbreviate Optimoze Optimize
 abbreviate optimoze optimize
 abbreviate powershell PowerShell
@@ -283,10 +286,9 @@ abbreviate sucessfuly successfully
 abbreviate Sucessfuly Successfully
 abbreviate teh the
 abbreviate Teh The
-abbreviate nuget NuGet
-abbreviate Nuget NuGet
-abbreviate im I'm
-abbreviate waht what
 abbreviate tehn then
 abbreviate tempary temporary
 abbreviate Tempary Temporary
+abbreviate tempoary temporary
+abbreviate Tempoary Temporary
+abbreviate waht what
