@@ -88,6 +88,8 @@ function Add-Exclusions {
   }
 }
 
+$oldErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = "Stop";
 if (!$ClearExclusions) {
   $paths = @(
     "$HOME\source",
@@ -151,3 +153,4 @@ if (!$ClearExclusions) {
   Remove-MpPreference -ExclusionExtension 'tmp' -ErrorAction Stop
   Write-Host 'Successfully cleared exclusions' -ForegroundColor Green
 }
+$ErrorActionPreference =  $oldErrorActionPreference
