@@ -243,3 +243,48 @@ cmap w!! w !sudo tee > /dev/null %
 
 " https://github.com/whiteinge/dotfiles
 " https://github.com/christoomey/dotfiles
+
+abbreviate Decleration Declaration
+abbreviate decleration declaration
+abbreviate Enqueries Enquiries
+abbreviate enqueries enquiries
+abbreviate Enquery Enquiry
+abbreviate enquery enquiry
+abbreviate Enqueryies Enquiries
+abbreviate Enqueryies Enquiries
+abbreviate enqueryies enquiries
+abbreviate enqueryies enquiries
+abbreviate Enquires Enquiries
+abbreviate enquires enquiries
+abbreviate Enquries Enquiries
+abbreviate enquries enquiries
+abbreviate im I'm
+abbreviate invoce invoke
+abbreviate Nuget NuGet
+abbreviate nuget NuGet
+abbreviate Optimoze Optimize
+abbreviate optimoze optimize
+abbreviate Powershell PowerShell
+abbreviate powershell PowerShell
+abbreviate Succes Success
+abbreviate succes success
+abbreviate Successfuly Successfully
+abbreviate successfuly successfully
+abbreviate Suces Success
+abbreviate suces success
+abbreviate Sucesful Successful
+abbreviate sucesful successful
+abbreviate Sucesfully Successfully
+abbreviate sucesfully successfully
+abbreviate Sucess Success
+abbreviate sucess success
+abbreviate Sucessful Successful
+abbreviate sucessful successful
+abbreviate Sucessfull Successful
+abbreviate sucessfull successful
+abbreviate Sucessfuly Successfully
+abbreviate sucessfuly successfully
+abbreviate Teh The
+abbreviate teh the
+abbreviate tehn then
+abbreviate waht what
