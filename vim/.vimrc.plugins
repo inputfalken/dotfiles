@@ -39,6 +39,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
 Plug 'luochen1990/rainbow'
 Plug 'vim-scripts/Flex-Development-Support'
+Plug 'martinda/Jenkinsfile-vim-syntax'
 call plug#end()
 
 " If ConEmuSession without NeoVim
@@ -104,3 +105,11 @@ let g:ycm_use_ultisnips_completer = 1
 
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+
+"============================================================================
+" Flex development
+"============================================================================
+
+autocmd BufNewFile,BufRead *.mxml setfiletype mxml
+autocmd BufNewFile,BufRead *.mxml set expandtab
+autocmd BufNewFile,BufRead *.as setfiletype actionscript

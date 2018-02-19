@@ -22,6 +22,7 @@ autocmd filetype svn,*commit* setlocal spell
 
 " Flex Development
 autocmd BufNewFile,BufRead *.mxml setfiletype mxml
+autocmd BufNewFile,BufRead *.mxml set expandtab
 autocmd BufNewFile,BufRead *.as setfiletype actionscript
 
 " Handle *.csproj, *.fsproj, web.config as xml
