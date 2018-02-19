@@ -23,7 +23,7 @@ function Add-Exclusions {
     [string[]]$ExclusionExtensions
   )
 
-  $ExclusionPaths = $ExclusionPaths
+  $ExclusionPaths = $ExclusionPaths |
   Where-Object { $_ | Test-Path } |
   Resolve-Path -ErrorAction Stop
 
