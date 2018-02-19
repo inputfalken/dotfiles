@@ -94,10 +94,8 @@ if (!$ClearExclusions) {
   $paths = @(
     "$HOME\source",
     (Create-Program86Path 'Epic Games'),
-    (Create-Program86Path 'Google'),
     (Create-Program86Path 'IIS Express'),
     (Create-Program86Path 'IIS'),
-    (Create-Program86Path 'Internet Explorer'),
     (Create-Program86Path 'Java'),
     (Create-Program86Path 'JetBrains'),
     (Create-Program86Path 'MSBuild'),
@@ -138,7 +136,6 @@ if (!$ClearExclusions) {
     (Create-ProgramPath 'Realtek'),
     (Create-ProgramPath 'dotnet'),
     (Create-ProgramPath 'intel'),
-    (Create-ProgramPath 'internet explorer'),
     (Create-ProgramPath 'nodejs')
   )
   $extensions = @( 'json','xml','cs','js','fs','csproj','txt','fsproj','log','md','html','cshtml','resx','ps1','py')
