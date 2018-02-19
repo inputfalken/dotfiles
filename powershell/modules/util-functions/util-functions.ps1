@@ -166,14 +166,17 @@ function Tail-File {
 function Clear-DotnetProject {
   [CmdletBinding()]
   param(
-    [Parameter(Position = 0, Mandatory = 0)] [string]$Path = '.\',
-    [Parameter(Position = 1, Mandatory = 0)] [switch]$Force = $false,
-    [Parameter(Position = 2, Mandatory = 0)] [switch]$UsePersistedPaths = $false,
-    [Parameter(Position = 3, Mandatory = 0)] [switch]$PersistPaths = $false
+    [Parameter(Position = 0,Mandatory = 0)] [string]$Path = '.\',
+    [Parameter(Position = 1,Mandatory = 0)] [switch]$Force = $false,
+    [Parameter(Position = 2,Mandatory = 0)] [int]$Depth = 5,
+    [Parameter(Position = 3,Mandatory = 0)] [switch]$UsePersistedPaths = $false,
+    [Parameter(Position = 4,Mandatory = 0)] [switch]$PersistPaths = $false
   )
 
   $resolvedPath = (Resolve-Path $Path -ErrorAction Stop)
-  $acceptedFileExtensions = @( '.csproj','.sln','.fsproj')
+
+  # For the moment the '.sln' file ending cannot be here since the result is `bin` and `obj` maps that exist in folders with the following extensions.
+  $acceptedFileExtensions = @( '.csproj','.fsproj')
   $persistFilePath = ("$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json").ToLower()
 
   function Create-CommaSeperatedString ([string[]]$Strings) {
@@ -181,93 +184,95 @@ function Clear-DotnetProject {
     [Linq.Enumerable]::Aggregate([string[]]$Strings,$delegate)
   }
 
-  # This is a safety check to make sure that you are either in a solution folder or a project folder.
-  if ((Get-ChildItem -LiteralPath $resolvedPath -File | Where-Object { $acceptedFileExtensions -contains $_.Extension }).length -gt 0) {
-    $includes = @( 'bin','obj')
-    $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
+  $includes = @( 'bin','obj')
+  $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
 
-    function Test-All {
-      [CmdletBinding()]
-      param(
-        [Parameter(Mandatory = $true)] $Condition,
-        [Parameter(Mandatory = $true,ValueFromPipeline = $true)] $InputObject
-      )
+  function Test-All {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory = $true)] $Condition,
+      [Parameter(Mandatory = $true,ValueFromPipeline = $true)] $InputObject
+    )
 
-      begin { $result = $true }
-      process {
-        if (-not (& $Condition $InputObject)) { $result = $false }
-      }
-      end { $result }
+    begin { $result = $true }
+    process {
+      if (-not (& $Condition $InputObject)) { $result = $false }
     }
+    end { $result }
+  }
 
-    $directories = if ($UsePersistedPaths) {
-      if (Test-Path -LiteralPath $persistFilePath) {
-        (Get-Content -Raw -LiteralPath $persistFilePath | ConvertFrom-Json).FullName |
-        Where-Object { Test-Path -LiteralPath $_ } |
-        Get-Item
-      } else {
-        Write-Host 'You need to call this cmdlet with -PersistPaths before you can use this flag.' -ForegroundColor Red
-        return
-      }
+  $projectPaths = if ($UsePersistedPaths) {
+    if (Test-Path -LiteralPath $persistFilePath) {
+      (Get-Content -Raw -LiteralPath $persistFilePath | ConvertFrom-Json).FullName |
+      Where-Object { Test-Path -LiteralPath $_ } |
+      Get-Item
     } else {
-      # Sadly the `-Exclude` flag is broken for directories when combined with recursive searches.
-      # In order to ignore folder you need to look at full path, which is done in 'Where-Object'.
-      # NOTE this cannot use `-LiteralPath` since the search query contains wildcards.
-      Get-ChildItem -Path $resolvedPath -Include $includes -Directory -Recurse |
-      Where-Object { $file = $_; $excludes | Test-All { $file -notlike $_ } }
-    }
-
-    if ($directories.length -gt 0) {
-
-      if (!$Force) {
-        $summary = $directories |
-        Format-Table @{ L = 'Directory'; E = { "$($_.Parent)\$($_.BaseName)" } },@{ L = 'Written'; E = { $_.LastWriteTime } },@{ L = 'Created'; E = { $_.CreationTime } } |
-        Out-String |
-        Write-Host -ForegroundColor White
-      }
-
-      if ($PersistPaths) {
-        $directories |
-        Select-Object -Property FullName |
-        ConvertTo-Json -Compress |
-        Out-File -LiteralPath $persistFilePath -ErrorAction Stop
-      }
-
-      function Confirm-Option ([string]$Message) {
-        while ($true) {
-          Write-Host $Message -NoNewline -ForegroundColor Yellow
-          Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
-          switch ((Read-Host).ToLower()) {
-            'y' { return $true }
-            'yes' { return $true }
-            'n' { return $false }
-            'no' { return $false }
-          }
-        }
-      }
-
-      if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
-        $count = 0
-        $directories | ForEach-Object {
-          try {
-            Remove-Item -LiteralPath $_.FullName -Force -Recurse -ErrorAction Stop
-            $count++
-          }
-          catch {
-            Write-Host $_ -ForegroundColor Red
-          }
-        }
-        if ($count -gt 0) {
-          $statusColor = if ($count -eq $directories.length) { 'Green' } elseif ($count -lt ($directories.length / 2)) { 'Red' } else { 'Yellow' }
-          Write-Host -NoNewline 'Removed' -ForegroundColor White
-          Write-Host -NoNewline " [$count/$($directories.Length)] " -ForegroundColor $statusColor
-          Write-Host -NoNewline "directories." -ForegroundColor White
-        }
-      }
-    } else {
-      Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
+      Write-Host 'You need to call this cmdlet with -PersistPaths before you can use this flag.' -ForegroundColor Red
+      return
     }
   } else {
-    Write-Host "No file found matching any file extension of: ($(Create-CommaSeperatedString $acceptedFileExtensions))" -ForegroundColor White
+    foreach ($projectFilePath in Get-ChildItem -Recurse -File -Path $resolvedPath -Depth $Depth) {
+      if ($acceptedFileExtensions -notcontains $projectFilePath.Extension) {
+        continue
+      }
+      $projectFilePath
+    }
+  }
+
+  $directories = $projectPaths |
+  Get-Item |
+  Select-Object -ExpandProperty Directory |
+  Get-ChildItem -Directory |
+  Where-Object { $includes -contains $_.BaseName }
+
+  if ($directories.length -gt 0) {
+
+    if (!$Force) {
+      $summary = $directories |
+      Format-Table @{ L = 'Directory'; E = { "$($_.Parent)\$($_.BaseName)" } },@{ L = 'Written'; E = { $_.LastWriteTime } },@{ L = 'Created'; E = { $_.CreationTime } } |
+      Out-String |
+      Write-Host -ForegroundColor White
+    }
+
+    if ($PersistPaths) {
+      $projectPaths |
+      Select-Object -Property FullName |
+      ConvertTo-Json -Compress |
+      Out-File -LiteralPath $persistFilePath -ErrorAction Stop
+    }
+
+    function Confirm-Option ([string]$Message) {
+      while ($true) {
+        Write-Host $Message -NoNewline -ForegroundColor Yellow
+        Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+        switch ((Read-Host).ToLower()) {
+          'y' { return $true }
+          'yes' { return $true }
+          'n' { return $false }
+          'no' { return $false }
+        }
+      }
+    }
+
+    if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
+      $count = 0
+      $directories | ForEach-Object {
+        try {
+          Remove-Item -LiteralPath $_.FullName -Force -Recurse -ErrorAction Stop
+          $count++
+        }
+        catch {
+          Write-Host $_ -ForegroundColor Red
+        }
+      }
+      if ($count -gt 0) {
+        $statusColor = if ($count -eq $directories.length) { 'Green' } elseif ($count -lt ($directories.length / 2)) { 'Red' } else { 'Yellow' }
+        Write-Host -NoNewline 'Removed' -ForegroundColor White
+        Write-Host -NoNewline " [$count/$($directories.Length)] " -ForegroundColor $statusColor
+        Write-Host -NoNewline "directories." -ForegroundColor White
+      }
+    }
+  } else {
+    Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
   }
 }
