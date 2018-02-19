@@ -2,14 +2,14 @@ param(
   [Parameter(Position = 0,Mandatory = 0)] [switch]$ClearExclusions = $false
 )
 
-function Create-ProgramFilesPath {
+function Create-ProgramPath {
   param(
     [string]$path
   )
   "$($env:ProgramFiles)\$path"
 }
 
-function Create-Program86FilesPath {
+function Create-Program86Path {
   param(
     [string]$path
   )
@@ -93,53 +93,53 @@ $ErrorActionPreference = "Stop";
 if (!$ClearExclusions) {
   $paths = @(
     "$HOME\source",
-    (Create-Program86FilesPath 'Epic Games'),
-    (Create-Program86FilesPath 'Google'),
-    (Create-Program86FilesPath 'IIS Express'),
-    (Create-Program86FilesPath 'IIS'),
-    (Create-Program86FilesPath 'Internet Explorer'),
-    (Create-Program86FilesPath 'Java'),
-    (Create-Program86FilesPath 'JetBrains'),
-    (Create-Program86FilesPath 'MSBuild'),
-    (Create-Program86FilesPath 'Microsoft SDKs'),
-    (Create-Program86FilesPath 'Microsoft Silverlight'),
-    (Create-Program86FilesPath 'Microsoft Visual Studio 10.0'),
-    (Create-Program86FilesPath 'Microsoft Visual Studio 14.0'),
-    (Create-Program86FilesPath 'Microsoft Visual Studio'),
-    (Create-Program86FilesPath 'Microsoft.NET'),
-    (Create-Program86FilesPath 'NVIDIA Corporation'),
-    (Create-Program86FilesPath 'NuGet'),
-    (Create-Program86FilesPath 'Overwatch'),
-    (Create-Program86FilesPath 'Steam'),
-    (Create-Program86FilesPath 'vim'),
-    (Create-ProgramFilesPath '7-Zip'),
-    (Create-ProgramFilesPath 'Amazon'),
-    (Create-ProgramFilesPath 'CMake'),
-    (Create-ProgramFilesPath 'ConEmu'),
-    (Create-ProgramFilesPath 'Docker Toolbox'),
-    (Create-ProgramFilesPath 'Docker'),
-    (Create-ProgramFilesPath 'Git'),
-    (Create-ProgramFilesPath 'IIS Express'),
-    (Create-ProgramFilesPath 'IIS'),
-    (Create-ProgramFilesPath 'Java'),
-    (Create-ProgramFilesPath 'MSBuild'),
-    (Create-ProgramFilesPath 'Microsoft SDKs'),
-    (Create-ProgramFilesPath 'Microsoft ASP.NET Core Runtime Package Store'),
-    (Create-ProgramFilesPath 'Microsoft Analysis Services'),
-    (Create-ProgramFilesPath 'Microsoft MPI'),
-    (Create-ProgramFilesPath 'Microsoft SQL Server'),
-    (Create-ProgramFilesPath 'Microsoft Silverlight'),
-    (Create-ProgramFilesPath 'Microsoft VS Code'),
-    (Create-ProgramFilesPath 'Microsoft'),
-    (Create-ProgramFilesPath 'Mozilla Firefox'),
-    (Create-ProgramFilesPath 'NVIDIA Corporation'),
-    (Create-ProgramFilesPath 'Oracle'),
-    (Create-ProgramFilesPath 'PowerShell'),
-    (Create-ProgramFilesPath 'Realtek'),
-    (Create-ProgramFilesPath 'dotnet'),
-    (Create-ProgramFilesPath 'intel'),
-    (Create-ProgramFilesPath 'internet explorer'),
-    (Create-ProgramFilesPath 'nodejs')
+    (Create-Program86Path 'Epic Games'),
+    (Create-Program86Path 'Google'),
+    (Create-Program86Path 'IIS Express'),
+    (Create-Program86Path 'IIS'),
+    (Create-Program86Path 'Internet Explorer'),
+    (Create-Program86Path 'Java'),
+    (Create-Program86Path 'JetBrains'),
+    (Create-Program86Path 'MSBuild'),
+    (Create-Program86Path 'Microsoft SDKs'),
+    (Create-Program86Path 'Microsoft Silverlight'),
+    (Create-Program86Path 'Microsoft Visual Studio 10.0'),
+    (Create-Program86Path 'Microsoft Visual Studio 14.0'),
+    (Create-Program86Path 'Microsoft Visual Studio'),
+    (Create-Program86Path 'Microsoft.NET'),
+    (Create-Program86Path 'NVIDIA Corporation'),
+    (Create-Program86Path 'NuGet'),
+    (Create-Program86Path 'Overwatch'),
+    (Create-Program86Path 'Steam'),
+    (Create-Program86Path 'vim'),
+    (Create-ProgramPath '7-Zip'),
+    (Create-ProgramPath 'Amazon'),
+    (Create-ProgramPath 'CMake'),
+    (Create-ProgramPath 'ConEmu'),
+    (Create-ProgramPath 'Docker Toolbox'),
+    (Create-ProgramPath 'Docker'),
+    (Create-ProgramPath 'Git'),
+    (Create-ProgramPath 'IIS Express'),
+    (Create-ProgramPath 'IIS'),
+    (Create-ProgramPath 'Java'),
+    (Create-ProgramPath 'MSBuild'),
+    (Create-ProgramPath 'Microsoft SDKs'),
+    (Create-ProgramPath 'Microsoft ASP.NET Core Runtime Package Store'),
+    (Create-ProgramPath 'Microsoft Analysis Services'),
+    (Create-ProgramPath 'Microsoft MPI'),
+    (Create-ProgramPath 'Microsoft SQL Server'),
+    (Create-ProgramPath 'Microsoft Silverlight'),
+    (Create-ProgramPath 'Microsoft VS Code'),
+    (Create-ProgramPath 'Microsoft'),
+    (Create-ProgramPath 'Mozilla Firefox'),
+    (Create-ProgramPath 'NVIDIA Corporation'),
+    (Create-ProgramPath 'Oracle'),
+    (Create-ProgramPath 'PowerShell'),
+    (Create-ProgramPath 'Realtek'),
+    (Create-ProgramPath 'dotnet'),
+    (Create-ProgramPath 'intel'),
+    (Create-ProgramPath 'internet explorer'),
+    (Create-ProgramPath 'nodejs')
   )
   $extensions = @( 'json','xml','cs','js','fs','csproj','txt','fsproj','log','md','html','cshtml','resx','ps1','py')
   Add-Exclusions -ExclusionPaths $paths -ExclusionExtensions $extensions
