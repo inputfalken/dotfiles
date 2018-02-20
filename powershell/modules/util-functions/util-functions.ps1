@@ -228,7 +228,7 @@ function Clear-DotnetProject {
   if ($directories.length -gt 0) {
 
     if (!$Force) {
-      $summary = $directories |
+      $directories |
       Format-Table @{ L = 'Directory'; E = { "$($_.Parent)\$($_.BaseName)" } },@{ L = 'Written'; E = { $_.LastWriteTime } },@{ L = 'Created'; E = { $_.CreationTime } } |
       Out-String |
       Write-Host -ForegroundColor White
