@@ -227,13 +227,6 @@ function Clear-DotnetProject {
 
   if ($directories.length -gt 0) {
 
-    if (!$Force) {
-      $directories |
-      Format-Table @{ L = 'Directory'; E = { "$($_.Parent)\$($_.BaseName)" } },@{ L = 'Written'; E = { $_.LastWriteTime } },@{ L = 'Created'; E = { $_.CreationTime } } |
-      Out-String |
-      Write-Host -ForegroundColor White
-    }
-
     if ($PersistPaths) {
       $projectPaths |
       Select-Object -Property FullName |
@@ -241,10 +234,9 @@ function Clear-DotnetProject {
       Out-File -LiteralPath $persistFilePath -ErrorAction Stop
     }
 
-    function Confirm-Option ([string]$Message) {
+    function Confirm-Option ([scriptblock]$Block) {
       while ($true) {
-        Write-Host $Message -NoNewline -ForegroundColor Yellow
-        Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+        $Block.Invoke()
         switch ((Read-Host).ToLower()) {
           'y' { return $true }
           'yes' { return $true }
@@ -254,7 +246,23 @@ function Clear-DotnetProject {
       }
     }
 
-    if ($Force -or (Confirm-Option "Would you like to remove the directories found?")) {
+
+    $deleteConfirmationBlock = {
+      $summary = $directories |
+      Group-Object -Property Parent |
+      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } }
+
+      $summary | Out-String | Write-Host -ForegroundColor White
+
+      Write-Host 'Found' -NoNewline -ForegroundColor White
+      Write-Host " $($directories.Length) " -NoNewline -ForegroundColor Yellow
+      Write-Host 'items ' -NoNewline -ForegroundColor White
+      Write-Host 'in' -NoNewline -ForegroundColor White
+      Write-Host " $($summary.Length) " -NoNewline -ForegroundColor Yellow
+      Write-Host 'projects. Would you like to remove them?' -NoNewline -ForegroundColor White
+      Write-Host ' [y/n]' -NoNewline -ForegroundColor Magenta
+    }
+    if ($Force -or (Confirm-Option $deleteConfirmationBlock)) {
       $count = 0
       $directories | ForEach-Object {
         try {

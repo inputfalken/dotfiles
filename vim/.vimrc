@@ -293,3 +293,4 @@ abbreviate Tempary Temporary
 abbreviate tempoary temporary
 abbreviate Tempoary Temporary
 abbreviate waht what
+abbreviate anomynous anonymous
