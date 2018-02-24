@@ -248,17 +248,17 @@ function Clear-DotnetProject {
 
 
     $deleteConfirmationBlock = {
-      $summary = $directories |
+      $directories |
       Group-Object -Property Parent |
-      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } }
-
-      $summary | Out-String | Write-Host -ForegroundColor White
+      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } } | 
+      Out-String |
+      Write-Host -ForegroundColor White
 
       Write-Host 'Found' -NoNewline -ForegroundColor White
-      Write-Host " $($directories.Length) " -NoNewline -ForegroundColor Yellow
+      Write-Host " $(@($directories).Count) " -NoNewline -ForegroundColor Yellow
       Write-Host 'items ' -NoNewline -ForegroundColor White
       Write-Host 'in' -NoNewline -ForegroundColor White
-      Write-Host " $($summary.Length) " -NoNewline -ForegroundColor Yellow
+      Write-Host " $(@($projectPaths).Count) " -NoNewline -ForegroundColor Yellow
       Write-Host 'projects. Would you like to remove them?' -NoNewline -ForegroundColor White
       Write-Host ' [y/n]' -NoNewline -ForegroundColor Magenta
     }
