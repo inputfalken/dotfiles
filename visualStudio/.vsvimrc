@@ -72,7 +72,7 @@ vnoremap <leader>s :vsc ReSharper.ReSharper_SurroundWith<CR>
 " Navigation
 "===================================================================================================
 
-nnoremap gR :vsc ReSharper.ReSharper_GotoRelatedFiles <return>
+nnoremap gR :vsc ReSharper.ReSharper_GotoRelatedFiles<CR>
 nnoremap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
 nnoremap gf :vsc ReSharper.ReSharper_GotoFile<CR>
 nnoremap gi :vsc ReSharper.ReSharper_GotoImplementations<CR>
@@ -83,6 +83,9 @@ nnoremap <Leader>bm :vsc Edit.ToggleBookmark<CR>
 nnoremap gB :vsc Edit.NextBookmark<CR>
 nnoremap gb :vsc Edit.NextBookmark<CR>
 
+nnoremap <C-j> :vsc ReSharper.ReSharper_GotoNextMethod<CR>
+nnoremap <C-k> :vsc ReSharper.ReSharper_GotoPrevMethod<CR>
+nnoremap ga :vsc ReSharper.ReSharper_GotoType<CR>
 
 "===================================================================================================
 " Package manager
