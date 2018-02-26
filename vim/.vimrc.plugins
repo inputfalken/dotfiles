@@ -28,12 +28,12 @@ Plug 'vim-jp/syntax-vim-ex'
 Plug 'robbles/logstash.vim'
 Plug 'elzr/vim-json'
 Plug 'rhysd/vim-gfm-syntax'
-Plug 'OmniSharp/omnisharp-vim'
 Plug 'Valloric/YouCompleteMe'
 Plug 'PProvost/vim-ps1'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'nanotech/jellybeans.vim'
+Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
@@ -51,16 +51,23 @@ if !empty($ConEmuBuild) && !has('nvim')
   inoremap <Char-0x07F> <BS>
   nnoremap <Char-0x07F> <BS>
   colorscheme jellybeans
-  "==========================================================================
-  " Airline
-  "==========================================================================
   let g:airline_theme='jellybeans'
   let g:airline_powerline_fonts = 1
   let g:airline#extensions#ale#enabled = 1
   set background=dark
-else
-  " Turn of Airline since it looks bad.
-  autocmd VimEnter * AirlineToggle
+elseif has('nvim')
+  colorscheme gruvbox
+  set background=dark
+  let g:airline_theme = 'gruvbox'
+  let g:airline_powerline_fonts = 0
+  let g:airline#extensions#ale#enabled = 1
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline_symbols.linenr = ''
+  let g:airline_symbols.maxlinenr = 'LN'
+  let g:airline_symbols.branch = '฿'
+  set termguicolors
 endif
 
 "============================================================================
