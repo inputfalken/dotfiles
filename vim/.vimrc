@@ -3,6 +3,7 @@ set visualbell
 set t_vb=
 " Lets you change buffers without saving them
 set hidden
+set splitbelow
 
 autocmd GUIEnter * set vb t_vb=
 autocmd VimEnter * set vb t_vb=
@@ -22,7 +23,6 @@ autocmd filetype svn,*commit* setlocal spell
 
 " Flex Development
 autocmd BufNewFile,BufRead *.mxml setfiletype mxml
-autocmd BufNewFile,BufRead *.mxml set expandtab
 autocmd BufNewFile,BufRead *.as setfiletype actionscript
 
 " Handle *.csproj, *.fsproj, web.config as xml
@@ -230,7 +230,7 @@ if !exists("g:syntax_on")
   syntax enable
 endif
 
-command JsonPretty execute "%!python -m json.tool"
+command! JsonPretty execute "%!python -m json.tool"
 
 "============================================================================
 " Allow saving of files as sudo when I forgot to start vim using sudo.
@@ -293,4 +293,3 @@ abbreviate Tempary Temporary
 abbreviate tempoary temporary
 abbreviate Tempoary Temporary
 abbreviate waht what
-abbreviate anomynous anonymous
