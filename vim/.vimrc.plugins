@@ -34,7 +34,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'nanotech/jellybeans.vim'
 Plug 'morhetz/gruvbox'
-Plug 'icymind/NeoSolarized'
+Plug 'OmniSharp/omnisharp-vim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
@@ -57,9 +57,9 @@ if !empty($ConEmuBuild) && !has('nvim')
   let g:airline#extensions#ale#enabled = 1
   set background=dark
 elseif has('nvim')
-  colorscheme gruvbox
+  colorscheme jellybeans
   set background=dark
-  let g:airline_theme = 'gruvbox'
+  let g:airline_theme = 'jellybeans'
   let g:airline_powerline_fonts = 0
   let g:airline#extensions#ale#enabled = 1
   if !exists('g:airline_symbols')
@@ -69,6 +69,11 @@ elseif has('nvim')
   let g:airline_symbols.maxlinenr = 'LN'
   let g:airline_symbols.branch = '฿'
   set termguicolors
+  " Escape --TERMINAL-- mode and enter Normal mode.
+  tnoremap jk <C-\><C-n>
+  command! PowerShell :terminal pwsh
+  command! PowerShellHorizontal :split | terminal pwsh
+  command! PowerShellVertical :vsplit | terminal pwsh
 endif
 
 "============================================================================
@@ -121,3 +126,5 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 autocmd BufNewFile,BufRead *.mxml setfiletype mxml
 autocmd BufNewFile,BufRead *.mxml set expandtab
 autocmd BufNewFile,BufRead *.as setfiletype actionscript
+
+let g:OmniSharp_server_type = 'roslyn'
