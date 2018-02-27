@@ -260,7 +260,7 @@ function Clear-DotnetProject {
       Write-Host 'in' -NoNewline -ForegroundColor White
       Write-Host " $(@($projectPaths).Count) " -NoNewline -ForegroundColor Yellow
       Write-Host 'projects. Would you like to remove them?' -NoNewline -ForegroundColor White
-      Write-Host ' [y/n]' -NoNewline -ForegroundColor Magenta
+      Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
     }
     if ($Force -or (Confirm-Option $deleteConfirmationBlock)) {
       $count = 0
