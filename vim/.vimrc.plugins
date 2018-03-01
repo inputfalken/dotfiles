@@ -70,10 +70,11 @@ elseif has('nvim')
   let g:airline_symbols.branch = '฿'
   set termguicolors
   " Escape --TERMINAL-- mode and enter Normal mode.
-  tnoremap jk <C-\><C-n>
+  tnoremap <leader>jk <C-\><C-n>
   command! PowerShell :terminal pwsh
   command! PowerShellHorizontal :split | terminal pwsh
   command! PowerShellVertical :vsplit | terminal pwsh
+  command! PowerShellTab :tabnew | terminal pwsh
 endif
 
 "============================================================================
