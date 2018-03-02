@@ -12,7 +12,7 @@
   lf = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]\" --decorate --numstat"
 [core]
   autocrlf = true
-  editor = 'C:/Program Files (x86)/vim/vim80/vim.exe'
+  editor = 'C:/tools/neovim/Neovim/bin/nvim.exe'
   excludesfile = ~/.gitignore_global
   ignorecase = true
   safecrlf = warn
