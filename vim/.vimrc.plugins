@@ -20,7 +20,6 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'ternjs/tern_for_vim', {'do': 'npm install'}
 Plug 'tmux-plugins/vim-tmux'
 Plug 'w0rp/ale'
-Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'othree/csscomplete.vim'
@@ -70,7 +69,7 @@ elseif has('nvim')
   let g:airline_symbols.branch = '฿'
   set termguicolors
   " Escape --TERMINAL-- mode and enter Normal mode.
-  tnoremap <leader>jk <C-\><C-n>
+  "tnoremap jk <C-\><C-n>
   command! PowerShell :terminal pwsh
   command! PowerShellHorizontal :split | terminal pwsh
   command! PowerShellVertical :vsplit | terminal pwsh
