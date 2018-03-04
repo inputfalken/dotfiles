@@ -66,7 +66,7 @@ function Add-Exclusions {
     }
   }
 
-  if ($addedExclusions.Length -gt 0) {
+  if ($addedExclusions.length -gt 0) {
     $addedExclusions |
     Get-Item |
     Select-Object -Property @{ L = 'Added exclusion paths & processes'; E = { $_.FullName } } |
@@ -77,7 +77,7 @@ function Add-Exclusions {
     Write-Host "`n`n`nNo new exclusions for paths and processed added." -ForegroundColor Yellow
   }
 
-  if ($addedExtensions.Length -gt 0) {
+  if ($addedExtensions.length -gt 0) {
     $addedExtensions |
     Select-Object -Property @{ L = 'Added exclusion extensions'; E = { $_ } } |
     Format-Table |
@@ -150,4 +150,4 @@ if (!$ClearExclusions) {
   Remove-MpPreference -ExclusionExtension 'tmp' -ErrorAction Stop
   Write-Host 'Successfully cleared exclusions' -ForegroundColor Green
 }
-$ErrorActionPreference =  $oldErrorActionPreference
+$ErrorActionPreference = $oldErrorActionPreference
