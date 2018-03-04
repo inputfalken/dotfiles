@@ -250,7 +250,7 @@ function Clear-DotnetProject {
     $deleteConfirmationBlock = {
       $directories |
       Group-Object -Property Parent |
-      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } } |
+      Format-Table -AutoSize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } } |
       Out-String |
       Write-Host -ForegroundColor White
 
@@ -287,28 +287,28 @@ function Clear-DotnetProject {
 
 # TODO create a more dynamic version of this function by turning the scriptblock into an
 # argument as well as the value assigned to $result.
-function Pipe-Nvim  {
-  [cmdletbinding()]
+function Pipe-Nvim {
+  [CmdletBinding()]
   param(
-    [Parameter(ValueFromPipeline=$true)]$Paths
+    [Parameter(ValueFromPipeline = $true)] $Paths
   )
 
   begin {
     $result = ''
   }
 
-  Process {
-    $scriptblock = { param ($acc, $cur) "$acc $cur" }
+  process {
+    $scriptblock = { param($acc,$cur) "$acc $cur" }
     $item = $_ |
-            Where-Object { (Test-Path $_) -eq $true } |
-            Get-Item  |
-            Select-Object -ExpandProperty FullName
+    Where-Object { (Test-Path $_) -eq $true } |
+    Get-Item |
+    Select-Object -ExpandProperty FullName
 
     $result = & $scriptblock $result $item
   }
 
-  End {
-    if ([String]::IsNullOrWhiteSpace($result)) {
+  end {
+    if ([string]::IsNullOrWhiteSpace($result)) {
       throw 'No files where found.'
     } else {
       Invoke-Expression "nvim -p $result"
