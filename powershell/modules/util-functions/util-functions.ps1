@@ -284,3 +284,34 @@ function Clear-DotnetProject {
     Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
   }
 }
+
+# TODO create a more dynamic version of this function by turning the scriptblock into an
+# argument as well as the value assigned to $result.
+function Pipe-Nvim  {
+  [cmdletbinding()]
+  param(
+    [Parameter(ValueFromPipeline=$true)]$Paths
+  )
+
+  begin {
+    $result = ''
+  }
+
+  Process {
+    $scriptblock = { param ($acc, $cur) "$acc $cur" }
+    $item = $_ |
+            Where-Object { (Test-Path $_) -eq $true } |
+            Get-Item  |
+            Select-Object -ExpandProperty FullName
+
+    $result = & $scriptblock $result $item
+  }
+
+  End {
+    if ([String]::IsNullOrWhiteSpace($result)) {
+      throw 'No files where found.'
+    } else {
+      Invoke-Expression "nvim -p $result"
+    }
+  }
+}
