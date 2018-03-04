@@ -250,7 +250,7 @@ function Clear-DotnetProject {
     $deleteConfirmationBlock = {
       $directories |
       Group-Object -Property Parent |
-      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } } | 
+      Format-Table -Autosize -Property @{ L = 'Count'; E = { $_.Count } },@{ L = 'Project'; E = { $_.Name } },@{ L = 'Items'; E = { $_.Group } } |
       Out-String |
       Write-Host -ForegroundColor White
 
