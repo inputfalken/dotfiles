@@ -232,6 +232,8 @@ endif
 
 command! JsonPretty execute "%!python -m json.tool"
 
+command! ReloadWindow :redraw!
+
 "============================================================================
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 "============================================================================
