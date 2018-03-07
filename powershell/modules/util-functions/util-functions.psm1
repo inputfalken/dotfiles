@@ -7,7 +7,8 @@ $exportModuleMemberParams = @{
         'Tail-File',
         'Get-ChocolateyPackges',
         'Clear-DotnetProject',
-        'Pipe-Nvim'
+        'nvim'
     )
+
 }
 Export-ModuleMember @exportModuleMemberParams

@@ -291,31 +291,21 @@ function Clear-DotnetProject {
 
 # TODO create a more dynamic version of this function by turning the scriptblock into an
 # argument as well as the value assigned to $result.
-function Pipe-Nvim {
+# TODO Create an API for starting Neovim with various arguments.
+function nvim {
   [CmdletBinding()]
-  param(
-    [Parameter(ValueFromPipeline = $true)] $Paths
-  )
+  $result = [string]::Empty
 
-  begin {
-    $result = ''
-  }
+  $input | ForEach-Object {
+    if ($_) {
+      $scriptblock = { param($acc,$cur) "$acc $cur" }
+      $item = $_ `
+      | Where-Object { (Test-Path $_) -eq $true } `
+      | Get-Item `
+      | Select-Object -ExpandProperty FullName
 
-  process {
-    $scriptblock = { param($acc,$cur) "$acc $cur" }
-    $item = $_ |
-    Where-Object { (Test-Path $_) -eq $true } |
-    Get-Item |
-    Select-Object -ExpandProperty FullName
-
-    $result = & $scriptblock $result $item
-  }
-
-  end {
-    if ([string]::IsNullOrWhiteSpace($result)) {
-      throw 'No files where found.'
-    } else {
-      Invoke-Expression "nvim -p $result"
+      $result = & $scriptblock $result $item
     }
   }
+  Invoke-Expression "C:\tools\neovim\Neovim\bin\nvim.exe $result $($args -join ' ')"
 }
