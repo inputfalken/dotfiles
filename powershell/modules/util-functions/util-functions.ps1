@@ -201,6 +201,8 @@ function Clear-DotnetProject {
     end { $result }
   }
 
+  # These paths could be obtained the following way if the project is a git repository 'git ls-files "*.csproj"'
+  # This has the advantage of being alot faster!
   $projectPaths = if ($UsePersistedPaths) {
     if (Test-Path -LiteralPath $persistFilePath) {
       (Get-Content -Raw -LiteralPath $persistFilePath | ConvertFrom-Json).FullName |
