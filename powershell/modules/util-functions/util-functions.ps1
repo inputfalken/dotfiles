@@ -179,11 +179,6 @@ function Clear-DotnetProject {
   $acceptedFileExtensions = @( '.csproj','.fsproj')
   $persistFilePath = ("$($env:TEMP)\$($resolvedPath -replace '\w:\\' -replace '\\', '-').json").ToLower()
 
-  function Create-CommaSeperatedString ([string[]]$Strings) {
-    [func[string, string, string]]$delegate = { param($resultSoFar,$next); "$resultSoFar" + ", $next" }
-    [Linq.Enumerable]::Aggregate([string[]]$Strings,$delegate)
-  }
-
   $includes = @( 'bin','obj')
   $excludes = @( '*node_modules*','*jspm_packages*','*packages*')
 
@@ -290,7 +285,7 @@ function Clear-DotnetProject {
       }
     }
   } else {
-    Write-Host "No directory found matching any name of: ($(Create-CommaSeperatedString $includes))." -ForegroundColor White
+    Write-Host "No directory found matching any name of: ($($includes -join ', '))." -ForegroundColor White
   }
 }
 
