@@ -201,8 +201,9 @@ function Clear-DotnetProject {
     end { $result }
   }
 
-  # These paths could be obtained the following way if the project is a git repository 'git ls-files "*.csproj"'
-  # This has the advantage of being alot faster!
+  # If persisted paths is true load json file
+  # Otherwise, check if the directory is a git repo and use git's api for obtaining files
+  # If none of the above, perform a recursive search.
   $projectPaths = if ($UsePersistedPaths) {
     if (Test-Path -LiteralPath $persistFilePath) {
       (Get-Content -Raw -LiteralPath $persistFilePath | ConvertFrom-Json).FullName |
@@ -212,6 +213,12 @@ function Clear-DotnetProject {
       Write-Host 'You need to call this cmdlet with -PersistPaths before you can use this flag.' -ForegroundColor Red
       return
     }
+  } elseif((git rev-parse --is-inside-work-tree) 2> $null)  {
+    $wildCardedAcceptedFileExtensions = ($acceptedFileExtensions | Foreach-Object { "*$_" }) -join ' '
+    (Invoke-Expression "git ls-files $wildCardedAcceptedFileExtensions") |
+    Where-Object { Test-Path -LiteralPath $_ } |
+    Get-Item |
+    Select-Object -ExpandProperty FullName
   } else {
     foreach ($projectFilePath in Get-ChildItem -Recurse -File -Path $resolvedPath -Depth $Depth) {
       if ($acceptedFileExtensions -notcontains $projectFilePath.Extension) {
