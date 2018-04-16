@@ -388,7 +388,7 @@ function Is-InsideGitRepository {
 .SYNOPSIS
   Accepts `git diff` arguments but returns file paths.
 #>
-function gdiff {
+function gdiffFiles {
   $joinedArguments = (($input + $args) | ForEach-Object { "'$_'" }) -join ' '
   if (Is-InsideGitRepository) {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
@@ -419,6 +419,43 @@ function guntrackedFiles {
     Pop-Location
   }
 }
+
+function gadd {
+  if (Is-InsideGitRepository) {
+    $arguments = $input + $args
+    if ($arguments.Count -gt 0) { git add ($arguments -join ' ') } 
+    else { Write-Output 'No arguments supplied.' }
+  } else {
+    throw "'$(Get-Location)' is not a git directory/repository."
+  }
+}
+
+function gcheckout {
+  if (Is-InsideGitRepository) {
+    $arguments = $args + $input | ForEach-Object {  "'$_'"  }
+    if ($arguments.Count -gt 0) { "git checkout $($arguments -join ' ')" | Invoke-Expression }
+    else { Write-Output 'No arguments supplied.' }
+  } else {
+    throw "'$(Get-Location)' is not a git directory/repository."
+  }
+}
+
+function gdiffFilesCheckout {
+  $revisionFiles =  git ls-tree $args -r | ForEach-Object { ($_ -split '\t') | Select-Object -Last 1 }
+  $currentFiles = git ls-files *
+
+  $commonFiles = Compare-Object -ReferenceObject $revisionFiles -IncludeEqual $currentFiles `
+      | Where-Object { $_.SideIndicator -eq '==' } `
+      | Select-Object -ExpandProperty InputObject `
+      | Get-Item
+
+  Compare-Object -ReferenceObject (gdiffFiles $args) -IncludeEqual $commonFiles `
+      | Where-Object { $_.SideIndicator -eq '==' } `
+      | Select-Object -ExpandProperty InputObject `
+      | Get-Item `
+      | gcheckout $args
+}
+
 
 <#
 .SYNOPSIS
@@ -478,7 +515,7 @@ function gdiffVim {
     }
   }
 
-  $diffingFiles = $args | gdiff
+  $diffingFiles = $args | gdiffFiles
   $confirmationBlock = {
     Write-Host 'Found' -NoNewline -ForegroundColor White
     Write-Host " $($diffingFiles.Count) " -NoNewline -ForegroundColor Yellow

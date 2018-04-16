@@ -6,7 +6,7 @@ $exportModuleMemberParams = @{
     'Compile-YCM',
     'Edit-Profile',
     'Exec',
-    'gdiff',
+    'gdiffFiles',
     'gdiffVim',
     'Get-ChocolateyPackages',
     'guntrackedFiles',
@@ -15,7 +15,10 @@ $exportModuleMemberParams = @{
     'Tail-File',
     'Get-ClipboardText',
     'Set-ClipboardText',
-    'glistFiles'
+    'glistFiles',
+    'gadd',
+    'gcheckout',
+    'gdiffFilesCheckout'
   )
 }
 Export-ModuleMember @exportModuleMemberParams
