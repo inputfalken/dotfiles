@@ -343,17 +343,19 @@ function nvim {
       }
     }
   } else {
-    ($input + $args) `
-      | ForEach-Object `
-      -Begin { $nvimArgs = @() } `
-      -Process {
-      # Wraping each argument in single quotes makes it possible to handle arguments containing spaces.
-      $nvimArgs += "'$_'"
-    } `
-      -End {
-      if ($nvimArgs.Count -gt 0) {
-        "$neovim $($nvimArgs -join ' ')$(if ($terminalSession) { ' --remote-tab' } else { [string]::Empty })"
-      } else { "$neovim$(if ($terminalSession) { ' -c new' } else { [string]::Empty })" }
+    $arguments = $input + $args
+    if ($arguments.Count -eq 0) { $neovim + "$(if ($terminalSession) { ' -c new' } else { [string]::Empty })" }
+    else {
+      $arguments `
+        | ForEach-Object `
+        -Begin { $wrappedArguments = @() } `
+        -Process {
+        # Wraping each argument in single quotes makes it possible to handle arguments containing spaces.
+        $wrappedArguments += "'$_'"
+      } `
+        -End {
+        "$neovim $($wrappedArguments -join ' ')" + "$(if ($terminalSession) { ' --remote-tab' } else { [string]::Empty })"
+      }
     }
   }
   $expression | Invoke-Expression
