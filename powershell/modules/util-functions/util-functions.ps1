@@ -319,9 +319,9 @@ function nvim {
     $path = Join-Path -Path $env:TEMP 'piped-nvim-argument.txt'
     $input `
       | ForEach-Object `
-      -Begin { $any = $false ; $nvimStdinArgs = @() } `
-      -Process { $any = $true ; $nvimStdinArgs += $_ } `
-      -End { if ($any) { $nvimStdinArgs } else { throw 'Stdin requires pipeline input.' } } `
+      -Begin { $any = $false ; $pipedStdinArgs = @() } `
+      -Process { $any = $true ; $pipedStdinArgs += $_ } `
+      -End { if ($any) { $pipedStdinArgs } else { throw 'Stdin requires pipeline input.' } } `
       | Out-File -FilePath $path -Force
 
     # The dash arguments needs to be sliced...
