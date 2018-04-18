@@ -443,19 +443,19 @@ function gcheckout {
 }
 
 function gdiffFilesCheckout {
-  $revisionFiles =  git ls-tree $args -r | ForEach-Object { ($_ -split '\t') | Select-Object -Last 1 }
+  $revisionFiles = git ls-tree $args -r | ForEach-Object { ($_ -split '\t') | Select-Object -Last 1 }
   $currentFiles = git ls-files *
 
   $commonFiles = Compare-Object -ReferenceObject $revisionFiles -IncludeEqual $currentFiles `
-      | Where-Object { $_.SideIndicator -eq '==' } `
-      | Select-Object -ExpandProperty InputObject `
-      | Get-Item
+    | Where-Object { $_.SideIndicator -eq '==' } `
+    | Select-Object -ExpandProperty InputObject `
+    | Get-Item
 
   Compare-Object -ReferenceObject (gdiffFiles $args) -IncludeEqual $commonFiles `
-      | Where-Object { $_.SideIndicator -eq '==' } `
-      | Select-Object -ExpandProperty InputObject `
-      | Get-Item `
-      | gcheckout $args
+    | Where-Object { $_.SideIndicator -eq '==' } `
+    | Select-Object -ExpandProperty InputObject `
+    | Get-Item `
+    | gcheckout $args
 }
 
 
