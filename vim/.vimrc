@@ -223,11 +223,22 @@ endif
 ":edit <spell file>
 "(make changes to the spell file)
 ":mkspell! %
+"
+function! FormatPowerShell()
+  let l:file = expand('%:p')
+  execute 'T Invoke-Formatter((Get-Content ' . l:file . ') -join [environment]::Newline) -Settings $PowerShellAnalyzerRules | Out-File -FilePath ' . l:file . ' -Force'
+  " Ugly hack to make sure the above command is finished.
+  sleep 200m 
+  edit!
+endfunction
 
+command! Bonly %bd! | e# | bd#
 command! JsonPretty execute '%!python -m json.tool'
 command! ReloadWindow :redraw!
 " Works like the command `only` but for buffers.
-command! Bonly %bd! | e# | bd#
+
+
+command! PrettyPowerShell call FormatPowerShell()
 
 "============================================================================
 " Save as super user
