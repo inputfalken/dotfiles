@@ -227,9 +227,7 @@ endif
 function! FormatPowerShell()
   let l:file = expand('%:p')
   execute 'T Invoke-Formatter((Get-Content ' . l:file . ') -join [environment]::Newline) -Settings $PowerShellAnalyzerRules | Out-File -FilePath ' . l:file . ' -Force'
-  " Ugly hack to make sure the above command is finished.
-  sleep 200m 
-  edit!
+  "TODO load file when the executed command has finished.
 endfunction
 
 command! Bonly %bd! | e# | bd#
