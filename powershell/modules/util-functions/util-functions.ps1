@@ -425,7 +425,7 @@ function guntrackedFiles {
 function gadd {
   if (Is-InsideGitRepository) {
     $arguments = $input + $args
-    if ($arguments.Count -gt 0) { git add ($arguments -join ' ') } 
+    if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
   } else {
     throw "'$(Get-Location)' is not a git directory/repository."
