@@ -224,19 +224,23 @@ endif
 "(make changes to the spell file)
 ":mkspell! %
 "
+
 function! FormatPowerShell()
   let l:file = expand('%:p')
-  execute 'T Invoke-Formatter((Get-Content ' . l:file . ') -join [environment]::Newline) -Settings $PowerShellAnalyzerRules | Out-File -FilePath ' . l:file . ' -Force'
-  "TODO load file when the executed command has finished.
+  let l:extension = expand('%:e')
+  if l:extension ==? 'ps1' || l:extension ==? 'psm1'
+    execute 'T Invoke-Formatter((Get-Content ' . l:file . ') -join [environment]::Newline) -Settings $PowerShellAnalyzerRules | Out-File -FilePath ' . l:file . ' -Force'
+  endif
 endfunction
 
 command! Bonly %bd! | e# | bd#
 command! JsonPretty execute '%!python -m json.tool'
+command! PrettyPowerShell call FormatPowerShell()
 command! ReloadWindow :redraw!
 " Works like the command `only` but for buffers.
+command! Bonly %bd! | e# | bd#
 
 
-command! PrettyPowerShell call FormatPowerShell()
 
 "============================================================================
 " Save as super user
