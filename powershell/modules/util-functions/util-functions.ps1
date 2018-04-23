@@ -458,7 +458,6 @@ function gdiffFilesCheckout {
     | gcheckout $args
 }
 
-
 <#
 .SYNOPSIS
   List files tracked by version control system git.
@@ -650,7 +649,6 @@ function Set-ClipboardText() {
         $tb.Copy()
       }
     }
-
   } else {
     # PowerShell *Core*
 
@@ -687,8 +685,6 @@ function Set-ClipboardText() {
       Write-Verbose "Linux: trying xclip -sel clip"
       bash -c "xclip -sel clip < '$tmpFile'"
     }
-
     Remove-Item $tmpFile
-
   }
 }
