@@ -32,6 +32,10 @@ function gRootDirectory {
   } else { throw "'$(Get-Location)' is not a git directory/repository." }
 }
 
+function Skip-Elements ([int] $Amount, [switch] $Last = $false) {
+  if ($Last) { $input | Select-Object -SkipLast $Amount } else { $input | Select-Object -Skip $Amount }
+}
+
 $PowerShellAnalyzerRules = @{
   IncludeRules = @(
     'PSPlaceOpenBrace',
