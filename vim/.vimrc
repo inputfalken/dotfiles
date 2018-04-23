@@ -234,7 +234,7 @@ function! FormatPowerShell()
 endfunction
 
 command! Bonly %bd! | e# | bd#
-command! JsonPretty execute '%!python -m json.tool'
+command! PrettyJson execute '%!python -m json.tool'
 command! PrettyPowerShell call FormatPowerShell()
 command! ReloadWindow :redraw!
 " Works like the command `only` but for buffers.
