@@ -6,7 +6,6 @@ Plug 'hail2u/vim-css3-syntax'
 Plug 'honza/vim-snippets'
 Plug 'iCyMind/NeoSolarized'
 Plug 'joshdick/onedark.vim'
-Plug 'joshdick/onedark.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kassio/neoterm'
 Plug 'luochen1990/rainbow'
@@ -26,15 +25,13 @@ Plug 'rakr/vim-one'
 Plug 'rhysd/vim-gfm-syntax'
 Plug 'robbles/logstash.vim'
 if has('nvim')
-  Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
-  Plug 'roxma/nvim-completion-manager'
-  Plug 'calebeby/ncm-css'
-  Plug 'fgrsnau/ncm-otherbuf'
-else
-  Plug 'Valloric/YouCompleteMe'
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/neco-syntax'
+  Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+  Plug 'Shougo/neco-vim'
+  Plug 'mhartington/nvim-typescript'
 endif
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'Shougo/neco-vim'
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-fugitive'
