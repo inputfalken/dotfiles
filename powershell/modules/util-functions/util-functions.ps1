@@ -344,7 +344,7 @@ function nvim {
     }
   } else {
     $arguments = $input + $args
-    if ($arguments.Count -eq 0) { $neovim + "$(if ($terminalSession) { ' -c new' } else { [string]::Empty })" }
+    if ($arguments.Count -eq 0) { $neovim + "$(if ($terminalSession) { ' -c enew' } else { [string]::Empty })" }
     else {
       $arguments `
         | ForEach-Object `
@@ -354,7 +354,7 @@ function nvim {
         $wrappedArguments += "'$_'"
       } `
         -End {
-        "$neovim $($wrappedArguments -join ' ')" + "$(if ($terminalSession) { ' --remote-tab' } else { [string]::Empty })"
+        "$neovim $($wrappedArguments -join ' ')"
       }
     }
   }
