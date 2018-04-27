@@ -1,3 +1,6 @@
+" Disable bell sounds
+set visualbell
+set noerrorbells
 " Settings
 set cursorline
 " Enable vim surround function
@@ -9,10 +12,10 @@ set undolevels=100
 set relativenumber
 set incsearch
 
-" Leader
-let mapleader=" "
+" Set leader key
+let mapleader = ' '
 
-" Motions 
+" Motions
 map Y y$
 nnoremap Y y$
 nnoremap x "_x
