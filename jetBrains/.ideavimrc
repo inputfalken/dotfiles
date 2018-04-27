@@ -34,6 +34,8 @@ nnoremap <c-o> :action Back<CR>
 nnoremap <c-i> :action Forward<CR>
 nnoremap <C-k> :action MethodUp<CR>
 nnoremap <C-j> :action MethodDown<CR>
+nnoremap <c-s-tab> gT
+nnoremap <c-tab> gt
 
 
 " Commands
