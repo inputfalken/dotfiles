@@ -1,52 +1,54 @@
-" Disable bell sounds
-set visualbell
-set noerrorbells
-" Settings
-set cursorline
-" Enable vim surround function
-set surround
-set ignorecase smartcase
-set clipboard=unnamed
-set scrolloff=5
-set undolevels=100
-set relativenumber
-set incsearch
+" Options { 
+    " Disable bell sounds
+    set                  visualbell
+    set                  noerrorbells
+    " Settings
+    set                  cursorline
+    " Enable vim surround function
+    set                  surround
+    set                  ignorecase smartcase
+    set                  clipboard=unnamed
+    set                  scrolloff=5
+    set                  undolevels=100
+    set                  relativenumber
+    set                  incsearch
+" }
+" Set leader key {
+  let mapleader = ' '
+" }
 
-" Set leader key
-let mapleader = ' '
+" Navigation {
+    map                  Y y$
+    nnoremap             Y y$
+    nnoremap             x "_x
+    nnoremap             X "_X
+    nnoremap             j gj
+    nnoremap             k gk
+    inoremap             jk <esc>
+    nnoremap             <Leader>rc :action ReformatCode<CR>
+    nnoremap             gb :action GotoNextBookmark<CR>
+    nnoremap             gB :action GotoPreviousBookmark<CR>
+    nnoremap             fu :action FindUsages<CR>
+    nnoremap             gi :action GotoImplementation<CR>
+    nnoremap             gf :action GotoFile<CR>
+    nnoremap             ge :action ReSharperGotoNextErrorInSolution<CR>
+    nnoremap             gE :action ReSharperGotoPrevErrorInSolution<CR>
+    nnoremap             gm :action FileStructurePopup<cr>
+    nnoremap             <c-o> :action Back<CR>
+    nnoremap             <c-i> :action Forward<CR>
+    nnoremap             <C-k> :action MethodUp<CR>
+    nnoremap             <C-j> :action MethodDown<CR>
+    nnoremap             <c-s-tab> gT
+    nnoremap             <c-tab> gt
+" }
 
-" Motions
-map Y y$
-nnoremap Y y$
-nnoremap x "_x
-nnoremap X "_X
-nnoremap j gj
-nnoremap k gk
-inoremap jk <esc>
-nnoremap <Leader>rc :action ReformatCode<CR>
-nnoremap gb :action GotoNextBookmark<CR>
-nnoremap gB :action GotoPreviousBookmark<CR>
-nnoremap fu :action FindUsages<CR>
-nnoremap gi :action GotoImplementation<CR>
-nnoremap gf :action GotoFile<CR>
-nnoremap ge :action ReSharperGotoNextErrorInSolution<CR>
-nnoremap gE :action ReSharperGotoPrevErrorInSolution<CR>
-" AKA Go member
-nnoremap gm :action FileStructurePopup<cr>
-nnoremap <c-o> :action Back<CR>
-nnoremap <c-i> :action Forward<CR>
-nnoremap <C-k> :action MethodUp<CR>
-nnoremap <C-j> :action MethodDown<CR>
-nnoremap <c-s-tab> gT
-nnoremap <c-tab> gt
-
-
-" Commands
-nnoremap <Leader>bp :action ToggleLineBreakpoint<CR>
-nnoremap <Leader>bm :action ToggleBookmark<CR>
-nnoremap <Leader>re :action RenameElement<CR>
-nnoremap <Leader>cr :action CollapseRegion<CR>
-nnoremap <Leader>B :action build<CR>
-nnoremap <Leader>R :action Run<CR>
-nnoremap <Leader>D :action Debug<CR>
-nnoremap <leader>sv :source ~/.ideavimrc<CR>
+" Commands {
+    nnoremap             <Leader>bp :action ToggleLineBreakpoint<CR>
+    nnoremap             <Leader>bm :action ToggleBookmark<CR>
+    nnoremap             <Leader>re :action RenameElement<CR>
+    nnoremap             <Leader>cr :action CollapseRegion<CR>
+    nnoremap             <Leader>B :action build<CR>
+    nnoremap             <Leader>R :action Run<CR>
+    nnoremap             <Leader>D :action Debug<CR>
+    nnoremap             <Leader>sv :source ~/.ideavimrc<CR>
+" }
