@@ -30,6 +30,8 @@ nnoremap ge :action ReSharperGotoNextErrorInSolution<CR>
 nnoremap gE :action ReSharperGotoPrevErrorInSolution<CR>
 " AKA Go member
 nnoremap gm :action FileStructurePopup<cr>
+nnoremap <c-o> :action Back<CR>
+nnoremap <c-i> :action Forward<CR>
 nnoremap <C-k> :action MethodUp<CR>
 nnoremap <C-j> :action MethodDown<CR>
 
