@@ -391,6 +391,8 @@ function Is-InsideGitRepository {
   Accepts `git diff` arguments but returns file paths.
 #>
 function gdiffFiles {
+  [OutputType('System.IO.FileSystemInfo')]
+  param()
   $joinedArguments = (($input + $args) | ForEach-Object { "'$_'" }) -join ' '
   if (Is-InsideGitRepository) {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
@@ -409,6 +411,8 @@ function gdiffFiles {
   List files which are neither ignored by `.gitignore` or tracked.
 #>
 function guntrackedFiles {
+  [OutputType('System.IO.FileSystemInfo')]
+  param()
   if (Is-InsideGitRepository) {
     git rev-parse --show-toplevel `
       | Get-Item `
@@ -482,6 +486,8 @@ function gdiffFilesCheckout {
   https://git-scm.com/docs/git-ls-files
 #>
 function glistFiles {
+  [OutputType('System.IO.FileSystemInfo')]
+  param()
   if (Is-InsideGitRepository) {
     $arguments = $args
     $input `
