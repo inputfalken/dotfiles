@@ -25,8 +25,9 @@
     nnoremap             <C-j> :action MethodDown<CR>
     nnoremap             <C-k> :action MethodUp<CR>
     nnoremap             <c-o> :action Back<CR>
-    nnoremap             <c-s-tab> gT
-    nnoremap             <c-tab> gt
+     " This should be binded from the editor UI instead.
+     " nnoremap             <c-s-tab> gT
+     " nnoremap             <c-tab> gt
     nnoremap             <Leader>rc :action ReformatCode<CR>
     nnoremap             fu :action FindUsages<CR>
     nnoremap             gb :action GotoNextBookmark<CR>
