@@ -48,7 +48,7 @@ augroup END
 let g:neoterm_eof = "\r"
 " Set shell to PowerShell Core.
 let g:neoterm_shell = 'pwsh'
-command! PowerShell Tnew
+command! PowerShell enew | Tnew
 command! PowerShellHorizontal botright Tnew | resize 70
 command! PowerShellVertical vertical Tnew
 command! PowerShellTab tabnew | Tnew
