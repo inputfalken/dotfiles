@@ -361,6 +361,13 @@ function nvim {
   $expression | Invoke-Expression
 }
 
+# This makes paths who contain spaces work with git.
+function Wrap-WithQuotes {
+  $input `
+    | Foreach-Object { "'$_'" } `
+    | Write-Output
+}
+
 <#
 .SYNOPSIS
   Recompiles the vim plugin 'YouCompleteMe' this is useful when updating YouCompleteMe.
@@ -393,7 +400,7 @@ function Is-InsideGitRepository {
 function gdiffFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param()
-  $joinedArguments = (($input + $args) | ForEach-Object { "'$_'" }) -join ' '
+  $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
   if (Is-InsideGitRepository) {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
       | ForEach-Object `
@@ -428,7 +435,7 @@ function guntrackedFiles {
 
 function gadd {
   if (Is-InsideGitRepository) {
-    $arguments = $input + $args
+    $arguments = $input + $args | Wrap-WithQuotes
     if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
   } else {
@@ -438,7 +445,7 @@ function gadd {
 
 function gcheckout {
   if (Is-InsideGitRepository) {
-    $arguments = $args + $input | ForEach-Object {  "'$_'"  }
+    $arguments = $args + $input | Wrap-WithQuotes
     if ($arguments.Count -gt 0) { "git checkout $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
   } else {
