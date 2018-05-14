@@ -410,6 +410,7 @@ function gdiffFiles {
 .SYNOPSIS
   List files which are neither ignored by `.gitignore` or tracked.
 #>
+# TODO build filter support, for example guntrackedFiles *.cs, which would list all untracked csharp files.
 function guntrackedFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param()
@@ -426,6 +427,7 @@ function guntrackedFiles {
   }
 }
 
+# TODO build filter support, for example gadd *.cs, which would add all csharp files.
 function gadd {
   if (Is-InsideGitRepository) {
     $arguments = $input + $args | Wrap-WithQuotes
