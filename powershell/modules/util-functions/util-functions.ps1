@@ -391,6 +391,7 @@ function Is-InsideGitRepository {
   Accepts `git diff` arguments but returns file paths.
 #>
 function gdiffFiles {
+  # TODO write output when no files are found.
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
   $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
@@ -412,6 +413,7 @@ function gdiffFiles {
   List files which are neither ignored by `.gitignore` or tracked.
 #>
 function guntrackedFiles {
+  # TODO write output when no files are found.
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
@@ -429,6 +431,7 @@ function guntrackedFiles {
 }
 
 function gadd {
+  # TODO write output when no files are found.
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
     $arguments = $input + $args `
