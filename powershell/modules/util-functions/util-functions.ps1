@@ -41,7 +41,7 @@ function When-Command {
   The working directory to set before running the external command.
 .EXAMPLE
   exec { svn info $repository_trunk } "Error executing SVN. Please verify SVN command-line client is installed"
-.LINK 
+.LINK
   https://raw.githubusercontent.com/psake/psake/master/src/public/Exec.ps1
 #>
 function Exec {
@@ -392,7 +392,7 @@ function Is-InsideGitRepository {
 #>
 function gdiffFiles {
   [OutputType('System.IO.FileSystemInfo')]
-  param()
+  param([string] $Filter = '*')
   $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
   if (Is-InsideGitRepository) {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
@@ -400,6 +400,7 @@ function gdiffFiles {
       -Begin { $rootDirectory = git rev-parse --show-toplevel } `
       -Process { Join-Path -Path $rootDirectory -ChildPath $_ } `
       | Where-Object { Test-Path $_ } `
+      | Where-Object { $_ -like $Filter } `
       | Get-Item
   } else {
     throw "'$(Get-Location)' is not a git directory/repository."
@@ -410,16 +411,16 @@ function gdiffFiles {
 .SYNOPSIS
   List files which are neither ignored by `.gitignore` or tracked.
 #>
-# TODO build filter support, for example guntrackedFiles *.cs, which would list all untracked csharp files.
 function guntrackedFiles {
   [OutputType('System.IO.FileSystemInfo')]
-  param()
+  param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
     git rev-parse --show-toplevel `
       | Get-Item `
       | Push-Location
 
     git ls-files -o --exclude-standard `
+      | Where-Object { $_ -like $Filter } `
       | Get-Item `
       | Write-Output
 
@@ -427,10 +428,12 @@ function guntrackedFiles {
   }
 }
 
-# TODO build filter support, for example gadd *.cs, which would add all csharp files.
 function gadd {
+  param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
-    $arguments = $input + $args | Wrap-WithQuotes
+    $arguments = $input + $args `
+      | Where-Object { $_ -like $Filter } `
+      | Wrap-WithQuotes
     if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
   } else {
