@@ -337,18 +337,7 @@ function nvim {
   } else {
     $arguments = $input + $args
     if ($arguments.Count -eq 0) { $neovim + "$(if ($terminalSession) { ' -c enew' } else { [string]::Empty })" }
-    else {
-      $arguments `
-        | ForEach-Object `
-        -Begin { $wrappedArguments = @() } `
-        -Process {
-        # Wraping each argument in single quotes makes it possible to handle arguments containing spaces.
-        $wrappedArguments += "'$_'"
-      } `
-        -End {
-        "$neovim $($wrappedArguments -join ' ')"
-      }
-    }
+    else { "$neovim $(($arguments | Wrap-WithQuotes) -join ' ')" }
   }
   $expression | Invoke-Expression
 }
