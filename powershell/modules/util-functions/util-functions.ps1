@@ -200,17 +200,16 @@ function Clear-DotnetProject {
     -Path $Path `
     | Get-Item `
     | ForEach-Object `
-    -Begin { $absolutePaths = @(); $directories = @(); $index = 0 } `
+    -Begin { $absolutePaths = @(); $directories = @() } `
     -Process {
     $absolutePaths += $_.FullName
     $directories += $_ `
       | Select-Object -ExpandProperty Directory `
       | Get-ChildItem `
       | Where-Object { $RemovalDirectories -contains $_.BaseName }
-    $index++
   } `
     -End {
-    if ($index -gt 0) { @{ Paths = $AbsolutePaths; Directories = $directories }
+    if ($directories.Count -gt 0) { @{ Paths = $AbsolutePaths; Directories = $directories }
     } else { throw "No file found with any extension of: $($ProjectExtensions -join ', ')." }
   }
 
