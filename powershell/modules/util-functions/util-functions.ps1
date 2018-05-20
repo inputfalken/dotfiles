@@ -379,18 +379,22 @@ function Is-InsideGitRepository {
   Accepts `git diff` arguments but returns file paths.
 #>
 function gdiffFiles {
-  # TODO write output when no files are found.
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
   $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
   if (Is-InsideGitRepository) {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
       | ForEach-Object `
-      -Begin { $rootDirectory = git rev-parse --show-toplevel } `
-      -Process { Join-Path -Path $rootDirectory -ChildPath $_ } `
-      | Where-Object { Test-Path $_ } `
-      | Where-Object { $_ -like $Filter } `
-      | Get-Item
+      -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
+      -Process { 
+        if ($emptySequence) { $emptySequence = $false }
+        Join-Path -Path $rootDirectory -ChildPath $_ `
+          | Where-Object { Test-Path $_ } `
+          | Where-Object { $_ -like $Filter } `
+          | Get-Item
+      } `
+      -End { if ($emptySequence) { 'No files found.' } } `
+      | Write-Output
   } else {
     throw "'$(Get-Location)' is not a git directory/repository."
   }
@@ -401,7 +405,6 @@ function gdiffFiles {
   List files which are neither ignored by `.gitignore` or tracked.
 #>
 function guntrackedFiles {
-  # TODO write output when no files are found.
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
@@ -410,8 +413,16 @@ function guntrackedFiles {
       | Push-Location
 
     git ls-files -o --exclude-standard `
-      | Where-Object { $_ -like $Filter } `
-      | Get-Item `
+      | Foreach-Object `
+      -Begin { $emptySequence = $true } `
+      -Process {  
+        if ($emptySequence) { $emptySequence = $false }
+        $_ `
+          | Where-Object { $_ -like $Filter } `
+          | Get-Item `
+
+      } `
+      -End { if ($emptySequence) { 'No files found.' } } `
       | Write-Output
 
     Pop-Location
@@ -419,7 +430,6 @@ function guntrackedFiles {
 }
 
 function gadd {
-  # TODO write output when no files are found.
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
     $arguments = $input + $args `
