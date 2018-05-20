@@ -386,13 +386,13 @@ function gdiffFiles {
     (Invoke-Expression "git diff $joinedArguments --name-only") `
       | ForEach-Object `
       -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
-      -Process { 
-        if ($emptySequence) { $emptySequence = $false }
-        Join-Path -Path $rootDirectory -ChildPath $_ `
-          | Where-Object { Test-Path $_ } `
-          | Where-Object { $_ -like $Filter } `
-          | Get-Item
-      } `
+      -Process {
+      if ($emptySequence) { $emptySequence = $false }
+      Join-Path -Path $rootDirectory -ChildPath $_ `
+        | Where-Object { Test-Path $_ } `
+        | Where-Object { $_ -like $Filter } `
+        | Get-Item
+    } `
       -End { if ($emptySequence) { 'No files found.' } } `
       | Write-Output
   } else {
@@ -415,13 +415,13 @@ function guntrackedFiles {
     git ls-files -o --exclude-standard `
       | Foreach-Object `
       -Begin { $emptySequence = $true } `
-      -Process {  
-        if ($emptySequence) { $emptySequence = $false }
-        $_ `
-          | Where-Object { $_ -like $Filter } `
-          | Get-Item `
+      -Process {
+      if ($emptySequence) { $emptySequence = $false }
+      $_ `
+        | Where-Object { $_ -like $Filter } `
+        | Get-Item `
 
-      } `
+    } `
       -End { if ($emptySequence) { 'No files found.' } } `
       | Write-Output
 
