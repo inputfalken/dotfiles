@@ -11,7 +11,8 @@
     set                  scrolloff=5
     set                  undolevels=100
     set                  number
-    set                  relativenumber
+    " Relative number is incredibly slow on huge files.
+    "set                  relativenumber
     set                  incsearch
 " }
 " Set leader key {
@@ -29,7 +30,8 @@
      " nnoremap             <c-s-tab> gT
      " nnoremap             <c-tab> gt
     nnoremap             <Leader>rc :action ReformatCode<CR>
-    nnoremap             fu :action FindUsages<CR>
+    nnoremap             fU :action FindUsages<CR>
+    nnoremap             fu :action ShowUsages<CR>
     nnoremap             gb :action GotoNextBookmark<CR>
     nnoremap             gB :action GotoPreviousBookmark<CR>
     nnoremap             ge :action ReSharperGotoNextErrorInSolution<CR>
