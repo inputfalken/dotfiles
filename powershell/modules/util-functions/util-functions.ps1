@@ -381,8 +381,8 @@ function Is-InsideGitRepository {
 function gdiffFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
-  $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
   if (Is-InsideGitRepository) {
+    $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
     (Invoke-Expression "git diff $joinedArguments --name-only") `
       | ForEach-Object `
       -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
