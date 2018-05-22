@@ -513,7 +513,7 @@ function glistFiles {
 
 <#
 .SYNOPSIS
-  Accepts `git diff` but creates a vimdiff session with the help of the plugin fugitive.
+  Accepts `git diff` arguments, but creates a vimdiff session with the help of the plugin fugitive.
 #>
 function gdiffVim {
   param([string] $Filter = '*')
