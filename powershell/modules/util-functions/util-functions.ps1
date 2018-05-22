@@ -516,6 +516,7 @@ function glistFiles {
   Accepts `git diff` but creates a vimdiff session with the help of the plugin fugitive.
 #>
 function gdiffVim {
+  param([string] $Filter = '*')
   function Confirm-Option ([scriptblock]$Block) {
     while ($true) {
       $Block.Invoke()
@@ -528,7 +529,7 @@ function gdiffVim {
     }
   }
 
-  $diffingFiles = $args | gdiffFiles
+  $diffingFiles = $args | gdiffFiles -Filter $Filter
   $confirmationBlock = {
     Write-Host 'Found' -NoNewline -ForegroundColor White
     Write-Host " $($diffingFiles.Count) " -NoNewline -ForegroundColor Yellow
