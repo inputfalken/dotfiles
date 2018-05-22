@@ -61,13 +61,23 @@ let g:python3_host_prog='C:\Python36\python.exe'
 let g:python_host_prog='C:\Python27\python.exe'
 
 "============================================================================
-" Neovim Completion Manager
+" Deoplete
 "============================================================================
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#omni#input_patterns = {}
+let g:deoplete#sources = {}
 
+" Language specifik settings
 "Add extra filetypes
 let g:deoplete#sources#ternjs#filetypes = [
                 \ 'jsx',
                 \ 'javascript.jsx',
                 \ 'vue',
                 \ ]
+let g:OmniSharp_server_path = 'C:\tools\omniSharpRoslyn\OmniSharp.exe'
+let g:deoplete#sources._=['buffer', 'ultisnips', 'file', 'dictionary']
+let g:deoplete#sources.cs = ['omni', 'file', 'buffer', 'ultisnips']
+let g:deoplete#omni#input_patterns.cs = ['^[^;]{2,}[^;]$']
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+
