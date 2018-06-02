@@ -21,6 +21,13 @@ function When-Command {
   }
 }
 
+# This makes paths who contain spaces work with git.
+function Wrap-WithQuotes {
+  $input `
+    | Foreach-Object { "'$_'" } `
+    | Write-Output
+}
+
 <#
 .SYNOPSIS
   Helper function for executing command-line programs.
@@ -340,13 +347,6 @@ function nvim {
     else { "$neovim $(($arguments | Wrap-WithQuotes) -join ' ')" }
   }
   $expression | Invoke-Expression
-}
-
-# This makes paths who contain spaces work with git.
-function Wrap-WithQuotes {
-  $input `
-    | Foreach-Object { "'$_'" } `
-    | Write-Output
 }
 
 <#
