@@ -171,7 +171,7 @@ function Find-SolutionFile {
     $SolutionFiles = $SolutionPath `
       | Get-ChildItem `
       | Where-Object { Is-SolutionFile $_ }
-    if (($SolutionFiles.Count -eq 1) -and ($SolutionPath -eq (Get-Location))) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionFiles[0] } 
+    if (($SolutionFiles.Count -eq 1) -and ($SolutionPath.FullName -eq (Get-Location).Path)) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionFiles[0] } 
     elseif ($SolutionFiles.Count -gt 1) { throw "You need to specify one of the following: $($SolutionFiles -join ', ')." } 
     else { throw "No solution file found with path '$SolutionPath'." }
   }
