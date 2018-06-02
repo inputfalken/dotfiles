@@ -324,14 +324,9 @@ function nvim {
       | Out-File -FilePath $path -Force
 
     # The dash arguments needs to be sliced...
-    $args[1..$args.Count] `
-      | ForEach-Object `
-      -Begin { $nvimArgs = @() } `
-      -Process {
-      # Wraping each argument in single quotes makes it possible to handle arguments containing spaces.
-      $nvimArgs += "'$_'"
-    } `
-      -End {
+    $nvimArgs = $args[1..$args.Count] `
+      | Wrap-WithQuotes
+    -End {
       if ($nvimArgs.Count -gt 0) {
         $joinedArguments = $nvimArgs -join ' '
         if ($terminalSession) { "$neovim '-c new | read! type $path' $joinedArguments" }
