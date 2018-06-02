@@ -3,6 +3,7 @@
 $exportModuleMemberParams = @{
   Function = @(
     'Clear-DotnetProject',
+    'Dotnet-GetSolutionProjects',
     'Compile-YCM',
     'Edit-Profile',
     'Exec',
