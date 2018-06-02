@@ -151,12 +151,48 @@ function Get-ChocolateyPackages {
   }
 }
 
-function Tail-File {
+function Find-SolutionFile {
+  param(
+    [Parameter(Position = 1, Mandatory = 1)] [string]$Path,
+    [Parameter(Position = 1, Mandatory = 1)] [scriptblock]$OnSuccess
+  )
+
+  function Is-SolutionFile {
+    param([Parameter(Position = 1, Mandatory = 1)] [System.IO.FileSystemInfo]$File )
+    $File.Extension -eq '.sln'
+  }
+
+  $SolutionPath = Get-Item $Path -ErrorAction Stop
+
+  if (Test-Path $SolutionPath -Type Leaf) {
+    if (Is-SolutionFile $SolutionPath) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionPath }
+    else { throw "File '$SolutionPath' is not not a solution file." }
+  } else {
+    $SolutionFiles = $SolutionPath `
+      | Get-ChildItem `
+      | Where-Object { Is-SolutionFile $_ }
+    if (($SolutionFiles.Count -eq 1) -and ($SolutionPath -eq (Get-Location))) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionFiles[0] } 
+    elseif ($SolutionFiles.Count -gt 1) { throw "You need to specify one of the following: $($SolutionFiles -join ', ')." } 
+    else { throw "No solution file found with path '$SolutionPath'." }
+  }
+}
+
+function Dotnet-GetSolutionProjects {
+  [OutputType('System.IO.FileSystemInfo')]
   [CmdletBinding()]
   param(
-    [Parameter(Position = 0, Mandatory = 1)] [string]$path
+    [Parameter(Position = 0, Mandatory = 0)] [string]$SolutionPath = '.\'
   )
-  Get-Content $path -Wait
+  Find-SolutionFile -Path $SolutionPath -OnSuccess {
+    param(
+      $SolutionFile
+    )
+    dotnet sln $SolutionFile list `
+      | Where-Object { Test-Path $_ -Type Leaf } `
+      | Get-Item `
+      | Write-Output
+    Write-Host "`r`n`r`nListed projects found in '$($SolutionFile.FullName)'."
+  }
 }
 
 <#
