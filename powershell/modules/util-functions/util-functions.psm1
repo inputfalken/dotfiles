@@ -11,6 +11,7 @@ $exportModuleMemberParams = @{
     'gdiffVim',
     'Get-ChocolateyPackages',
     'guntrackedFiles',
+    'gignoredFiles',
     'nvim',
     'Reload-Path',
     'Tail-File',
