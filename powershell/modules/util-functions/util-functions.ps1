@@ -28,6 +28,42 @@ function Wrap-WithQuotes {
     | Write-Output
 }
 
+function Any-Match {
+   param( $FilterScript= $null )
+   process { if ($FilterScript| Invoke-Expression){ $true; break } }
+   end { $false }
+}
+
+function Take-While () {
+  param([scriptblock]$pred = $(throw "Need a predicate"))
+  begin {
+    $take = $true
+  }
+  process {
+    if ($take) {
+      $take = & $pred $_
+      if ($take) {
+        $_
+      }
+    } else { break }
+  }
+}
+
+# TODO When an uppercased letter is found, do case sensitive filtering from the position of the uppercased letter.
+# This could be achived by generating an regex pattern.
+function Smart-Filter   {
+  param(
+    [Parameter(Position = 0, Mandatory = 1)] [string]$Text,
+    [Parameter(Position = 1, Mandatory = 1)] [string]$Filter
+  )
+
+  if ($Filter.ToCharArray() | Any-Match {[char]::IsUpper($_)}) {
+    $text -clike "*$filter*"
+  } else {
+    $text -like "*$filter*"
+  }
+}
+
 <#
 .SYNOPSIS
   Helper function for executing command-line programs.
@@ -118,20 +154,6 @@ function Reload-Path {
   * Version
 #>
 function Get-ChocolateyPackages {
-  function Take-While () {
-    param([scriptblock]$pred = $(throw "Need a predicate"))
-    begin {
-      $take = $true
-    }
-    process {
-      if ($take) {
-        $take = & $pred $_
-        if ($take) {
-          $_
-        }
-      }
-    }
-  }
   Write-Host 'Getting installed packages' -ForegroundColor Yellow
   # Gets the packages names
   $packages = choco list --local-only
@@ -171,8 +193,8 @@ function Find-SolutionFile {
     $SolutionFiles = $SolutionPath `
       | Get-ChildItem `
       | Where-Object { Is-SolutionFile $_ }
-    if (($SolutionFiles.Count -eq 1) -and ($SolutionPath.FullName -eq (Get-Location).Path)) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionFiles[0] } 
-    elseif ($SolutionFiles.Count -gt 1) { throw "You need to specify one of the following: $($SolutionFiles -join ', ')." } 
+    if (($SolutionFiles.Count -eq 1) -and ($SolutionPath.FullName -eq (Get-Location).Path)) { Invoke-Command -ScriptBlock $OnSuccess -ArgumentList $SolutionFiles[0] }
+    elseif ($SolutionFiles.Count -gt 1) { throw "You need to specify one of the following: $($SolutionFiles -join ', ')." }
     else { throw "No solution file found with path '$SolutionPath'." }
   }
 }
@@ -421,13 +443,23 @@ function gdiffFiles {
       if ($emptySequence) { $emptySequence = $false }
       Join-Path -Path $rootDirectory -ChildPath $_ `
         | Where-Object { Test-Path $_ } `
-        | Where-Object { $_ -like $Filter } `
+        | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
         | Get-Item
     } `
       -End { if ($emptySequence) { 'No files found.' } } `
       | Write-Output
   } else {
     throw "'$(Get-Location)' is not a git directory/repository."
+  }
+}
+
+function gignoredFiles {
+  [OutputType('System.IO.FileSystemInfo')]
+  param([string] $Filter = '*')
+  if (Is-InsideGitRepository) {
+    git ls-files -o -i --exclude-standard `
+      | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
+      | Get-Item
   }
 }
 
@@ -449,7 +481,7 @@ function guntrackedFiles {
       -Process {
       if ($emptySequence) { $emptySequence = $false }
       $_ `
-        | Where-Object { $_ -like $Filter } `
+        | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
         | Get-Item `
 
     } `
@@ -464,7 +496,7 @@ function gadd {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
     $arguments = $input + $args `
-      | Where-Object { $_ -like $Filter } `
+      | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
       | Wrap-WithQuotes
     if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
