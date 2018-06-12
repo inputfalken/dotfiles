@@ -1,3 +1,6 @@
+function Update-PythonPackageManager($Path) {
+  "$Path -m pip install --upgrade pip" | Invoke-Expression
+}
 function Update-PythonPackages ($PackageManager) {
   if (Get-Command -Name $PackageManager -CommandType Application -ErrorAction SilentlyContinue) {
     Exec {
@@ -41,6 +44,10 @@ function Update-VimPackages {
   }
 }
 
+
+
+Update-PythonPackageManager -Path "C:\Python36\python.exe"
+Update-PythonPackageManager -Path "C:\Python27\python.exe"
 
 Update-PythonPackages -PackageManager 'pip2'
 Update-PythonPackages -PackageManager 'pip3'
