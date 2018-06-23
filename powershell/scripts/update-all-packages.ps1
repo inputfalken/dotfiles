@@ -29,6 +29,7 @@ function Update-RubyGems {
 function Update-NodePackages {
   if (Get-Command -Name 'npm' -CommandType Application -ErrorAction SilentlyContinue) {
     Exec { npm update -g }
+    Exec { npm install -g npm }
   }
 }
 
