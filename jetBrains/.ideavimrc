@@ -11,7 +11,6 @@
     set                  scrolloff=5
     set                  undolevels=100
     set                  number
-    " Relative number is incredibly slow on huge files.
     "set                  relativenumber
     set                  incsearch
 " }
@@ -55,4 +54,7 @@
     nnoremap             <Leader>R :action Run<CR>
     nnoremap             <Leader>re :action RenameElement<CR>
     nnoremap             <Leader>sv :source ~/.ideavimrc<CR>
+" }
+" Debugger {
+   nnoremap             <C-q> :action EvaluateExpression<CR>
 " }
