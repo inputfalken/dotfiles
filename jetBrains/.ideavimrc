@@ -17,6 +17,11 @@
 " Set leader key {
   let mapleader = ' '
 " }
+"
+
+" Package Management {
+    nnoremap            <Leader>pm :action RiderNuGetQuickListPopupAction<CR>
+" }
 
 " Navigation {
     map                  Y y$
@@ -38,6 +43,7 @@
     nnoremap             gf :action GotoFile<CR>
     nnoremap             gi :action GotoImplementation<CR>
     nnoremap             gm :action FileStructurePopup<cr>
+    nnoremap             <Leader>bp :action ViewBreakpoints<cr>
     nnoremap             j gj
     nnoremap             k gk
     nnoremap             x "_x
