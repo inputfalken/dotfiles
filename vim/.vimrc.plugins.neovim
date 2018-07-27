@@ -15,10 +15,10 @@ augroup END
 function! SetColorScheme()
   " The get() function will fall back to 'default' if the variable has not yet been set.
   let l:current_scheme = get(g:, 'colors_name', 'default')
-  if l:current_scheme !=# 'one' && filereadable($HOME .'/.vim/plugged/onedark.vim/colors/onedark.vim')
+  if l:current_scheme !=# 'gruvbox' && filereadable($HOME .'/.vim/plugged/onedark.vim/colors/onedark.vim')
     set background=dark
-    colorscheme one
-    let g:airline_theme = 'onedark'
+    colorscheme gruvbox
+    let g:airline_theme = 'gruvbox'
   endif
 endfunction
 
