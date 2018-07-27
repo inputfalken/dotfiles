@@ -5,7 +5,15 @@ Import-Module util-functions 3> $null
 Import-Module PowerShell-Beautifier.psd1
 
 Set-Alias ls Get-ChildItemColorFormatWide -Option AllScope
-Set-PSReadlineOption -EditMode vi -BellStyle None
+Set-PSReadlineOption -BellStyle None
+Set-PSReadlineOption -EditMode vi
+Set-PSReadLineKeyHandler -Key Tab -Function Complete
+Set-PSReadlineKeyhandler -Key ctrl+n -Function ViTabCompleteNext
+Set-PSReadlineKeyhandler -Key ctrl+p -Function ViTabCompletePrevious
+Set-PSReadlineKeyhandler -Key Shift+Insert -Function Paste
+Remove-PSReadLineKeyHandler -Key ctrl+v
+
+
 Set-Alias vi vim
 
 # Chocolatey profile
@@ -80,4 +88,3 @@ $PowerShellAnalyzerRules = @{
     }
   }
 }
-
