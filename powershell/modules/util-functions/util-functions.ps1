@@ -518,6 +518,24 @@ function Exclude-Item {
     | Where-Object { $items -notcontains $_ } `
     | Write-Output
 }
+
+<#
+.SYNOPSIS
+  Includes an item from the pipeline
+#>
+function Include-Item {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory, ValueFromPipeline)] [ValidateNotNull()] $InputObject,
+    [Parameter(Position = 0, Mandatory)][ValidateNotNull()] [object[]] $items
+  )
+  if ($Input) { $InputObject = $Input }
+  if ($items.Length -lt 0) { throw 'You must suply an argument.' }
+  $InputObject `
+    | Where-Object { $items -contains $_ } `
+    | Write-Output
+}
+
 function gadd {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
