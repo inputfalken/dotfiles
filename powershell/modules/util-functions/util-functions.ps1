@@ -492,6 +492,15 @@ function guntrackedFiles {
   }
 }
 
+<#
+.SYNOPSIS
+  Lists local branches
+#>
+function gbranches { 
+  [OutputType('System.String')]
+  param()
+  git for-each-ref refs/heads --format "%(refname:short)" 
+}
 function gadd {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
