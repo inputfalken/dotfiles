@@ -501,6 +501,23 @@ function gbranches {
   param()
   git for-each-ref refs/heads --format "%(refname:short)" 
 }
+
+<#
+.SYNOPSIS
+  Excludes an item from the pipeline
+#>
+function Exclude-Item {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory, ValueFromPipeline)] [ValidateNotNull()] $InputObject,
+    [Parameter(Position = 0, Mandatory)][ValidateNotNull()] [object[]] $items
+  )
+  if ($Input) { $InputObject = $Input }
+  if ($items.Length -lt 0) { throw 'You must suply an argument.' }
+  $InputObject `
+    | Where-Object { $items -notcontains $_ } `
+    | Write-Output
+}
 function gadd {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
