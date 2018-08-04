@@ -436,7 +436,7 @@ function gdiffFiles {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
     $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
-    (Invoke-Expression "git diff $joinedArguments --name-only") `
+    (Invoke-Expression "git diff $joinedArguments --name-only --diff-filter=AM") `
       | ForEach-Object `
       -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
       -Process {
