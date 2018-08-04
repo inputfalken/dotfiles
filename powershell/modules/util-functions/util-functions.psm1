@@ -3,6 +3,7 @@
 $exportModuleMemberParams = @{
   Function = @(
     'Clear-DotnetProject',
+    'Dotnet-AddProjectToSolution',
     'Dotnet-GetSolutionProjects',
     'Compile-YCM',
     'Edit-Profile',
@@ -11,6 +12,7 @@ $exportModuleMemberParams = @{
     'gdiffVim',
     'Get-ChocolateyPackages',
     'guntrackedFiles',
+    'gbranches',
     'gignoredFiles',
     'nvim',
     'Reload-Path',
@@ -20,7 +22,9 @@ $exportModuleMemberParams = @{
     'glistFiles',
     'gadd',
     'gcheckout',
-    'gdiffFilesCheckout'
+    'gdiffFilesCheckout',
+    'Exclude-Item',
+    'Include-Item'
   )
 }
 Export-ModuleMember @exportModuleMemberParams
