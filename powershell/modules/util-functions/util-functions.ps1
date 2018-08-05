@@ -494,12 +494,12 @@ function guntrackedFiles {
 
 <#
 .SYNOPSIS
-  Lists local branches
+  Lists local git branches
 #>
-function gbranches { 
+function gbranches {
   [OutputType('System.String')]
   param()
-  git for-each-ref refs/heads --format "%(refname:short)" 
+  git for-each-ref refs/heads --format "%(refname:short)"
 }
 
 <#
