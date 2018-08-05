@@ -29,9 +29,9 @@ function Wrap-WithQuotes {
 }
 
 function Any-Match {
-   param( $FilterScript= $null )
-   process { if ($FilterScript| Invoke-Expression){ $true; break } }
-   end { $false }
+  param( $FilterScript = $null )
+  process { if ($FilterScript| Invoke-Expression) { $true; break } }
+  end { $false }
 }
 
 function Take-While () {
@@ -51,7 +51,7 @@ function Take-While () {
 
 # TODO When an uppercased letter is found, do case sensitive filtering from the position of the uppercased letter.
 # This could be achived by generating an regex pattern.
-function Smart-Filter   {
+function Smart-Filter {
   param(
     [Parameter(Position = 0, Mandatory = 1)] [string]$Text,
     [Parameter(Position = 1, Mandatory = 1)] [string]$Filter
