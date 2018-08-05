@@ -25,6 +25,7 @@ $exportModuleMemberParams = @{
     'gdiffFilesCheckout',
     'Exclude-Item',
     'Include-Item'
+    'Skip-Object'
   )
 }
 Export-ModuleMember @exportModuleMemberParams
