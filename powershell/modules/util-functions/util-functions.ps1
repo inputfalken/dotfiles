@@ -504,9 +504,9 @@ function gbranches {
 
 <#
 .SYNOPSIS
-  Excludes an item from the pipeline
+  Excludes an item from the pipeline.
 #>
-function Exclude-Item {
+function Exclude-Object {
   [CmdletBinding()]
   Param(
     [Parameter(Mandatory, ValueFromPipeline)] [ValidateNotNull()] $InputObject,
@@ -521,9 +521,9 @@ function Exclude-Item {
 
 <#
 .SYNOPSIS
-  Includes an item from the pipeline
+  Includes an item from the pipeline.
 #>
-function Include-Item {
+function Include-Object {
   [CmdletBinding()]
   Param(
     [Parameter(Mandatory, ValueFromPipeline)] [ValidateNotNull()] $InputObject,
