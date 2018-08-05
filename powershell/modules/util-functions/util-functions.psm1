@@ -23,8 +23,8 @@ $exportModuleMemberParams = @{
     'gadd',
     'gcheckout',
     'gdiffFilesCheckout',
-    'Exclude-Item',
-    'Include-Item'
+    'Exclude-Object',
+    'Include-Object',
     'Skip-Object'
   )
 }
