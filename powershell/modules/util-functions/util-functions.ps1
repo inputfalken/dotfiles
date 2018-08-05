@@ -536,6 +536,27 @@ function Include-Item {
     | Write-Output
 }
 
+<#
+.SYNOPSIS
+  Skips a number of items from the pipeline.
+#>
+function Skip-Object {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory, ValueFromPipeline)] [ValidateNotNull()] $InputObject,
+    [Parameter(Position = 0, Mandatory)][int] $Amount,
+    [Parameter(Position = 1)][switch] $Last = $false
+  )
+  if ($Input) { $InputObject = $Input }
+  if ($Last) {
+    $InputObject `
+      | Select-Object -SkipLast $Amount
+  } else {
+    $InputObject `
+      | Select-Object -Skip $Amount
+  }
+}
+
 function gadd {
   param([string] $Filter = '*')
   if (Is-InsideGitRepository) {
