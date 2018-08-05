@@ -273,76 +273,71 @@ function Clear-DotnetProject {
       | Get-ChildItem `
       | Where-Object { $RemovalDirectories -contains $_.BaseName }
   } `
-    -End {
-    if ($directories.Count -gt 0) { @{ Paths = $AbsolutePaths; Directories = $directories }
-    } else { throw "No file found with any extension of: $($ProjectExtensions -join ', ')." }
+    -End { @{ Paths = $AbsolutePaths; Directories = $directories } }
+  if ($projects.Paths.Count -eq 0) { throw "No file with extensioin matching: $($ProjectExtensions -join ', ')." }
+  if ($projects.Directories.Count -eq 0) { throw "No path found matching: $($RemovalDirectories -join ', ')." }
+
+  if ($PersistPaths) {
+    $projects.Paths `
+      | ConvertTo-Json -Compress `
+      | Out-File -LiteralPath $persistPath -ErrorAction Stop
   }
 
-  if ($projects.Directories.Count -gt 0) {
-    if ($PersistPaths) {
-      $projects.Paths `
-        | ConvertTo-Json -Compress `
-        | Out-File -LiteralPath $persistPath -ErrorAction Stop
-    }
-
-    function Confirm-Option ([scriptblock]$Block) {
-      while ($true) {
-        $Block.Invoke()
-        switch ((Read-Host).ToLower()) {
-          'y' { return $true }
-          'yes' { return $true }
-          'n' { return $false }
-          'no' { return $false }
-        }
+  function Confirm-Option ([scriptblock]$Block) {
+    while ($true) {
+      $Block.Invoke()
+      switch ((Read-Host).ToLower()) {
+        'y' { return $true }
+        'yes' { return $true }
+        'n' { return $false }
+        'no' { return $false }
       }
     }
+  }
 
-    $deleteConfirmationBlock = {
-      # If the search is recursive, we don't where the directories are.
-      $projects.Directories `
-        | Group-Object -Property Parent `
+  $deleteConfirmationBlock = {
+    # If the search is recursive, we don't where the directories are.
+    $projects.Directories `
+      | Group-Object -Property Parent `
+      | Select-Object -Property `
+    @{ Name = 'Project'; Expression = { $_.Name } }, `
+    @{ Name = 'Directories'; Expression = { $_.Group -join ', ' } } `
+      | Sort-Object -Property Project `
+      | Format-Table -AutoSize `
+      | Out-String `
+      | Write-Host -NoNewline
+
+    Write-Host 'Found' -NoNewline -ForegroundColor White
+    Write-Host " $($projects.Directories.Count) " -NoNewline -ForegroundColor Yellow
+    Write-Host 'items ' -NoNewline -ForegroundColor White
+    Write-Host 'in' -NoNewline -ForegroundColor White
+    Write-Host " $($Projects.Paths.Count) " -NoNewline -ForegroundColor Yellow
+    Write-Host 'projects. Would you like to remove them?' -NoNewline -ForegroundColor White
+    Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+  }
+  if ($Force -or (Confirm-Option $deleteConfirmationBlock)) {
+    $result = $projects.Directories `
+      | ForEach-Object `
+      -Begin { $list = @() } `
+      -Process {
+      try { $item = $_; Remove-Item -LiteralPath $_.FullName -Force -Recurse -ErrorAction Stop; $list += @{ Item = $item; Error = $null }
+      } catch { $list += @{ Item = $item; Error = $_ }
+      }
+    } `
+      -End { $list }
+    if ($result.Count -gt 0) {
+      $result `
         | Select-Object -Property `
-      @{ Name = 'Project'; Expression = { $_.Name } }, `
-      @{ Name = 'Directories'; Expression = { $_.Group -join ', ' } } `
-        | Sort-Object -Property Project `
-        | Format-Table -AutoSize `
-        | Out-String `
-        | Write-Host -NoNewline
-
-      Write-Host 'Found' -NoNewline -ForegroundColor White
-      Write-Host " $($projects.Directories.Count) " -NoNewline -ForegroundColor Yellow
-      Write-Host 'items ' -NoNewline -ForegroundColor White
-      Write-Host 'in' -NoNewline -ForegroundColor White
-      Write-Host " $($Projects.Paths.Count) " -NoNewline -ForegroundColor Yellow
-      Write-Host 'projects. Would you like to remove them?' -NoNewline -ForegroundColor White
-      Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+      @{ Name = 'Project'; Expression = { $_.Item.Parent } }, `
+      @{ Name = 'Target'; Expression = { $_.Item } }, `
+      @{ Name = 'Status'; Expression = { if ($_.Error) { "Failure: $($_.Error.Exception.GetType())" } else { 'Success' } } } `
+        | Group-Object -Property Status `
+        | Select-Object -Property `
+      @{ Name = 'Count'; Expression = { $_.Group.Count } }, `
+      @{ Name = 'Status'; Expression = { $_.Name } }, `
+      @{ Name = 'Group'; Expression = { $_.Group | Select-Object -ExcludeProperty Status } } `
+        | Write-Output
     }
-    if ($Force -or (Confirm-Option $deleteConfirmationBlock)) {
-      $result = $projects.Directories `
-        | ForEach-Object `
-        -Begin { $list = @() } `
-        -Process {
-        try { $item = $_; Remove-Item -LiteralPath $_.FullName -Force -Recurse -ErrorAction Stop; $list += @{ Item = $item; Error = $null }
-        } catch { $list += @{ Item = $item; Error = $_ }
-        }
-      } `
-        -End { $list }
-      if ($result.Count -gt 0) {
-        $result `
-          | Select-Object -Property `
-        @{ Name = 'Project'; Expression = { $_.Item.Parent } }, `
-        @{ Name = 'Target'; Expression = { $_.Item } }, `
-        @{ Name = 'Status'; Expression = { if ($_.Error) { "Failure: $($_.Error.Exception.GetType())" } else { 'Success' } } } `
-          | Group-Object -Property Status `
-          | Select-Object -Property `
-        @{ Name = 'Count'; Expression = { $_.Group.Count } }, `
-        @{ Name = 'Status'; Expression = { $_.Name } }, `
-        @{ Name = 'Group'; Expression = { $_.Group | Select-Object -ExcludeProperty Status } } `
-          | Write-Output
-      }
-    }
-  } else {
-    Write-Host "No directory found matching any name of: $($RemovalDirectories -join ', ')." -ForegroundColor White
   }
 }
 
