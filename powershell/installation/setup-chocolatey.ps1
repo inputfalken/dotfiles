@@ -11,32 +11,31 @@ function Setup-Chocolatey {
   # Installs the choco package manager
   # Source: https://chocolatey.org/
   function Install-Chocolatey {
-    When-Command choco -Found {
-      Write-Verbose 'Package manager Chocolatey is allready installed.'
-    } -NotFound {
-      Write-Verbose 'Installing package manager Chocolatey.'
-      Invoke-WebRequest -Uri 'https://chocolatey.org/install.ps1' `
+    $command = Get-Command -CommandType Application -Name 'choco' -ErrorAction SilentlyContinue
+    if ($command) {
+      Write-Host "$($command.Source) exists, skipping installation."
+    } else {
+      $uri = 'https://chocolatey.org/install.ps1' 
+      Write-Host "Installing package manager Chocolatey from '$uri'."
+      Invoke-WebRequest -Uri $uri`
         | Select-Object -ExpandProperty content `
         | Invoke-Expression
       Reload-Path
     }
   }
 
-  # Install a chocolatey package.
-  function Install-ChocolateyPackage ([string]$package, [bool]$prompt = $false) {
-    if ($installedPackages -contains $package) {
-      Write-Verbose "Package $package is already installed, skipping installment."
+  Install-Chocolatey
+  $installedPackages = Exec { Get-ChocolateyPackages | Select-Object -ExpandProperty Package }
+
+  function Install-ChocolateyPackage ([string]$Package, [bool]$Prompt = $false) {
+    if ($installedPackages -contains $Package) {
+      Write-Host "Package $package is already installed, skipping installment."
     } else {
-      # If prompt and the confirmation is false.
-      if ($prompt -and !(Confirm-Option "Would you like to install package '$package'?")) {
-        return
-      }
-      Exec { choco install $package -y }
+      if ($Prompt -and !(Confirm-Option "Would you like to install package '$Package'?")) { return }
+      Exec { choco install $Package -y }
     }
   }
 
-  Install-Chocolatey
-  $installedPackages = Exec { Get-ChocolateyPackages | Select-Object -ExpandProperty Package }
   Install-ChocolateyPackage '7zip'
   Install-ChocolateyPackage 'cmake'
   Install-ChocolateyPackage 'conemu'
