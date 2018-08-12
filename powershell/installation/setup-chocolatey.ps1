@@ -17,7 +17,7 @@ function Setup-Chocolatey {
     } else {
       $uri = 'https://chocolatey.org/install.ps1' 
       Write-Host "Installing package manager Chocolatey from '$uri'."
-      Invoke-WebRequest -Uri $uri`
+      Invoke-WebRequest -Uri $uri `
         | Select-Object -ExpandProperty content `
         | Invoke-Expression
       Reload-Path
