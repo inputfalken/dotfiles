@@ -2,7 +2,6 @@ Import-Module posh-git
 Import-Module dotfile-helper
 Import-Module Get-ChildItemColor
 Import-Module util-functions 3> $null
-Import-Module PowerShell-Beautifier.psd1
 
 Set-Alias ls Get-ChildItemColorFormatWide -Option AllScope
 Set-PSReadlineOption -BellStyle None
