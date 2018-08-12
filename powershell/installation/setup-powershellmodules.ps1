@@ -4,56 +4,19 @@
 #                                                                                                  #
 ####################################################################################################
 
+# TODO instead of using $PSScriptRoot, find the root directory by using git.
 function Setup-PowerShellModules {
   [CmdletBinding()]
   param()
 
-  [System.IO.DirectoryInfo]$profileDirectory = ([System.IO.FileInfo]$PROFILE).DirectoryName
-  [System.IO.DirectoryInfo]$profileModules = "$profileDirectory\Modules"
+  # "Installs" local modules.
+  Join-Path $PSScriptRoot '..\modules\' `
+    | Get-ChildItem -ErrorAction Stop `
+    | Copy-Item -Destination  (Join-Path ($PROFILE | Get-Item).DirectoryName 'modules') -Force -ErrorAction Stop
 
-  function Install-LocalPowerShellModule {
-    [CmdletBinding()]
-    param(
-      [Parameter(Position = 0, Mandatory = 1)] [string]$module,
-      [Parameter(Position = 1)] [string]$dotfilesModules = "./powershell/modules/$module"
-    )
-    Copy-Item -Recurse -Force -Path $dotfilesModules -Destination $profileModules
-  }
 
-  # Installs a PowerShell module
-  # First attempts to find a local module and then add/override it.
-  # If no local module is found it attempts to see if the module allready exists,
-  # if module exists nothing is done otherwise an attempt is made to locate it online and then install it.
-  function Install-PowerShellModule {
-    [CmdletBinding()]
-    param(
-      [Parameter(Position = 0)] [string]$module
-    )
-
-    function Is-Installed () {
-      Get-Module -ListAvailable -Name $module
-    }
-
-    if (Is-Installed) {
-      Update-Module -Name $module -Force
-      $modules = (Get-Module -Name $module -ListAvailable) | Sort-Object -Property Version -Descending
-      if ($modules.length -gt 1) {
-        Write-Verbose "Update added for module '$module'."
-        Write-Verbose "Removing old versions of module '$module'."
-        $oldModules = $modules[1..$modules.length] | `
-          Select-Object -ExpandProperty Path | `
-          Remove-Item -Force -Recurse
-      } else {
-        Write-Verbose "No update found for module '$module'."
-      }
-    } else {
-      PowerShellGet\Install-Module -Name $module -Scope CurrentUser -AllowClobber -Force
-    }
-  }
-  Install-PowerShellModule 'posh-git'
-  Install-PowerShellModule 'z'
-  Install-PowerShellModule 'PowerShell-Beautifier'
-  Install-PowerShellModule 'Get-ChildItemColor'
-  Install-LocalPowerShellModule 'dotfile-helper'
-  Install-LocalPowerShellModule 'util-functions'
+  Install-Module -Name 'posh-git' -Scope CurrentUser -AllowClobber -Force
+  Install-Module -Name 'PowerShell-Beautifier' -Scope CurrentUser -AllowClobber -Force
+  Install-Module -Name 'Get-ChildItemColor' -Scope CurrentUser -AllowClobber -Force
+  Install-Module -Name 'PSScriptAnalyzer' -Scope CurrentUser -AllowClobber -Force
 }
