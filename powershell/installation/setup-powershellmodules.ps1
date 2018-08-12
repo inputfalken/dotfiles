@@ -12,7 +12,7 @@ function Setup-PowerShellModules {
   # "Installs" local modules.
   Join-Path $PSScriptRoot '..\modules\' `
     | Get-ChildItem -ErrorAction Stop `
-    | Copy-Item -Destination  (Join-Path ($PROFILE | Get-Item).DirectoryName 'modules') -Force -ErrorAction Stop
+    | Copy-Item -Recurse -Destination (Join-Path ($PROFILE | Get-Item).DirectoryName 'modules') -Force -ErrorAction Stop
 
 
   Install-Module -Name 'posh-git' -Scope CurrentUser -AllowClobber -Force
