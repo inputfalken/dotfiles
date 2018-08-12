@@ -8,20 +8,6 @@ function Setup-Linters {
   [CmdletBinding()]
   param()
 
-  function Install-VimVint {
-    Exec { pip3 install vim-vint }
-  }
-
-  function Install-JsonLint {
-    [CmdletBinding()]
-    param()
-    Exec { npm install jsonlint -g }
-  }
-
-  function Install-MardownLintTool {
-    Exec { gem install mdl }
-  }
-
   function Install-XmlLint {
     [CmdletBinding()]
     param(
@@ -62,21 +48,10 @@ function Setup-Linters {
     Pop-Location
   }
 
-  When-Command -cmd xmllint -NotFound {
-    Install-XmlLint -InstallationDirectory (Join-Path -Path $ToolsDirectory -ChildPath 'xml') -Verbose
-  }
-
-  When-Command -cmd JsonLint -NotFound {
-    Install-JsonLint -Verbose
-  }
-
-  When-Command -cmd vint -NotFound {
-    exec { pip install vim-vint }
-  }
-
-  When-Command -cmd gem -Found {
-    When-Command -cmd mdl -NotFound { Install-MardownLintTool }
-  } -NotFound {
-    Write-Host "Package manager 'Gem' does not exist"
+  if (Get-Command -name 'xmllint' -Type 'Application' -ErrorAction SilentlyContinue) { Install-XmlLint -InstallationDirectory (Join-Path -Path $ToolsDirectory -ChildPath 'xml') -Verbose }
+  if (Get-Command -name 'JsonLint' -Type 'Application' -ErrorAction SilentlyContinue) { Exec { npm install jsonlint -g } }
+  if (Get-Command -name 'vint' -Type 'Application' -ErrorAction SilentlyContinue) { Exec { pip install vim-vint } }
+  if (Get-Command -name 'gem' -Type 'Application' -ErrorAction SilentlyContinue) {
+    if (Get-Command -name 'mdl' -Type 'Application' -ErrorAction SilentlyContinue) { Exec { gem install mdl } } else { Write-Host "Package manager 'Gem' does not exist" } 
   }
 }
