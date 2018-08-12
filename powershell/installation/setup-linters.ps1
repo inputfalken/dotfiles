@@ -71,7 +71,7 @@ function Setup-Linters {
   }
 
   When-Command -cmd vint -NotFound {
-    Install-JsonLint -Verbose
+    exec { pip install vim-vint }
   }
 
   When-Command -cmd gem -Found {
