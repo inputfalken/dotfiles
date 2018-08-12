@@ -37,23 +37,24 @@ function Setup-Chocolatey {
   }
 
   Install-ChocolateyPackage '7zip'
-  Install-ChocolateyPackage 'cmake'
-  Install-ChocolateyPackage 'conemu'
+  Install-ChocolateyPackage 'awscli'
   Install-ChocolateyPackage 'dotnetcore'
-  Install-ChocolateyPackage 'dotnetcore-sdk'
+  Install-ChocolateyPackage 'Firefox'
   Install-ChocolateyPackage 'git'
-  Install-ChocolateyPackage 'googlechrome'
-  Install-ChocolateyPackage 'googledrive'
+  Install-ChocolateyPackage 'GoogleChrome'
+  # Google Play Music Desktop Player UNOFFICIAL
+  Install-ChocolateyPackage 'gpmdp'
   Install-ChocolateyPackage 'jdk8'
   Install-ChocolateyPackage 'neovim'
   Install-ChocolateyPackage 'nodejs'
   Install-ChocolateyPackage 'nuget.commandline'
   Install-ChocolateyPackage 'postman'
   Install-ChocolateyPackage 'powershell-core'
-  Install-ChocolateyPackage 'Python'
   Install-ChocolateyPackage 'python2'
+  Install-ChocolateyPackage 'python3'
   Install-ChocolateyPackage 'ruby'
   Install-ChocolateyPackage 'slack'
   Install-ChocolateyPackage 'vim'
+  Install-ChocolateyPackage 'vlc'
   Reload-Path
 }
