@@ -336,6 +336,7 @@ function Clear-DotnetProject {
       @{ Name = 'Count'; Expression = { $_.Group.Count } }, `
       @{ Name = 'Status'; Expression = { $_.Name } }, `
       @{ Name = 'Group'; Expression = { $_.Group | Select-Object -ExcludeProperty Status } } `
+        | ForEach-Object { $parent = $_ ;  $_.group  | Select-Object -Property *,  @{ Name = 'Result' ; Expression = { $parent.Status } } } `
         | Write-Output
     }
   }
