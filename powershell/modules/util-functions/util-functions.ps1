@@ -617,21 +617,20 @@ function gdiffFilesCheckout {
 #>
 function glistFiles {
   [OutputType('System.IO.FileSystemInfo')]
-  param()
+  param(
+      [Parameter(ValueFromPipeline, Mandatory = 0)][ValidateNotNull()] $InputObject,
+      [Parameter(Position = 0, Mandatory = 0)][ValidateNotNull()][string[]] $Arguments = @(),
+      [Parameter(Position = 1, Mandatory = 0)][ValidateNotNull()][switch] $Strict = $false
+  )
   if (Is-InsideGitRepository) {
-    $arguments = $args
-    $input `
-      | ForEach-Object `
-      -Begin { $any = $false ; $joinedArgs = if ($arguments.Count -gt 0) { " $(($arguments | Wrap-WithQuotes | ForEach-Object { "*$_*" }) -join ' ')" } else { [string]::Empty } } `
-      -Process { if (!$any) { $any = $true } ; "git ls-files $_" + $joinedArgs } `
-      -End {
-      if (!$any) {
-        if ($joinedArgs -eq [string]::Empty) { "git ls-files *" }
-        else { "git ls-files" + $joinedArgs }
-      }
-    } `
-      | Invoke-Expression `
-      | Get-Item
+    if ($Input) { $InputObject = $Input }
+      $concatenatedArguments = ($Arguments += $InputObject) | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
+      $joinedArgs = if ($Arguments.Count -gt 0) { if ($Strict) { $concatenatedArguments | Wrap-WithQuotes } else { $concatenatedArguments | ForEach-Object { "*$_*" } | Wrap-WithQuotes } } else { [string]::Empty }
+
+      $expression = if ([string]::IsNullOrWhiteSpace($joinedArgs)) { "git ls-files *" } else { "git ls-files " + $joinedArgs }
+      $expression  `
+        | Invoke-Expression `
+        | Get-Item
   } else { throw "'$(Get-Location)' is not a git directory/repository." }
 }
 
