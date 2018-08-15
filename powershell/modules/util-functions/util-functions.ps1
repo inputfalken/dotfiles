@@ -567,8 +567,13 @@ function gadd {
 }
 
 function gcheckout {
+  param(
+      [Parameter(ValueFromPipeline, Mandatory = 0)][ValidateNotNull()] $InputObject,
+      [Parameter(Position = 0, Mandatory = 0)][ValidateNotNull()][string[]] $ArgumentObject = @()
+  )
   if (Is-InsideGitRepository) {
-    $arguments = $args + $input | Wrap-WithQuotes
+    if ($Input) { $InputObject = $Input }
+    $arguments = $InputObject + $ArgumentObject | Wrap-WithQuotes
     if ($arguments.Count -gt 0) { "git checkout $($arguments -join ' ')" | Invoke-Expression }
     else { Write-Output 'No arguments supplied.' }
   } else {
