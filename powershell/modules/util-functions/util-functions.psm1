@@ -20,7 +20,6 @@ $exportModuleMemberParams = @{
     'Get-ClipboardText',
     'Set-ClipboardText',
     'glistFiles',
-    'glistFilesStrict',
     'gadd',
     'gcheckout',
     'gdiffFilesCheckout',
