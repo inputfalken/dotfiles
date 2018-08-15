@@ -634,26 +634,6 @@ function glistFiles {
   } else { throw "'$(Get-Location)' is not a git directory/repository." }
 }
 
-function glistFilesStrict {
-  [OutputType('System.IO.FileSystemInfo')]
-  param()
-  if (Is-InsideGitRepository) {
-    $arguments = $args
-    $input `
-      | ForEach-Object `
-      -Begin { $any = $false ; $joinedArgs = if ($arguments.Count -gt 0) { " $($arguments -join ' ')" } else { [string]::Empty } } `
-      -Process { if (!$any) { $any = $true } ; "git ls-files $_" + $joinedArgs } `
-      -End {
-      if (!$any) {
-        if ($joinedArgs -eq [string]::Empty) { "git ls-files *" }
-        else { "git ls-files" + $joinedArgs }
-      }
-    } `
-      | Invoke-Expression `
-      | Get-Item
-  } else { throw "'$(Get-Location)' is not a git directory/repository." }
-}
-
 <#
 .SYNOPSIS
   Accepts `git diff` arguments, but creates a vimdiff session with the help of the plugin fugitive.
