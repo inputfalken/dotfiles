@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -eo pipefail
+IFS=$'\n\t'
+
 if [[ -z "${NVIM_LISTEN_ADDRESS}" ]]; then
     "C:/tools/neovim/Neovim/bin/nvim.exe" "$*"
   else
