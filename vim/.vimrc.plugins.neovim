@@ -75,9 +75,11 @@ let g:deoplete#sources#ternjs#filetypes = [
                 \ 'javascript.jsx',
                 \ 'vue',
                 \ ]
-let g:OmniSharp_server_path = 'C:\tools\omniSharpRoslyn\OmniSharp.exe'
-let g:deoplete#sources._=['buffer', 'ultisnips', 'file', 'dictionary']
-let g:deoplete#sources.cs = ['omni', 'file', 'buffer', 'ultisnips']
-let g:deoplete#omni#input_patterns.cs = ['^[^;]{2,}[^;]$']
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 
+" a hash of file types to language server launch command
+" NOTE: this requires VS code with PowerShell plugin!
+let g:LanguageClient_serverCommands = {
+    \ 'ps1': ['pwsh', '~/.vscode/extensions/ms-vscode.powershell-1.8.4/modules/PowerShellEditorServices/Start-EditorServices.ps1', '-HostName', 'nvim', '-HostProfileId', '0', '-HostVersion', '1.0.0', '-LogPath', '~/Desktop/pses.log.txt', '-LogLevel', 'Diagnostic', '-BundledModulesPath', '~/.vscode/extensions/ms-vscode.powershell-1.8.4/modules', '-Stdio', '-SessionDetailsPath', '~/Desktop/.pses_session']
+    \ }
+" for debugging LanguageClient-neovim
+let g:LanguageClient_loggingLevel = 'DEBUG'
