@@ -17,11 +17,18 @@ Plug 'plasticboy/vim-markdown'
 Plug 'PProvost/vim-ps1'
 Plug 'rhysd/vim-gfm-syntax'
 Plug 'robbles/logstash.vim'
+Plug 'sheerun/vim-polyglot'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'Shougo/neco-syntax'
   Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
   Plug 'Shougo/neco-vim'
+
+  " The LSP client
+  Plug 'autozimu/LanguageClient-neovim', {
+          \ 'branch': 'next',
+          \ 'do': 'bash install.sh',
+          \ }
 endif
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'SirVer/ultisnips'
@@ -37,6 +44,21 @@ Plug 'vim-jp/syntax-vim-ex'
 Plug 'vim-scripts/Flex-Development-Support'
 Plug 'w0rp/ale'
 call plug#end()
+
+" If the filetype is powershell set up our keybindings
+autocmd FileType ps1 call VsimEnableLanguageServerKeys()
+function! VsimEnableLanguageServerKeys()
+  nnoremap <silent> <S-K> :call LanguageClient_textDocument_hover()<CR>
+  nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+  nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+  set formatexpr=LanguageClient_textDocument_rangeFormatting()
+  vnoremap = :call LanguageClient_textDocument_rangeFormatting()<CR>
+  nnoremap <C-k><C-r> :call LanguageClient_textDocument_references()<CR>
+  nnoremap <silent><Leader>rc :call LanguageClient_textDocument_formatting()<CR>
+  augroup CursorHold
+    autocmd! CursorHold * call LanguageClient_textDocument_hover()
+  augroup END
+endfunction
 
 if !empty($ConEmuBuild) && !has('nvim')
   set term=xterm
