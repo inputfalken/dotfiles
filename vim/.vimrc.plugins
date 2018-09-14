@@ -1,5 +1,4 @@
 call plug#begin('~/.vim/plugged')
-Plug 'challenger-deep-theme/vim'
 Plug 'elzr/vim-json'
 Plug 'godlygeek/tabular'
 Plug 'hail2u/vim-css3-syntax'
@@ -9,19 +8,13 @@ Plug 'joshdick/onedark.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kassio/neoterm'
 Plug 'luochen1990/rainbow'
-Plug 'martinda/Jenkinsfile-vim-syntax'
-Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'metakirby5/codi.vim'
-Plug 'mhartington/oceanic-next'
-Plug 'mhinz/vim-janah'
 Plug 'morhetz/gruvbox'
-Plug 'nanotech/jellybeans.vim'
 Plug 'othree/csscomplete.vim'
 Plug 'othree/html5.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
 Plug 'PProvost/vim-ps1'
-Plug 'rakr/vim-one'
 Plug 'rhysd/vim-gfm-syntax'
 Plug 'robbles/logstash.vim'
 if has('nvim')
@@ -29,7 +22,6 @@ if has('nvim')
   Plug 'Shougo/neco-syntax'
   Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
   Plug 'Shougo/neco-vim'
-  Plug 'mhartington/nvim-typescript'
 endif
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'SirVer/ultisnips'
