@@ -398,23 +398,6 @@ function nvim {
   $expression | Invoke-Expression
 }
 
-<#
-.SYNOPSIS
-  Recompiles the vim plugin 'YouCompleteMe' this is useful when updating YouCompleteMe.
-  In order for this function to work; you need to have 7-Zip and CMake installed.
-.EXAMPLE
-  Compile-YCM "$HOME\.vim\plugged\YouCompleteMe"
-#>
-function Compile-YCM {
-  [CmdletBinding()]
-  param(
-    [Parameter(Position = 0, Mandatory = 0)] [string]$directory = "$HOME\.vim\plugged\YouCompleteMe"
-  )
-  $env:Path += ";$($env:ProgramFiles)\7-Zip"
-  $env:Path += ";$($env:ProgramFiles)\CMake\bin"
-  python "$directory\install.py"
-}
-
 function Is-InsideGitRepository {
   if (Get-Command -Name 'git' -ErrorAction SilentlyContinue) {
     if (git rev-parse --is-inside-work-tree 2>$null) { $true } else { $false }

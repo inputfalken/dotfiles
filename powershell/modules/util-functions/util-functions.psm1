@@ -5,7 +5,6 @@ $exportModuleMemberParams = @{
     'Clear-DotnetProject',
     'Dotnet-AddProjectToSolution',
     'Dotnet-GetSolutionProjects',
-    'Compile-YCM',
     'Edit-Profile',
     'Exec',
     'gdiffFiles',
