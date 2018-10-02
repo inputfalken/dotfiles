@@ -1,3 +1,7 @@
+param (
+ [Parameter(Mandatory = 1, Position = 0)][string] $Title,
+ [Parameter(Mandatory = 1, Position = 1)][string] $Message
+)
 $app = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
 [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime]
 
@@ -10,8 +14,8 @@ $Template = [Windows.UI.Notifications.ToastTemplateType]::ToastImageAndText01
 <toast launch="app-defined-string">
   <visual>
     <binding template="ToastGeneric">
-      <text>Title</text>
-      <text>Message</text>
+      <text>$Title</text>
+      <text>$Message</text>
     </binding>
   </visual>
   <actions>
