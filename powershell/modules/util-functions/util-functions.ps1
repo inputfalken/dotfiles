@@ -274,8 +274,8 @@ function Clear-DotnetProject {
       | Where-Object { $RemovalDirectories -contains $_.BaseName }
   } `
     -End { @{ Paths = $AbsolutePaths; Directories = $directories } }
-  if ($projects.Paths.Count -eq 0) { throw "No file with extensioin matching: $($ProjectExtensions -join ', ')." }
-  if ($projects.Directories.Count -eq 0) { throw "No path found matching: $($RemovalDirectories -join ', ')." }
+  if ($projects.Paths.Count -eq 0) { throw "No files found whose extension macthes: $($ProjectExtensions -join ', ')." }
+  if ($projects.Directories.Count -eq 0) { throw "No paths found whose name matches: $($RemovalDirectories -join ', ')." }
 
   if ($PersistPaths) {
     $projects.Paths `
