@@ -398,12 +398,10 @@ function nvim {
   $expression | Invoke-Expression
 }
 
-function Is-InsideGitRepository {
-  if (Get-Command -Name 'git' -ErrorAction SilentlyContinue) {
-    if (git rev-parse --is-inside-work-tree 2>$null) { $true } else { $false }
-  } else {
-    throw 'Git could not be found.'
-  }
+function Test-GitRepository {
+  if (Get-Command -CommandType Application -Name 'git' -ErrorAction SilentlyContinue) {
+    if ((git rev-parse --is-inside-work-tree 2>$null) -eq $null) { throw "'$(Get-Location)' is not a git repository." } 
+  } else { throw 'Git is needs to be available globally.' }
 }
 
 <#
@@ -413,33 +411,29 @@ function Is-InsideGitRepository {
 function gdiffFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
-  if (Is-InsideGitRepository) {
-    $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
-    (Invoke-Expression "git diff $joinedArguments --name-only --diff-filter=AM") `
-      | ForEach-Object `
-      -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
-      -Process {
-      if ($emptySequence) { $emptySequence = $false }
-      Join-Path -Path $rootDirectory -ChildPath $_ `
-        | Where-Object { Test-Path $_ } `
-        | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
-        | Get-Item
-    } `
-      -End { if ($emptySequence) { 'No files found.' } } `
-      | Write-Output
-  } else {
-    throw "'$(Get-Location)' is not a git directory/repository."
-  }
+  Test-GitRepository
+  $joinedArguments = (($input + $args) | Wrap-WithQuotes) -join ' '
+  (Invoke-Expression "git diff $joinedArguments --name-only --diff-filter=AM") `
+    | ForEach-Object `
+    -Begin { $emptySequence = $true ; $rootDirectory = git rev-parse --show-toplevel } `
+    -Process {
+    if ($emptySequence) { $emptySequence = $false }
+    Join-Path -Path $rootDirectory -ChildPath $_ `
+      | Where-Object { Test-Path $_ } `
+      | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
+      | Get-Item
+  } `
+    -End { if ($emptySequence) { 'No files found.' } } `
+    | Write-Output
 }
 
 function gignoredFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
-  if (Is-InsideGitRepository) {
+  Test-GitRepository
     git ls-files -o -i --exclude-standard `
       | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
       | Get-Item
-  }
 }
 
 <#
@@ -449,26 +443,25 @@ function gignoredFiles {
 function guntrackedFiles {
   [OutputType('System.IO.FileSystemInfo')]
   param([string] $Filter = '*')
-  if (Is-InsideGitRepository) {
-    git rev-parse --show-toplevel `
+  Test-GitRepository
+  git rev-parse --show-toplevel `
+    | Get-Item `
+    | Push-Location
+
+  git ls-files -o --exclude-standard `
+    | Foreach-Object `
+    -Begin { $emptySequence = $true } `
+    -Process {
+    if ($emptySequence) { $emptySequence = $false }
+    $_ `
+      | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
       | Get-Item `
-      | Push-Location
 
-    git ls-files -o --exclude-standard `
-      | Foreach-Object `
-      -Begin { $emptySequence = $true } `
-      -Process {
-      if ($emptySequence) { $emptySequence = $false }
-      $_ `
-        | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
-        | Get-Item `
+  } `
+    -End { if ($emptySequence) { 'No files found.' } } `
+    | Write-Output
 
-    } `
-      -End { if ($emptySequence) { 'No files found.' } } `
-      | Write-Output
-
-    Pop-Location
-  }
+  Pop-Location
 }
 
 <#
@@ -538,15 +531,12 @@ function Skip-Object {
 
 function gadd {
   param([string] $Filter = '*')
-  if (Is-InsideGitRepository) {
-    $arguments = $input + $args `
-      | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
-      | Wrap-WithQuotes
-    if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
-    else { Write-Output 'No arguments supplied.' }
-  } else {
-    throw "'$(Get-Location)' is not a git directory/repository."
-  }
+  Test-GitRepository
+  $arguments = $input + $args `
+    | Where-Object { Smart-Filter -Filter $Filter -Text $_ } `
+    | Wrap-WithQuotes
+  if ($arguments.Count -gt 0) { "git add $($arguments -join ' ')" | Invoke-Expression }
+  else { Write-Output 'No arguments supplied.' }
 }
 
 function gcheckout {
@@ -554,14 +544,11 @@ function gcheckout {
       [Parameter(ValueFromPipeline, Mandatory = 0)][ValidateNotNull()] $InputObject,
       [Parameter(Position = 0, Mandatory = 0)][ValidateNotNull()][string[]] $ArgumentObject = @()
   )
-  if (Is-InsideGitRepository) {
-    if ($Input) { $InputObject = $Input }
-    $arguments = $InputObject + $ArgumentObject | Wrap-WithQuotes
-    if ($arguments.Count -gt 0) { "git checkout $($arguments -join ' ')" | Invoke-Expression }
-    else { Write-Output 'No arguments supplied.' }
-  } else {
-    throw "'$(Get-Location)' is not a git directory/repository."
-  }
+  Test-GitRepository
+  if ($Input) { $InputObject = $Input }
+  $arguments = $InputObject + $ArgumentObject | Wrap-WithQuotes
+  if ($arguments.Count -gt 0) { "git checkout $($arguments -join ' ')" | Invoke-Expression }
+  else { Write-Output 'No arguments supplied.' }
 }
 
 function gdiffFilesCheckout {
@@ -610,16 +597,15 @@ function glistFiles {
       [Parameter(Position = 0, Mandatory = 0)][ValidateNotNull()][string[]] $Arguments = @(),
       [Parameter(Position = 1, Mandatory = 0)][ValidateNotNull()][switch] $Strict = $false
   )
-  if (Is-InsideGitRepository) {
-    if ($Input) { $InputObject = $Input }
-      $concatenatedArguments = ($Arguments += $InputObject) | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
-      $joinedArgs = if ($Arguments.Count -gt 0) { if ($Strict) { $concatenatedArguments | Wrap-WithQuotes } else { $concatenatedArguments | ForEach-Object { "*$_*" } | Wrap-WithQuotes } } else { [string]::Empty }
+  Test-GitRepository
+  if ($Input) { $InputObject = $Input }
+    $concatenatedArguments = ($Arguments += $InputObject) | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
+    $joinedArgs = if ($Arguments.Count -gt 0) { if ($Strict) { $concatenatedArguments | Wrap-WithQuotes } else { $concatenatedArguments | ForEach-Object { "*$_*" } | Wrap-WithQuotes } } else { [string]::Empty }
 
-      $expression = if ([string]::IsNullOrWhiteSpace($joinedArgs)) { "git ls-files *" } else { "git ls-files " + $joinedArgs }
-      $expression  `
-        | Invoke-Expression `
-        | Get-Item
-  } else { throw "'$(Get-Location)' is not a git directory/repository." }
+    $expression = if ([string]::IsNullOrWhiteSpace($joinedArgs)) { "git ls-files *" } else { "git ls-files " + $joinedArgs }
+    $expression  `
+      | Invoke-Expression `
+      | Get-Item
 }
 
 <#
