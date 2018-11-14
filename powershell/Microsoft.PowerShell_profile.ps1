@@ -17,7 +17,8 @@ Set-Alias vi vim
 
 # Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path ($ChocolateyProfile)) {
+if (Test-Path ($ChocolateyProfile))
+{
   Import-Module "$ChocolateyProfile"
 }
 
@@ -30,13 +31,21 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 }
 
 function gRootDirectory {
-  if (git rev-parse --is-inside-work-tree 2> $null) {
-    $location = git rev-parse --show-toplevel `
-      | Resolve-Path `
-      | Get-Item
-    if ((Get-Location).Path -eq $location) { return }
-    else { Push-Location $location }
-  } else { throw "'$(Get-Location)' is not a git directory/repository." }
+  [CmdletBinding()]
+  Param(
+    [Parameter(Position = 0, Mandatory = 0)][switch] $Push = $false
+  )
+  if (Get-Command -CommandType Application -Name 'git'  -ErrorAction SilentlyContinue) {
+    if (git rev-parse --is-inside-work-tree 2> $null) {
+      $location = git rev-parse --show-toplevel `
+        | Resolve-Path `
+        | Get-Item
+      if ((Get-Location).Path -eq $location) { return } else { 
+        if ($Push) { Push-Location $location }
+        else { Set-Location $location }
+      }
+    } else { throw "'$(Get-Location)' is not a git directory/repository." }
+  } else { throw "Function 'gRootDirectory' requires 'git' to be globally available." }
 }
 
 $PowerShellAnalyzerRules = @{
