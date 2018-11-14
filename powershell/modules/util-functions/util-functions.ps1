@@ -400,7 +400,7 @@ function nvim {
 
 function Test-GitRepository {
   if (Get-Command -CommandType Application -Name 'git' -ErrorAction SilentlyContinue) {
-    if ((git rev-parse --is-inside-work-tree 2>$null) -eq $null) { throw "'$(Get-Location)' is not a git repository." } 
+    if (git rev-parse --is-inside-work-tree 2>$null) { return } { throw "'$(Get-Location)' is not a git repository." }
   } else { throw 'Git is needs to be available globally.' }
 }
 
@@ -626,6 +626,7 @@ function gdiffVim {
     }
   }
 
+  Test-GitRepository
   $diffingFiles = $args | gdiffFiles -Filter $Filter
   $confirmationBlock = {
     Write-Host 'Found' -NoNewline -ForegroundColor White
