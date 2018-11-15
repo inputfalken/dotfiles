@@ -26,11 +26,11 @@ function Setup-ColorScheme {
     } else { throw "Function 'gRootDirectory' requires 'git' to be globally available." }
   }
   $zipFile = '.\colortool.zip'
-  Invoke-WebRequest -Uri 'https://github.com/Microsoft/console/releases/download/1810.02002/ColorTool.zip' -OutFile $zipFile
+  Invoke-WebRequest -Uri 'https://github.com/Microsoft/console/releases/download/1810.02002/ColorTool.zip' -OutFile $zipFile -ErrorAction Stop
   $outPath = '.\colortool'
   Expand-Archive $zipFile -DestinationPath $outPath -ErrorAction Stop
   gRootDirectory -Push
-  $ColorschemePaths = Get-ChildItem '.\shell\colorschemes' | Select-Object -ExpandProperty FullName
+  $ColorschemePaths = Get-ChildItem '.\shell\colorschemes' -ErrorAction Stop | Select-Object -ExpandProperty FullName -ErrorAction Stop
   Pop-Location
   Push-Location $outPath
   $ColorschemePaths | Copy-Item -Destination '.\schemes'
