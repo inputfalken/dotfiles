@@ -401,7 +401,7 @@ function nvim {
 function Test-GitRepository {
   if (Get-Command -CommandType Application -Name 'git' -ErrorAction SilentlyContinue) {
     if (git rev-parse --is-inside-work-tree 2>$null) { return } { throw "'$(Get-Location)' is not a git repository." }
-  } else { throw 'Git is needs to be available globally.' }
+  } else { throw 'Git needs to be available globally.' }
 }
 
 <#
@@ -471,6 +471,7 @@ function guntrackedFiles {
 function gbranches {
   [OutputType('System.String')]
   param()
+  Test-GitRepository
   git for-each-ref refs/heads --format "%(refname:short)"
 }
 
@@ -552,6 +553,7 @@ function gcheckout {
 }
 
 function gdiffFilesCheckout {
+  Test-GitRepository
   $revisionFiles = git ls-tree $args -r | ForEach-Object { ($_ -split '\t') | Select-Object -Last 1 }
   $currentFiles = git ls-files *
 
@@ -614,6 +616,7 @@ function glistFiles {
 #>
 function gdiffVim {
   param([string] $Filter = '*')
+  Test-GitRepository
   function Confirm-Option ([scriptblock]$Block) {
     while ($true) {
       $Block.Invoke()
