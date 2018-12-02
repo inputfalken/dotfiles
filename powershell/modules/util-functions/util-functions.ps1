@@ -126,9 +126,8 @@ function Build-GitPullRequest {
         # TODO check for existing branches
         $sourceBranch = (Read-Host).Trim()
 
-        if ($sourceBranch -eq $Target) {
-          throw "Source branch '$sourceBranch' cannot be the same as target branch '$Target';."
-        }
+        # If it's still the same branch, throw an exception.
+        if ($sourceBranch -eq $Target) { throw "Source branch '$sourceBranch' cannot be the same as target branch '$Target';." }
     }
 
     # Exit code 1: does not exist on remote
