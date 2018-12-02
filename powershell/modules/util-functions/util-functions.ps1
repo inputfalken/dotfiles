@@ -117,6 +117,7 @@ function Build-GitPullRequest {
 
     $sourceIsTarget = $sourceBranch -eq $Target
     if ($sourceIsTarget) {
+        # Another case where a branch needs to be created is $Source is set but does not exist.
         Write-Host 'Your are in the same branch as the target' -NoNewline -ForegroundColor White
         Write-Host ", you have to create a new branch in order to continue.`r`n" -NoNewline -ForegroundColor White
 
@@ -143,7 +144,8 @@ function Build-GitPullRequest {
             Write-Host "to remote?" -NoNewline -ForegroundColor White
             Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
         }
-        if (($sourceIsTarget -or $Force) -or (Confirm-Option $pushConfirmationBlock)) {
+
+        if ($sourceIsTarget -or (Confirm-Option $pushConfirmationBlock)) {
             if ($sourceIsTarget) {
                 if ($DryRun) { Write-Host "Would execute '& git branch $sourceBranch'." }
                 else {
