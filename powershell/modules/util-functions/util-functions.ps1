@@ -74,15 +74,6 @@ function Build-GitPullRequest {
         [Parameter(Position = 5, Mandatory = $false)] [switch] $DryRun = $false
     )
 
-    function Convert-ToBase64 {
-        [CmdletBinding()]
-        param (
-            [Parameter(Mandatory = $true, Position = 0)][ValidateNotNull()] [string] $String
-        )
-        $bytes = [System.Text.Encoding]::UTF8.GetBytes($String)
-        return [System.Convert]::ToBase64String($bytes)
-    }
-
     function Confirm-Option ([ScriptBlock]$Block) {
         while ($true) {
             $Block.Invoke()
@@ -100,12 +91,22 @@ function Build-GitPullRequest {
             [Parameter(Position = 0, Mandatory = $true)] [ValidateNotNull()] [string] $Source,
             [Parameter(Position = 1, Mandatory = $true)] [ValidateNotNull()][string] $Target
         )
-        $command = git rev-list --left-right --count $Target...$Source
-        $commits = $command -split '\t'
-        if ($? -eq $false) { throw 'Could not obtain git commit state.' }
+
+        git rev-list --left-only --count $Target...$Source 2>&1 `
+          | Tee-Object -Variable output `
+          | Out-Null
+        $behind = $output
+        if ($LASTEXITCODE -ne 0) { throw "Could not obtain git commit state:`n$output" }
+
+        git rev-list --right-only --count $Target...$Source 2>&1 `
+          | Tee-Object -Variable output `
+          | Out-Null
+        $ahead = $output
+        if ($LASTEXITCODE -ne 0) { throw "Could not obtain git commit state:`n$output" }
+
         @{
-            Behind = $commits[0]
-            Ahead  = $commits[1]
+            Behind = $behind
+            Ahead  = $ahead
         }
     }
 
@@ -118,26 +119,25 @@ function Build-GitPullRequest {
     }
     $sourceIsTarget = $sourceBranch -eq $Target
     if ($sourceIsTarget) {
-        $gitCreateBranchConfirmationBlock = {
-            Write-Host 'You are in the same branch as the target (' -NoNewline -ForegroundColor White
-            Write-Host "$sourceBranch" -NoNewline -ForegroundColor Yellow
-            Write-Host '), would you like to create a new branch?' -NoNewline -ForegroundColor White
-            Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+        Write-Host 'Your are in the same branch as the target' -NoNewline -ForegroundColor White
+        Write-Host ", you have to create a new branch in order to continue.`r`n" -NoNewline -ForegroundColor White
+
+        Write-Host "Branch name: " -NoNewline -ForegroundColor Magenta
+        # TODO check for existing branches
+        $sourceBranch = (Read-Host).Trim()
+
+        if ($sourceBranch -eq $Target) {
+          throw "Source branch '$sourceBranch' cannot be the same as target branch '$Target';."
         }
-        if ($Force -or (Confirm-Option $gitCreateBranchConfirmationBlock)) {
-            Write-Host "Pull request branch name: " -NoNewline
-            # TODO check for existing branches
-            $sourceBranch = (Read-Host).Trim()
-        }
-        else { throw "Aborting, target branch cannot be the same as the source branch."}
     }
 
-    # Checks if remote branch exists.
-    git show-branch remotes/origin/$sourceBranch 2>&1 `
-      | Tee-Object -Variable stderr `
+    # Exit code 1: does not exist on remote
+    # Exit code 0: Exists on remote
+    git rev-parse --verify --quiet remotes/origin/$sourceBranch 2>&1 `
+      | Tee-Object -Variable output `
       | Out-Null
 
-    if ($LASTEXITCODE -ne 0) {
+    if ($LASTEXITCODE -eq 1) {
         $gitPushConfirmationBlock = {
             Write-Host 'Git branch' -NoNewline -ForegroundColor White
             Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
@@ -147,13 +147,14 @@ function Build-GitPullRequest {
             Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
         }
         if (($sourceIsTarget -or $Force) -or (Confirm-Option $gitPushConfirmationBlock)) {
+
             $resetBranch = if ($sourceIsTarget) {
                 $commitCount = Get-CommitCount -Source "HEAD" -Target "origin/$Target"
                 if ($commitCount.Ahead -gt 0 -and $commitCount.Behind -eq 0) {
                     $gitResetToRemoteConfirmationBlock = {
-                        Write-Host "Your local branch (" -NoNewline -ForegroundColor White
-                        Write-Host "$Target" -NoNewline -ForegroundColor Yellow
-                        Write-Host ") is $($commitCount.Ahead) commits ahead of" -NoNewline -ForegroundColor White
+                        Write-Host "Your local branch" -NoNewline -ForegroundColor White
+                        Write-Host " $Target " -NoNewline -ForegroundColor Yellow
+                        Write-Host " is $($commitCount.Ahead) commits ahead of" -NoNewline -ForegroundColor White
                         Write-Host " origin/$Target" -NoNewline -ForegroundColor Yellow
                         Write-Host ', would you like to also reset to remote?' -NoNewline -ForegroundColor White
                         Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
@@ -167,20 +168,23 @@ function Build-GitPullRequest {
                 if ($DryRun) { Write-Host "Would execute '& git branch $sourceBranch'." }
                 else {
                     & git branch $sourceBranch 2>&1 `
-                      | Tee-Object -Variable stderr `
+                      | Tee-Object -Variable output `
                       | Out-Null
-                    if ($LASTEXITCODE -ne 0) { throw "Could not create branch:`n$stderr"}
+                    if ($LASTEXITCODE -ne 0) { throw "Could not create branch:`n$output"}
                 }
             }
+
             if ($DryRun) { Write-Host "Would execute '& git push origin $sourceBranch --set-upstream 2>&1'." }
             else {
                 Write-Host "Pushing '$sourceBranch'." -ForegroundColor Yellow
                 & git push origin $sourceBranch --set-upstream 2>&1 `
-                  | Tee-Object -Variable stderr `
+                  | Tee-Object -Variable output `
                   | Out-Null
-                if ($LASTEXITCODE -ne 0) { throw "Could not push branch '$sourceBranch':`n$stderr" }
+                if ($LASTEXITCODE -ne 0) { throw "Could not push branch '$sourceBranch':`n$output" }
                 else {
-                  Write-Host "Successfully pushed '$sourceBranch'." -ForegroundColor Green
+                  Write-Host "Successfully pushed" -NoNewline -ForegroundColor Green
+                  Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
+                  Write-Host "to remote." -NoNewline -ForegroundColor Green
                 }
             }
 
@@ -188,16 +192,24 @@ function Build-GitPullRequest {
                 if ($DryRun) { Write-Host "Would execute '& git reset --hard origin/$Target'." }
                 else {
                     & git reset --hard abc 2>&1 `
-                      | Tee-Object -Variable stderr `
+                      | Tee-Object -Variable output `
                       | Out-Null
-                    if ($LASTEXITCODE -ne 0) { throw "Could not reset branch '$Target':`n$stderr" }
+                    if ($LASTEXITCODE -ne 0) { throw "Could not reset branch '$Target':`n$output" }
                 }
             }
         }
     }
+    elseif ($LASTEXITCODE -eq 0) {
+      Write-Host "Source branch" -NoNewline -ForegroundColor Green
+      Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
+      Write-Host "already exits on remote." -NoNewline -ForegroundColor Green
+    }
+    elseif ($LASTEXITCODE -ne 0) { throw "Could not check remote branch:`n$output" }
     $pullRequestDescription = if ([string]::IsNullOrWhiteSpace($Description)) {
-        git log -1 --pretty=%B 2>&1 | Tee-Object -Variable stderr | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
-        if ($LASTEXITCODE -ne 0) { throw "Could note resolve commit message:`n$stderr" }
+        git log -1 --pretty=%B 2>&1 `
+          | Tee-Object -Variable output `
+          | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
+        if ($LASTEXITCODE -ne 0) { throw "Could note resolve commit message:`n$output" }
     }
     else {
         $Description
