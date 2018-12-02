@@ -113,10 +113,8 @@ function Build-GitPullRequest {
     $sourceBranch = if ([string]::IsNullOrWhiteSpace($Source)) {
         git rev-parse --abbrev-ref HEAD
         if ($? -eq $false) { throw "Could not obtain source branch." }
-    }
-    else {
-        $Source
-    }
+    } else { $Source }
+
     $sourceIsTarget = $sourceBranch -eq $Target
     if ($sourceIsTarget) {
         Write-Host 'Your are in the same branch as the target' -NoNewline -ForegroundColor White
@@ -137,7 +135,7 @@ function Build-GitPullRequest {
       | Out-Null
 
     if ($LASTEXITCODE -eq 1) {
-        $gitPushConfirmationBlock = {
+        $pushConfirmationBlock = {
             Write-Host 'Git branch' -NoNewline -ForegroundColor White
             Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
             Write-Host 'does not exist, would you like to push' -NoNewline -ForegroundColor White
@@ -145,24 +143,7 @@ function Build-GitPullRequest {
             Write-Host "to remote?" -NoNewline -ForegroundColor White
             Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
         }
-        if (($sourceIsTarget -or $Force) -or (Confirm-Option $gitPushConfirmationBlock)) {
-
-            $resetBranch = if ($sourceIsTarget) {
-                $commitCount = Get-CommitCount -Source "HEAD" -Target "origin/$Target"
-                if ($commitCount.Ahead -gt 0 -and $commitCount.Behind -eq 0) {
-                    $gitResetToRemoteConfirmationBlock = {
-                        Write-Host "Your local branch" -NoNewline -ForegroundColor White
-                        Write-Host " $Target " -NoNewline -ForegroundColor Yellow
-                        Write-Host " is $($commitCount.Ahead) commits ahead of" -NoNewline -ForegroundColor White
-                        Write-Host " origin/$Target" -NoNewline -ForegroundColor Yellow
-                        Write-Host ', would you like to also reset to remote?' -NoNewline -ForegroundColor White
-                        Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
-                    }
-                    $Force -or (Confirm-Option $gitResetToRemoteConfirmationBlock)
-                }
-                else { $false }
-            }
-
+        if (($sourceIsTarget -or $Force) -or (Confirm-Option $pushConfirmationBlock)) {
             if ($sourceIsTarget) {
                 if ($DryRun) { Write-Host "Would execute '& git branch $sourceBranch'." }
                 else {
@@ -173,7 +154,7 @@ function Build-GitPullRequest {
                 }
             }
 
-            if ($DryRun) { Write-Host "Would execute '& git push origin $sourceBranch --set-upstream 2>&1'." }
+            if ($DryRun) { Write-Host "Would execute '& git push origin $sourceBranch --set-upstream'." }
             else {
                 Write-Host "Pushing '$sourceBranch'." -ForegroundColor Yellow
                 & git push origin $sourceBranch --set-upstream 2>&1 `
@@ -186,16 +167,6 @@ function Build-GitPullRequest {
                   Write-Host "to remote." -NoNewline -ForegroundColor Green
                 }
             }
-
-            if ($resetBranch) {
-                if ($DryRun) { Write-Host "Would execute '& git reset --hard origin/$Target'." }
-                else {
-                    & git reset --hard abc 2>&1 `
-                      | Tee-Object -Variable output `
-                      | Out-Null
-                    if ($LASTEXITCODE -ne 0) { throw "Could not reset branch '$Target':`n$output" }
-                }
-            }
         }
     }
     elseif ($LASTEXITCODE -eq 0) {
@@ -204,15 +175,13 @@ function Build-GitPullRequest {
       Write-Host "already exits on remote." -NoNewline -ForegroundColor Green
     }
     elseif ($LASTEXITCODE -ne 0) { throw "Could not check remote branch:`n$output" }
+
     $pullRequestDescription = if ([string]::IsNullOrWhiteSpace($Description)) {
         git log -1 --pretty=%B 2>&1 `
           | Tee-Object -Variable output `
           | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
         if ($LASTEXITCODE -ne 0) { throw "Could note resolve commit message:`n$output" }
-    }
-    else {
-        $Description
-    }
+    } else { $Description }
 
     @{
         PullRequest = @{
@@ -223,7 +192,6 @@ function Build-GitPullRequest {
         }
         Actions       = @{
             CreatedBranch = $sourceIsTarget
-            RequestedReset = $resetBranch
         }
     }
 }
