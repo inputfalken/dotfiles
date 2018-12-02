@@ -12,6 +12,7 @@ $exportModuleMemberParams = @{
     'Get-ChocolateyPackages',
     'guntrackedFiles',
     'gbranches',
+    'Build-GitPullRequest',
     'gignoredFiles',
     'nvim',
     'Reload-Path',

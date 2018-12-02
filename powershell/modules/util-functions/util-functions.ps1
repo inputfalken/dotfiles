@@ -64,6 +64,159 @@ function Smart-Filter {
   }
 }
 
+function Build-GitPullRequest {
+    param(
+        [Parameter(Position = 0, Mandatory = $true)] [ValidateNotNull()] [string] $Target,
+        [Parameter(Position = 1, Mandatory = $true)] [ValidateNotNull()][string] $Title,
+        [Parameter(Position = 2, Mandatory = $false)] [string] $Source,
+        [Parameter(Position = 3, Mandatory = $false)] [string] $Description,
+        [Parameter(Position = 4, Mandatory = $false)] [switch] $Force = $false,
+        [Parameter(Position = 5, Mandatory = $false)] [switch] $DryRun = $false
+    )
+
+    function Convert-ToBase64 {
+        [CmdletBinding()]
+        param (
+            [Parameter(Mandatory = $true, Position = 0)][ValidateNotNull()] [string] $String
+        )
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($String)
+        return [System.Convert]::ToBase64String($bytes)
+    }
+
+    function Confirm-Option ([ScriptBlock]$Block) {
+        while ($true) {
+            $Block.Invoke()
+            switch ((Read-Host).ToLower()) {
+                'y' { return $true }
+                'yes' { return $true }
+                'n' { return $false }
+                'no' { return $false }
+            }
+        }
+    }
+
+    function Get-CommitCount {
+        param (
+            [Parameter(Position = 0, Mandatory = $true)] [ValidateNotNull()] [string] $Source,
+            [Parameter(Position = 1, Mandatory = $true)] [ValidateNotNull()][string] $Target
+        )
+        $command = git rev-list --left-right --count $Target...$Source
+        $commits = $command -split '\t'
+        if ($? -eq $false) { throw 'Could not obtain git commit state.' }
+        @{
+            Behind = $commits[0]
+            Ahead  = $commits[1]
+        }
+    }
+
+    $sourceBranch = if ([string]::IsNullOrWhiteSpace($Source)) {
+        git rev-parse --abbrev-ref HEAD
+        if ($? -eq $false) { throw "Could not obtain source branch." }
+    }
+    else {
+        $Source
+    }
+    $sourceIsTarget = $sourceBranch -eq $Target
+    if ($sourceIsTarget) {
+        $gitCreateBranchConfirmationBlock = {
+            Write-Host 'You are in the same branch as the target (' -NoNewline -ForegroundColor White
+            Write-Host "$sourceBranch" -NoNewline -ForegroundColor Yellow
+            Write-Host '), would you like to create a new branch?' -NoNewline -ForegroundColor White
+            Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+        }
+        if ($Force -or (Confirm-Option $gitCreateBranchConfirmationBlock)) {
+            Write-Host "Pull request branch name: " -NoNewline
+            # TODO check for existing branches
+            $sourceBranch = (Read-Host).Trim()
+        }
+        else { throw "Aborting, target branch cannot be the same as the source branch."}
+    }
+
+    # Checks if remote branch exists.
+    git show-branch remotes/origin/$sourceBranch 2>&1 `
+      | Tee-Object -Variable stderr `
+      | Out-Null
+
+    if ($LASTEXITCODE -ne 0) {
+        $gitPushConfirmationBlock = {
+            Write-Host 'Git branch' -NoNewline -ForegroundColor White
+            Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
+            Write-Host 'does not exist, would you like to push' -NoNewline -ForegroundColor White
+            Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
+            Write-Host "to remote?" -NoNewline -ForegroundColor White
+            Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+        }
+        if (($sourceIsTarget -or $Force) -or (Confirm-Option $gitPushConfirmationBlock)) {
+            $resetBranch = if ($sourceIsTarget) {
+                $commitCount = Get-CommitCount -Source "HEAD" -Target "origin/$Target"
+                if ($commitCount.Ahead -gt 0 -and $commitCount.Behind -eq 0) {
+                    $gitResetToRemoteConfirmationBlock = {
+                        Write-Host "Your local branch (" -NoNewline -ForegroundColor White
+                        Write-Host "$Target" -NoNewline -ForegroundColor Yellow
+                        Write-Host ") is $($commitCount.Ahead) commits ahead of" -NoNewline -ForegroundColor White
+                        Write-Host " origin/$Target" -NoNewline -ForegroundColor Yellow
+                        Write-Host ', would you like to also reset to remote?' -NoNewline -ForegroundColor White
+                        Write-Host ' [y/n] ' -NoNewline -ForegroundColor Magenta
+                    }
+                    $Force -or (Confirm-Option $gitResetToRemoteConfirmationBlock)
+                }
+                else { $false }
+            }
+
+            if ($sourceIsTarget) {
+                if ($DryRun) { Write-Host "Would execute '& git branch $sourceBranch'." }
+                else {
+                    & git branch $sourceBranch 2>&1 `
+                      | Tee-Object -Variable stderr `
+                      | Out-Null
+                    if ($LASTEXITCODE -ne 0) { throw "Could not create branch:`n$stderr"}
+                }
+            }
+            if ($DryRun) { Write-Host "Would execute '& git push origin $sourceBranch --set-upstream 2>&1'." }
+            else {
+                Write-Host "Pushing '$sourceBranch'." -ForegroundColor Yellow
+                & git push origin $sourceBranch --set-upstream 2>&1 `
+                  | Tee-Object -Variable stderr `
+                  | Out-Null
+                if ($LASTEXITCODE -ne 0) { throw "Could not push branch '$sourceBranch':`n$stderr" }
+                else {
+                  Write-Host "Successfully pushed '$sourceBranch'." -ForegroundColor Green
+                }
+            }
+
+            if ($resetBranch) {
+                if ($DryRun) { Write-Host "Would execute '& git reset --hard origin/$Target'." }
+                else {
+                    & git reset --hard abc 2>&1 `
+                      | Tee-Object -Variable stderr `
+                      | Out-Null
+                    if ($LASTEXITCODE -ne 0) { throw "Could not reset branch '$Target':`n$stderr" }
+                }
+            }
+        }
+    }
+    $pullRequestDescription = if ([string]::IsNullOrWhiteSpace($Description)) {
+        git log -1 --pretty=%B 2>&1 | Tee-Object -Variable stderr | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false }
+        if ($LASTEXITCODE -ne 0) { throw "Could note resolve commit message:`n$stderr" }
+    }
+    else {
+        $Description
+    }
+
+    @{
+        PullRequest = @{
+            Source      = $SourceBranch
+            Target      = $Target
+            Title       = $Title
+            Description = $pullRequestDescription
+        }
+        Actions       = @{
+            CreatedBranch = $sourceIsTarget
+            RequestedReset = $resetBranch
+        }
+    }
+}
+
 <#
 .SYNOPSIS
   Helper function for executing command-line programs.
