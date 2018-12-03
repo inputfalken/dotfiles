@@ -110,14 +110,21 @@ function Build-GitPullRequest {
         }
     }
 
+    git rev-parse --verify remotes/origin/$Target 2>&1 `
+      | Tee-Object -Variable output `
+      | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "Could not check if branch '$Target' exists on remote:`n$output" }
+
     $sourceBranch = if ([string]::IsNullOrWhiteSpace($Source)) {
-        git rev-parse --abbrev-ref HEAD
-        if ($? -eq $false) { throw "Could not obtain source branch." }
+        git rev-parse --abbrev-ref HEAD 2>&1 `
+          | Tee-Object -Variable output `
+          | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "Could not get current branch:`n$output" }
+        $output
     } else { $Source }
 
     $sourceIsTarget = $sourceBranch -eq $Target
     if ($sourceIsTarget) {
-        # Another case where a branch needs to be created is $Source is set but does not exist.
         Write-Host 'Your are in the same branch as the target' -NoNewline -ForegroundColor White
         Write-Host ", you have to create a new branch in order to continue.`r`n" -NoNewline -ForegroundColor White
 
@@ -129,13 +136,24 @@ function Build-GitPullRequest {
         if ($sourceBranch -eq $Target) { throw "Source branch '$sourceBranch' cannot be the same as target branch '$Target';." }
     }
 
-    # Exit code 1: does not exist on remote
-    # Exit code 0: Exists on remote
-    git rev-parse --verify --quiet remotes/origin/$sourceBranch 2>&1 `
+    git rev-parse --verify $sourceBranch 2>&1 `
       | Tee-Object -Variable output `
       | Out-Null
 
-    if ($LASTEXITCODE -eq 1) {
+    $doesNotExistLocally = $LASTEXITCODE -eq 1
+    # Currently not needed, consider removing...
+    $existLocally = $LASTEXITCODE -eq 0
+    if (!$existLocally -and !$doesNotExistLocally) { throw "Could not check if branch '$sourceBranch' exists on remote:`n$output"  }
+
+    git rev-parse --verify remotes/origin/$sourceBranch 2>&1 `
+      | Tee-Object -Variable output `
+      | Out-Null
+
+    $doesNotExistRemotely = $LASTEXITCODE -eq 1
+    $existsRemotely = $LASTEXITCODE -eq 0
+    if (!$existsRemotely -and !$doesNotExistRemotely) { throw "Could not check if branch '$sourceBranch' exists on remote:`n$output"  }
+
+    if ($doesNotExistRemotely) {
         $pushConfirmationBlock = {
             Write-Host 'Git branch' -NoNewline -ForegroundColor White
             Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
@@ -146,7 +164,7 @@ function Build-GitPullRequest {
         }
 
         if ($sourceIsTarget -or (Confirm-Option $pushConfirmationBlock)) {
-            if ($sourceIsTarget) {
+            if ($sourceIsTarget -or $doesNotExistLocally) {
                 if ($DryRun) { Write-Host "Would execute '& git branch $sourceBranch'." }
                 else {
                     & git branch $sourceBranch 2>&1 `
@@ -171,12 +189,11 @@ function Build-GitPullRequest {
             }
         }
     }
-    elseif ($LASTEXITCODE -eq 0) {
+    elseif ($existsRemotely) {
       Write-Host "Source branch" -NoNewline -ForegroundColor Green
       Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
-      Write-Host "already exits on remote." -NoNewline -ForegroundColor Green
+      Write-Host "already exists on remote." -NoNewline -ForegroundColor Green
     }
-    elseif ($LASTEXITCODE -ne 0) { throw "Could not check remote branch:`n$output" }
 
     $pullRequestDescription = if ([string]::IsNullOrWhiteSpace($Description)) {
         git log -1 --pretty=%B 2>&1 `
