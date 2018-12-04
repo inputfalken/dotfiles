@@ -70,8 +70,8 @@ function Build-GitPullRequest {
         [Parameter(Position = 1, Mandatory = $true)] [ValidateNotNull()][string] $Title,
         [Parameter(Position = 2, Mandatory = $false)] [string] $Source,
         [Parameter(Position = 3, Mandatory = $false)] [string] $Description,
-        [Parameter(Position = 4, Mandatory = $false)] [switch] $Force = $false,
-        [Parameter(Position = 5, Mandatory = $false)] [switch] $DryRun = $false
+        [Parameter(Position = 4, Mandatory = $false)] [bool] $Force = $false,
+        [Parameter(Position = 5, Mandatory = $false)] [bool] $DryRun = $false
     )
 
     function Confirm-Option ([ScriptBlock]$Block) {
@@ -140,7 +140,7 @@ function Build-GitPullRequest {
       | Tee-Object -Variable output `
       | Out-Null
 
-    $doesNotExistLocally = $LASTEXITCODE -eq 1
+    $doesNotExistLocally = $LASTEXITCODE -eq 128
     # Currently not needed, consider removing...
     $existLocally = $LASTEXITCODE -eq 0
     if (!$existLocally -and !$doesNotExistLocally) { throw "Could not check if branch '$sourceBranch' exists on remote:`n$output"  }
@@ -149,7 +149,7 @@ function Build-GitPullRequest {
       | Tee-Object -Variable output `
       | Out-Null
 
-    $doesNotExistRemotely = $LASTEXITCODE -eq 1
+    $doesNotExistRemotely = $LASTEXITCODE -eq 128
     $existsRemotely = $LASTEXITCODE -eq 0
     if (!$existsRemotely -and !$doesNotExistRemotely) { throw "Could not check if branch '$sourceBranch' exists on remote:`n$output"  }
 
@@ -184,15 +184,15 @@ function Build-GitPullRequest {
                 else {
                   Write-Host "Successfully pushed" -NoNewline -ForegroundColor Green
                   Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
-                  Write-Host "to remote." -NoNewline -ForegroundColor Green
+                  Write-Host "to remote." -ForegroundColor Green
                 }
             }
-        }
+        } else { throw 'Could not create branch.' }
     }
     elseif ($existsRemotely) {
       Write-Host "Source branch" -NoNewline -ForegroundColor Green
       Write-Host " $sourceBranch " -NoNewline -ForegroundColor Yellow
-      Write-Host "already exists on remote." -NoNewline -ForegroundColor Green
+      Write-Host "already exists on remote." -ForegroundColor Green
     }
 
     $pullRequestDescription = if ([string]::IsNullOrWhiteSpace($Description)) {
