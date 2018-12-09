@@ -40,7 +40,7 @@ function gRootDirectory {
       $location = git rev-parse --show-toplevel `
         | Resolve-Path `
         | Get-Item
-      if ((Get-Location).Path -eq $location) { return } else { 
+      if ((Get-Location).Path -eq $location) { return } else {
         if ($Push) { Push-Location $location }
         else { Set-Location $location }
       }
@@ -92,3 +92,6 @@ $PowerShellAnalyzerRules = @{
     }
   }
 }
+
+# So neovim can exit properly by clearing itself.
+$env:TERM='xterm-256color'
