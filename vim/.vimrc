@@ -4,6 +4,11 @@ set t_vb=
 " Lets you change buffers without saving them
 set hidden
 
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --color=never\ --no-heading
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
 augroup turnOffBells
   autocmd GUIEnter * set vb t_vb=
   autocmd VimEnter * set vb t_vb=
