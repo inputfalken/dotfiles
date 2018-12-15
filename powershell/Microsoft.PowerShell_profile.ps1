@@ -95,3 +95,14 @@ $PowerShellAnalyzerRules = @{
 
 # So neovim can exit properly by clearing itself.
 $env:TERM='xterm-256color'
+
+if ($env:NVIM_LISTEN_ADDRESS) {
+  $env:EDITOR = 'nvr'
+  Set-Alias 'hh' 'nvr -o'
+  Set-Alias 'vv' 'nvr -O'
+  Set-Alias 'tt' 'nvr --remote-tab'
+} else {
+  $env:EDITOR = 'nvim'
+}
+$env:GIT_EDITOR = $EDITOR
+$env:VISUAL = $EDITOR
