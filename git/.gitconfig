@@ -1,5 +1,3 @@
-[diff]
-  tool = vimdiff
 [diff "csharp"]
     xfuncname = ^[ \\t]*(((static|public|internal|private|protected|new|virtual|sealed|override|unsafe|async|partial)[ \\t]+)*[][<>@.~_[:alnum:]]+[ \\t]+[<>@._[:alnum:]]+[ \\t]*\\(.*\\))[ \\t]*$
 [push]
@@ -12,6 +10,8 @@
   ours = "!f() { git checkout --ours ${@-.} && git add ${@-.}; }; f"
   theirs = "!f() { git checkout --theirs ${@-.} && git add ${@-.}; }; f"
   lf = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]\" --decorate --numstat"
+  # Example: git rename origin old_branch new_branch
+  rename = "!git branch -m $2 $3 && git push $1 :$2 $3 -u #"
 [core]
   autocrlf = true
   excludesfile = ~/.gitignore_global
@@ -19,6 +19,7 @@
   safecrlf = warn
   pager = diff-so-fancy | less --tabs=4 -RFX
   attributesfile = ~/.gitattributes
+  #editor = nvim
 [pull]
   rebase = true
 [rebase]
@@ -28,6 +29,15 @@
   follow = true
 [merge]
   renormalize = true
+  tool = vimdiff
+[mergetool]
+    prompt = true
+[mergetool "vimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J
+[difftool]
+    prompt = false
+[diff]
+  tool = vimdiff
 [branch]
   autosetuprebase = always
 [color "diff"]
