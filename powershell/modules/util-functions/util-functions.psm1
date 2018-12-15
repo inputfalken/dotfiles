@@ -14,7 +14,7 @@ $exportModuleMemberParams = @{
     'gbranches',
     'Build-GitPullRequest',
     'gignoredFiles',
-    'nvim',
+    'Start-Nvim',
     'Reload-Path',
     'Tail-File',
     'Get-ClipboardText',

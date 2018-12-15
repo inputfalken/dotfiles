@@ -505,17 +505,17 @@ function Clear-DotnetProject {
   You can pipe any argument that neovim can handle. paths (directories & files)
   is mainly where this functionality shines.
 .EXAMPLE
-  Get-ChildItem -Recurse -File *.csproj | nvim # Recursivly search for all csproj and open them in neovim as seperate buffers.
+  Get-ChildItem -Recurse -File *.csproj | Start-Nvim # Recursivly search for all csproj and open them in neovim as seperate buffers.
 .EXAMPLE
-  Get-ChildItem -Recurse -File *.fsproj | nvim -p # Recursivly search for all fsproj files and open them in neovim as tabs.
+  Get-ChildItem -Recurse -File *.fsproj | Start-Nvim -p # Recursivly search for all fsproj files and open them in neovim as tabs.
 .EXAMPLE
-  Get-ChildItem -Recurse -File *.xml | nvim -p --noplugin # Recursivly search for all xml files and open them in neovim as tabs with plugins disabled.
+  Get-ChildItem -Recurse -File *.xml | Start-Nvim -p --noplugin # Recursivly search for all xml files and open them in neovim as tabs with plugins disabled.
 .EXAMPLE
-  Write-Output 'hello' | nvim - # Opens vim with a buffer containing the output.
+  Write-Output 'hello' | Start-Nvim - # Opens vim with a buffer containing the output.
 .LINK
   https://neovim.io/doc/user/starting.html
 #>
-function nvim {
+function Start-Nvim {
   $terminalSession = [bool]$env:NVIM_LISTEN_ADDRESS
   # If a terminal is used within neovim, send the files to the neovim hosting the terminal rather than creating a nested neovim process.
   $neovim = if ($terminalSession) { 'C:\Python36\Scripts\nvr.exe' } else { 'C:\tools\neovim\Neovim\bin\nvim.exe' }
@@ -802,7 +802,7 @@ function gdiffVim {
         $vimArgs += 'Gdiff' + $gitArguments
       } `
         -End { "-c $($vimArgs -Join ' | ')" } `
-        | nvim "-c set shada='NONE'"
+        | Start-Nvim "-c set shada='NONE'"
       # The shada argument is importnant since the files that are being opened differs.
       # And could cause the shada file to be corrupted.
     }
@@ -810,7 +810,7 @@ function gdiffVim {
 }
 
 function Edit-Profile {
-  @( $PROFILE, '-c lcd %:h') | nvim
+  @( $PROFILE, '-c lcd %:h') | Start-Nvim
 }
 
 function Get-ClipboardText {
