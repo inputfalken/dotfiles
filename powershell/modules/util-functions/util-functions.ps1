@@ -681,6 +681,24 @@ function Skip-Object {
   }
 }
 
+function gRootDirectory {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Position = 0, Mandatory = 0)][switch] $Push = $false
+  )
+  if (Get-Command -CommandType Application -Name 'git'  -ErrorAction SilentlyContinue) {
+    if (git rev-parse --is-inside-work-tree 2> $null) {
+      $location = git rev-parse --show-toplevel `
+        | Resolve-Path `
+        | Get-Item
+      if ((Get-Location).Path -eq $location) { return } else {
+        if ($Push) { Push-Location $location }
+        else { Set-Location $location }
+      }
+    } else { throw "'$(Get-Location)' is not a git directory/repository." }
+  } else { throw "Function 'gRootDirectory' requires 'git' to be globally available." }
+}
+
 function gadd {
   param([string] $Filter = '*')
   Test-GitRepository
