@@ -60,6 +60,7 @@
     nnoremap             <Leader>R :action Run<CR>
     nnoremap             <Leader>re :action RenameElement<CR>
     nnoremap             <Leader>sv :source ~/.ideavimrc<CR>
+    nnoremap             <Leader>? :action ShowErrorDescription<CR>
 " }
 " Debugger {
    nnoremap             <C-q> :action EvaluateExpression<CR>
