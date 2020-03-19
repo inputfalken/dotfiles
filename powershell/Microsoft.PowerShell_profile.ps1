@@ -1,7 +1,14 @@
+$PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 Import-Module posh-git
 Import-Module dotfile-helper
 Import-Module Get-ChildItemColor
 Import-Module util-functions 3> $null
+Import-Module oh-my-posh
+Import-Module '~/Documents/PowerShell/Modules/JSON2Class/PowerShellModule.dll'
+
+
+Set-Theme Agnoster
+$DefaultUser = $env:UserName
 
 Set-Alias ls Get-ChildItemColorFormatWide -Option AllScope
 Set-PSReadlineOption -BellStyle None
@@ -88,3 +95,7 @@ if ($env:NVIM_LISTEN_ADDRESS) {
 }
 $env:GIT_EDITOR = $EDITOR
 $env:VISUAL = $EDITOR
+
+function Get-ProcessByPort($port) {
+  Get-Process -Id (Get-NetTCPConnection -LocalPort $port).OwningProcess
+}
