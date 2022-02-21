@@ -1,5 +1,6 @@
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 Import-Module util-functions 3> $null
+$FZF_DEFAULT_COMMAND='rg --files'
 
 ## posh-git {
   # Needed for autcomplete
