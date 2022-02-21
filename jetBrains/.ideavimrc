@@ -26,23 +26,26 @@
 " Navigation {
     map                  Y y$
     inoremap             jk <esc>
-    nnoremap             <c-i> :action Forward<CR>
     nnoremap             <C-j> :action MethodDown<CR>
     nnoremap             <C-k> :action MethodUp<CR>
-    nnoremap             <c-o> :action Back<CR>
+     " This should be binded from the editor binding names:
+      " Forward : Navigate -> Forward 
+      " BackWard: Navigate -> Back
+      "nnoremap             <c-i> :action Forward<CR>
+      "nnoremap             <c-o> :action Back<CR>
      " This should be binded from the editor UI instead.
      " nnoremap             <c-s-tab> gT
      " nnoremap             <c-tab> gt
     nnoremap             <Leader>rc :action ReformatCode<CR>
-    nnoremap             fU :action FindUsages<CR>
-    nnoremap             fu :action ShowUsages<CR>
-    nnoremap             gb :action GotoNextBookmark<CR>
-    nnoremap             gB :action GotoPreviousBookmark<CR>
-    nnoremap             ge :action ReSharperGotoNextErrorInSolution<CR>
-    nnoremap             gE :action ReSharperGotoPrevErrorInSolution<CR>
-    nnoremap             gf :action GotoFile<CR>
-    nnoremap             gi :action GotoImplementation<CR>
-    nnoremap             gm :action FileStructurePopup<cr>
+    nnoremap             <Leader>fU :action FindUsages<CR>
+    nnoremap             <Leader>fu :action ShowUsages<CR>
+    nnoremap             <Leader>gb :action GotoNextBookmark<CR>
+    nnoremap             <Leader>gB :action GotoPreviousBookmark<CR>
+    nnoremap             <Leader>ge :action ReSharperGotoNextErrorInSolution<CR>
+    nnoremap             <Leader>gE :action ReSharperGotoPrevErrorInSolution<CR>
+    nnoremap             <Leader>gf :action GotoFile<CR>
+    nnoremap             <Leader>gi :action GotoImplementation<CR>
+    nnoremap             <Leader>gm :action FileStructurePopup<cr>
     nnoremap             <Leader>bp :action ViewBreakpoints<cr>
     nnoremap             j gj
     nnoremap             k gk
