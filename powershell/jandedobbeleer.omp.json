@@ -12,6 +12,7 @@
           "style": "powerline",
           "foreground": "black",
           "background": "lightBlue",
+          "powerline_symbol": "",
           "template": " \ue5ff {{ .Path }}",
           "properties": {
             "style": "folder"
@@ -36,10 +37,7 @@
           "powerline_symbol": "\ue0b0",
           "foreground": "black",
           "background": "lightBlue",
-          "template": " {{if gt .StackCount 0}}{{ .StackCount }} \uf51e {{end}}",
-          "properties": {
-            "style": "folder"
-          }
+          "template": " {{if gt .StackCount 0}}{{ .StackCount }} \uf51e {{end}}"
         }
       ]
     }
