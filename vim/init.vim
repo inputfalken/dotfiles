@@ -287,7 +287,7 @@ call plug#end()
 
   let g:OmniSharp_selector_findusages = 'fzf'
   let g:OmniSharp_server_use_net6 = 1
-  let g:OmniSharp_selector_ui = 'fzf' 
+  let g:OmniSharp_selector_ui = 'fzf'
 
 
   augroup omnisharp_commands
@@ -331,11 +331,30 @@ call plug#end()
     autocmd FileType cs imap <silent> <buffer> <F2> <C-o>:OmniSharpRename<cr>
   augroup END
 "C# }
+  augroup other_commands
+    autocmd!
+    autocmd FileType javascript nmap <Leader>gd :ALEGoToDefinition<CR>
+    autocmd FileType javascriptreact nmap <Leader>gd :ALEGoToDefinition<CR>
+    autocmd FileType typescript nmap <Leader>gd :ALEGoToDefinition<CR>
+    autocmd FileType typescriptreact nmap <Leader>gd :ALEGoToDefinition<CR>
+    if(&ft!='cs' && &ft!='cshtml')
+      noremap <Leader>rc :ALEFix<CR>
+    endif
+  augroup end
+
+
 " ALE {
-  let g:ale_linters = {
-  \ 'cs': ['OmniSharp'],
-  \ 'yaml.cloudformation': ['cfn-lint']
+  let js_fixers = ['prettier', 'eslint']
+  let g:ale_fixers = {
+  \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+  \   'javascript': js_fixers,
+  \   'javascript.jsx': js_fixers,
+  \   'typescript': js_fixers,
+  \   'typescriptreact': js_fixers,
+  \   'css': ['prettier'],
+  \   'json': ['prettier'],
   \}
+  let g:ale_fix_on_save = 1
 " }
 " coc-snippets {
   inoremap <silent><expr> <TAB>
