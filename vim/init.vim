@@ -104,9 +104,15 @@ nnoremap k gk
 " Vimrc
 "============================================================================
 
-nnoremap <silent> <leader>ev :e $HOME/AppData/Local/nvim/init.vim<CR>
-nnoremap <silent> <leader>sv :so $HOME/AppData/Local/nvim/init.vim<CR>
-nnoremap <leader>ev :vsplit $HOME/AppData/Local/nvim/init.vim<CR>
+if has('win64')
+  nnoremap <silent> <leader>ev :e $HOME/AppData/Local/nvim/init.vim<CR>
+  nnoremap <silent> <leader>sv :so $HOME/AppData/Local/nvim/init.vim<CR>
+  nnoremap <leader>ev :vsplit $HOME/AppData/Local/nvim/init.vim<CR>
+else
+  nnoremap <silent> <leader>ev :e ~/.config/nvim/init.vim<CR>
+  nnoremap <silent> <leader>sv :so ~/.config/nvim/init.vim<CR>
+  nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
+endif
 
 "============================================================================
 " Menu completion
