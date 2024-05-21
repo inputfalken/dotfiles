@@ -6,6 +6,9 @@ require('mason-lspconfig').setup(
       'omnisharp',
       'lua_ls',
       'powershell_es'
+-- Not available:
+--      'json-lsp',
+--      'yaml-language-server',
     }
   }
 )
