@@ -6,6 +6,7 @@ vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
 vim.keymap.set('n', '<S-F11>', function() require('dap').step_out() end)
 vim.keymap.set('n', '<Leader>bp', function() dap.toggle_breakpoint() end);
 
+
 require('plugins.debugger.csharp').setup(dap);
 local dapui = require('dapui')
 dapui.setup()

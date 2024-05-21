@@ -1,31 +1,23 @@
+local prompt_selection = function(prompt_title, options, optionFormatter)
+  local utils = require('modules.util');
+  local mapped_options = optionFormatter == nil
+      and utils.map(options, function(i, x) return string.format('%s : %s', i, x) end)
+      or utils.map(options, function(i, x) return string.format('%s : %s', i, optionFormatter(x)) end)
+
+  table.insert(mapped_options, 1, prompt_title)
+  local index = vim.fn.inputlist(mapped_options)
+
+  return index > 0
+      and options[index]
+      or nil
+end
+
 local resolve_path = function(cmd, opts)
-  local prompt_selection = function(prompt_title, options)
-    local index_options = function(array)
-      local result = {}
-      for i, value in ipairs(array) do
-        result[i] = i .. ': ' .. value
-      end
-      return result
-    end
-
-    local indexed_options = index_options(options)
-    table.insert(indexed_options, 1, prompt_title)
-    local index = vim.fn.inputlist(indexed_options)
-
-    return index > 0
-        and options[index]
-        or nil
-  end
-
   local results = vim.fn.systemlist(cmd)
 
   if #results == 0 then
     print(string.format('Command "%s" gave no result', cmd))
     return
-  end
-
-  if opts.allow_multiple then
-    return results
   end
 
   return #results > 1
@@ -59,7 +51,7 @@ local dll_selection = function(path, searchInward)
     {
       empty_message = 'No csproj files found in ' .. path,
       multiple_title_message = 'Select project:'
-    }):match('^%s*(.-)%s*$')
+    })
   if project_file == nil then
     return
   end
@@ -105,27 +97,60 @@ return {
 
     local config = {
       {
-        type = 'coreclr',
-        name = 'Launch (CWD)',
+        type    = 'coreclr',
+        name    = 'Launch (CWD)',
         request = 'launch',
         program = function()
           return dll_selection(vim.fn.getcwd(), true) or dap.ABORT
         end,
       },
       {
-        type = 'coreclr',
-        name = 'Launch (CWF)',
+        type    = 'coreclr',
+        name    = 'Launch (CWF)',
         request = 'launch',
         program = function()
           return dll_selection(vim.fn.expand('%:p:h'), false) or dap.ABORT
         end,
       },
       {
-        name = 'Attach to process',
-        type = 'corecls',
-        request = 'attach',
-        pid = require('dap.utils').pick_process,
-        args = {},
+        name      = 'Attach to process',
+        type      = 'coreclr',
+        request   = 'attach',
+        processId = function()
+          local name_id_json = vim.fn.system(
+            [[
+               Get-Process
+               | Where-Object { $_.Path -ne $null } `
+               | Where-Object { $_.Path.StartsWith($env:USERPROFILE) } `
+               | Sort-Object -Descending StartTime `
+               | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
+               | ConvertTo-Json -Compress
+            ]]
+          )
+          local table = require('modules.json').parse(name_id_json);
+          if (table == nil) then
+            print('Could not convert system call into json.')
+            return dap.ABORT
+          end
+          if (#table == 0) then
+            print('No processes found')
+            return dap.ABORT
+          end
+          local decision = prompt_selection('Select process', table,
+            function(x)
+              if (x.Name == nil or x.Id == nil) then
+                error(string.format('Unexpected fields in JSON \'%s\''), name_id_json)
+              end
+              return string.format('%s(%s)', x.Name, x.Id)
+            end
+          )
+          if (decision == nil) then
+            return dap.ABORT
+          end
+
+          return decision.Id
+        end,
+        args      = {},
       },
     }
 
