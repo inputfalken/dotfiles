@@ -30,11 +30,4 @@ Plug('neovim/nvim-lspconfig')
 Plug('mfussenegger/nvim-dap')
 Plug('nvim-neotest/nvim-nio')
 Plug('rcarriga/nvim-dap-ui', { ['commit'] = '5934302d63d1ede12c0b22b6f23518bb183fc972' }) -- Commit can be removed once they fix latest version.
-
-Plug('mxsdev/nvim-dap-vscode-js',
-  {
-    ['dir'] = '~/',
-    ['do'] = 'npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out'
-  }
-)
 vim.call('plug#end')
