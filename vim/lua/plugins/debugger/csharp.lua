@@ -127,7 +127,7 @@ return {
                | ConvertTo-Json -Compress
             ]]
           )
-          local table = require('modules.json').parse(name_id_json);
+          local table = vim.json.decode(name_id_json);
           if (table == nil) then
             print('Could not convert system call into json.')
             return dap.ABORT
