@@ -35,10 +35,12 @@ local dll_selection = function(project_list_command)
   end
 
   local project_directory_path = vim.fn.fnamemodify(project_file_path, ':p:h')
+  -- We currently assume the bin folder is next to the project directory.
+  -- TODO combine the commands of finding the *.csproj and binaries to a single shell invocation. which bin folder override from csproj into account.
   local binary_paths_json = vim.fn.system(
     string.format(
       [[
-        Get-ChildItem -Path %s -Recurse -Directory -Filter 'bin' `
+        Join-Path -Path '%s' -ChildPath 'bin'
         | Get-ChildItem -Filter 'Debug' `
         | Get-ChildItem `
         | Select-Object -ExpandProperty FullName `
