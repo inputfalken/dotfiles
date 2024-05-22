@@ -4,7 +4,7 @@ local prompt_selection = function(items, opts)
       and utils.map(items, function(i, x) return string.format('%s : %s', i, x) end)
       or utils.map(items, function(i, x) return string.format('%s : %s', i, opts.element_stringifier(x)) end)
 
-  table.insert(mapped_options, 1, opts.multiple_title_message)
+  table.insert(mapped_options, 1, string.format('Select %s:', opts.subject))
   local index = vim.fn.inputlist(mapped_options)
 
   return index > 0
@@ -14,7 +14,7 @@ end
 
 local select_element_from_table = function(items, opts)
   if #items == 0 then
-    print(string.format('Command "%s" gave no result', items))
+    print(string.format('No %s found', opts.subject))
     return
   end
 
@@ -25,11 +25,9 @@ end
 
 
 local dll_selection = function(project_list_command)
-  local project_json = vim.fn.system(project_list_command)
-
   local project_file_path = select_element_from_table(
-    vim.json.decode(project_json),
-    { multiple_title_message = 'Select project:', smartSelect = true }
+    vim.json.decode(vim.fn.system(project_list_command)),
+    { subject = 'project', smartSelect = true }
   )
 
   if project_file_path == nil then
@@ -51,7 +49,7 @@ local dll_selection = function(project_list_command)
   )
   local binary_path = select_element_from_table(
     vim.json.decode(binary_paths_json),
-    { multiple_title_message = 'Select binary:', smartSelect = true }
+    { subject = 'binary', smartSelect = true }
   )
   if binary_path == nil then
     return
@@ -85,11 +83,12 @@ return {
         program = function()
           return dll_selection(
             string.format(
-              [[
+              [=[
                 Get-ChildItem -Recurse -Depth 10 -Path '%s' -File -Filter '*.csproj' `
+                | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
                 | Select-Object -ExpandProperty FullName `
                 | ConvertTo-Json -Compress -AsArray
-              ]],
+              ]=],
               vim.fn.getcwd()
             )
           ) or dap.ABORT
@@ -102,7 +101,7 @@ return {
         program = function()
           return dll_selection(
             string.format(
-              [[
+              [=[
                 $items
                 $cwd = Get-Item -Path '%s'
                 $rootDirectory = Get-Item -Path '/'
@@ -111,9 +110,10 @@ return {
                   $cwd = $cwd.Parent
                 } until ($items -or ($cwd.FullName -eq $rootDirectory.FullName))
                 $items `
+                | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
                 | Select-Object -ExpandProperty FullName `
                 | ConvertTo-Json -Compress -AsArray
-              ]],
+              ]=],
               vim.fn.expand('%:p:h')
             )
           ) or dap.ABORT
@@ -143,7 +143,7 @@ return {
           local process = select_element_from_table(
             table,
             {
-              multiple_title_message = 'Select process:',
+              subject = 'process',
               smartSelect = false,
               element_stringifier = function(x)
                 if (x.Name == nil or x.Id == nil) then
