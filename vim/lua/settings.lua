@@ -11,10 +11,9 @@ vim.g.python3_host_prog = 'C:\\Program Files\\Python312\\python'
 
 -- powershell core as terminal
 vim.opt.shell = 'pwsh'
-vim.opt.shellcmdflag =
-'-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
-vim.opt.shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode';
-vim.opt.shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode';
+vim.opt.shellcmdflag = '-NonInteractive -NoProfile -NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[\'Out-File:Encoding\']=\'utf8\';$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;'
+vim.opt.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
 
