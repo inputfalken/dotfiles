@@ -1,5 +1,3 @@
-[diff "csharp"]
-    xfuncname = ^[ \\t]*(((static|public|internal|private|protected|new|virtual|sealed|override|unsafe|async|partial)[ \\t]+)*[][<>@.~_[:alnum:]]+[ \\t]+[<>@._[:alnum:]]+[ \\t]*\\(.*\\))[ \\t]*$
 [push]
   default = simple
 [alias]
@@ -13,13 +11,20 @@
   # Example: git rename origin old_branch new_branch
   rename = "!git branch -m $2 $3 && git push $1 :$2 $3 -u #"
 [core]
-  autocrlf = true
   excludesfile = ~/.gitignore_global
   ignorecase = true
-  safecrlf = warn
-  pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = delta
   attributesfile = ~/.gitattributes
+  # https://stackoverflow.com/a/40720527
+  sshCommand = 'C:\\Windows\\System32\\OpenSSH\\ssh.exe'
+	symlinks = true
   #editor = nvim
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  navigate = true
+  line-numbers = true
+  side-by-side= true
 [pull]
   rebase = true
 [rebase]
@@ -28,16 +33,18 @@
 [log]
   follow = true
 [merge]
+  conflictstyle = diff3
   renormalize = true
   tool = vimdiff
 [mergetool]
     prompt = true
 [mergetool "vimdiff"]
-    cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [difftool]
     prompt = false
 [diff]
   tool = vimdiff
+  colorMoved = default
 [branch]
   autosetuprebase = always
 [color "diff"]
@@ -52,8 +59,8 @@
 [color "branch"]
   current = green bold
 [user]
-  name = Name
-  email = Email
+  name = TODO
+  email = TODO
 [rerere]
   enabled = true
   autoUpdate = true
