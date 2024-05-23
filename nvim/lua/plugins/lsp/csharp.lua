@@ -3,8 +3,11 @@ return {
     local omnisharp_extended = require('omnisharp_extended');
     lsp.omnisharp.setup(coq.lsp_ensure_capabilities({
       settings = {
-        FormattingOptions = {
-          EnableEditorConfigSupport = true
+        RoslynExtensionsOptions = {
+          enableDecompilationSupport = true
+        },
+        FormattingOptions       = {
+          enableEditorConfigSupport = true
         }
       },
       handlers = {
