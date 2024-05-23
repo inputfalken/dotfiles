@@ -1,5 +1,3 @@
---vim.opt.autochdir = true;
-
 -- leader key {
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -16,7 +14,6 @@ vim.opt.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
 vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
-
 
 -- Set encoding
 vim.opt.encoding = 'utf-8'

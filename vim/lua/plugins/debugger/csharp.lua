@@ -14,7 +14,7 @@ end
 
 local select_element_from_table = function(items, opts)
   if #items == 0 then
-    print(string.format('No %s found', opts.subject))
+    vim.print(string.format('⚠️ No %s found', opts.subject))
     return
   end
 
@@ -138,7 +138,7 @@ return {
           )
           local table = vim.json.decode(name_id_json);
           if (table == nil) then
-            print('Could not convert system call into json.')
+            vim.print('⚠️ Could not convert system call into json.')
             return dap.ABORT
           end
 

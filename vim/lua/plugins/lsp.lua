@@ -6,17 +6,19 @@ require('mason-lspconfig').setup(
       'omnisharp',
       'lua_ls',
       'powershell_es'
--- Not available:
---      'json-lsp',
---      'yaml-language-server',
+      -- Not available:
+      --      'json-lsp',
+      --      'yaml-language-server',
     }
   }
 )
 
+vim.diagnostic.config({ virtual_text = false, severity_sort = true })
+
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
-    local bufnr = args.buf
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local bufnr, client = args.buf, vim.lsp.get_client_by_id(args.data.client_id)
+
     if client.server_capabilities.completionProvider then
       vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
     end
@@ -24,71 +26,47 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.bo[bufnr].tagfunc = 'v:lua.vim.lsp.tagfunc'
     end
 
+    local floatOpts = {
+      focusable = false,
+      close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
+      border = 'rounded',
+      source = 'always',
+      prefix = ' ',
+      scope = 'cursor',
+    }
+
+    -- Open diagnostic pop-up when hovering.
+    -- `vim.o.updatetime = 100` will affect how fast the window is shown, default is 4000.
+    vim.api.nvim_create_autocmd('CursorHold', {
+      buffer = bufnr,
+      callback = function()
+        vim.diagnostic.open_float(nil, floatOpts)
+      end
+    })
+
     -- Mappings.
     local opts = { buffer = bufnr, noremap = true, silent = true }
     vim.keymap.set('n', '<Leader>gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', '<Leader>gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', '<Leader>fu', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<Leader>gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', '<Leader>?', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set('n', '<F2>', function() vim.lsp.buf.rename() end, opts)
-    vim.keymap.set('n', '<Leader>gn', function() vim.diagnostic.goto_next() end, opts)
-    vim.keymap.set('n', '<Leader>gp', function() vim.diagnostic.goto_prev() end, opts)
-    vim.keymap.set('n', '<A-CR>', function() vim.lsp.buf.code_action() end, opts)
-    vim.keymap.set('n', '<Leader>rc', function() vim.lsp.buf.format({ async = false }) end, opts)
+    vim.keymap.set('n', '<Leader>?', function()
+      if (vim.diagnostic.open_float(nil, floatOpts) ~= nil) then
+        return
+      end
+      vim.lsp.buf.signature_help()
+    end, opts)
+    vim.keymap.set({ 'n', 'i' }, '<F2>', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<Leader>gne', vim.diagnostic.goto_next, opts)
+    vim.keymap.set('n', '<Leader>gpe', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', '<A-CR>', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<Leader>rc', vim.lsp.buf.format, opts)
   end,
 })
 
 vim.g.coq_settings = { auto_start = 'shut-up', keymap = { manual_complete = '<C-E>' } }
-local lsp = require 'lspconfig'
-local coq = require 'coq'
-lsp.omnisharp.setup(coq.lsp_ensure_capabilities({
-  settings = {
-    FormattingOptions = {
-      EnableEditorConfigSupport = true
-    }
-  },
-  handlers = {
-    ['textDocument/definition'] = require('omnisharp_extended').definition_handler,
-    ['textDocument/typeDefinition'] = require('omnisharp_extended').type_definition_handler,
-    ['textDocument/references'] = require('omnisharp_extended').references_handler,
-    ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
-  }
-}))
-
-lsp.tsserver.setup(coq.lsp_ensure_capabilities());
-lsp.lua_ls.setup(coq.lsp_ensure_capabilities(
-  {
-    cmd = { 'lua-language-server' },
-    on_init = function(client)
-      client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-        runtime = {
-          -- Tell the language server which version of Lua you're using
-          -- (most likely LuaJIT in the case of Neovim)
-          version = 'LuaJIT'
-        },
-        -- Make the server aware of Neovim runtime files
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            vim.env.VIMRUNTIME
-            -- Depending on the usage, you might want to add additional paths here.
-            -- "${3rd}/luv/library"
-            -- "${3rd}/busted/library",
-          },
-          -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-          --library = vim.api.nvim_get_runtime_file("", true)
-        }
-      })
-    end,
-    settings = {
-      Lua = {}
-    }
-  }
-))
-
-lsp.powershell_es.setup(coq.lsp_ensure_capabilities(
-  {
-    settings = { powershell = { codeFormatting = { Preset = 'OTBS' } } }
-  }
-))
+local lsp, coq = require('lspconfig'), require('coq')
+require('plugins.lsp.csharp').setup(lsp, coq);
+require('plugins.lsp.typescript').setup(lsp, coq)
+require('plugins.lsp.lua').setup(lsp, coq);
+require('plugins.lsp.powershell').setup(lsp, coq);
