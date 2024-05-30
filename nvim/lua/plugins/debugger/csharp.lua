@@ -1,5 +1,5 @@
+local utils = require('modules.util');
 local prompt_selection = function(items, opts)
-  local utils = require('modules.util');
   local mapped_options = opts.element_stringifier == nil
       and utils.map(items, function(i, x) return string.format('%s : %s', i, x) end)
       or utils.map(items, function(i, x) return string.format('%s : %s', i, opts.element_stringifier(x)) end)
@@ -13,8 +13,13 @@ local prompt_selection = function(items, opts)
 end
 
 local select_element_from_table = function(items, opts)
+  if (items == nil) then
+    utils.print_warning(string.format(string.format('The list of %s is nil', opts.subject)))
+    return
+  end
+
   if #items == 0 then
-    vim.print(string.format('⚠️ No %s found', opts.subject))
+    utils.print_warning(string.format('The list of %s is empty', opts.subject))
     return
   end
 
@@ -25,6 +30,12 @@ end
 
 
 local dll_selection = function(project_list_command)
+  local project_list_json = vim.fn.system(project_list_command);
+  if (project_list_json == nil or project_list_json == '') then
+    utils.print_warning(string.format('The payload from was empty from command:\n%s', project_list_command))
+    return
+  end
+
   local project_file_path = select_element_from_table(
     vim.json.decode(vim.fn.system(project_list_command)),
     { subject = 'project', smartSelect = true }
@@ -34,7 +45,7 @@ local dll_selection = function(project_list_command)
     return
   end
 
-  local project_directory_path = vim.fn.fnamemodify(project_file_path, ':p:h')
+  local project_directory_path = utils.get_directory(project_file_path);
   -- We currently assume the bin folder is next to the project directory.
   -- TODO combine the commands of finding the *.csproj and binaries to a single shell invocation. which bin folder override from csproj into account.
   local binary_paths_json = vim.fn.system(
@@ -58,11 +69,11 @@ local dll_selection = function(project_list_command)
   end
 
   -- Sets the working directory for the window/buffer only.
-  vim.cmd(string.format('lcd %s', project_directory_path))
+  vim.cmd(string.format('lchdir %s', project_directory_path))
 
   return binary_path
       .. '/'
-      .. vim.fn.fnamemodify(project_file_path, ':t:r') -- name of file
+      .. utils.get_file(project_file_path)
       .. '.dll'
 end
 
@@ -76,7 +87,7 @@ return {
           :get_install_path() .. '\\netcoredbg\\netcoredbg.exe',
       args = { '--interpreter=vscode' }
     }
-
+    -- `vim.lsp.buf.list_workspace_folders()` could be used to find projects files.
     local config = {
       {
         type    = 'coreclr',
@@ -137,10 +148,6 @@ return {
             ]]
           )
           local table = vim.json.decode(name_id_json);
-          if (table == nil) then
-            vim.print('⚠️ Could not convert system call into json.')
-            return dap.ABORT
-          end
 
           local process = select_element_from_table(
             table,

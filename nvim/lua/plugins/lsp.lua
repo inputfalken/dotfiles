@@ -54,7 +54,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
       if (vim.diagnostic.open_float(nil, floatOpts) ~= nil) then
         return
       end
-      vim.lsp.buf.signature_help()
+--      if (vim.lsp.buf.signature_help() ~= nil) then
+--        return
+--      end
+      if (vim.lsp.buf.hover() ~= nil) then
+        return
+      end
     end, opts)
     vim.keymap.set({ 'n', 'i' }, '<F2>', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<Leader>gne', vim.diagnostic.goto_next, opts)
