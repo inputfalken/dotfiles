@@ -9,11 +9,30 @@ vim.g.python3_host_prog = 'C:\\Program Files\\Python312\\python'
 
 -- powershell core as terminal
 vim.opt.shell = 'pwsh'
-vim.opt.shellcmdflag = '-NonInteractive -NoProfile -NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[\'Out-File:Encoding\']=\'utf8\';$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;'
+vim.opt.shellcmdflag =
+'-NonInteractive -NoProfile -NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[\'Out-File:Encoding\']=\'utf8\';$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;'
 vim.opt.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
 vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
+
+local pattern = require('modules.util').HOME_PATH
+    .. [[\Documents\PowerShell\Microsoft.PowerShell_profile.ps1]]
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = 'ps1',
+    callback = function(ev)
+      if (pattern ~= ev.file) then
+        return
+      end
+      vim.cmd(string.format(
+        'lchdir %s',
+        require('modules.util').get_directory(ev.file)
+      ))
+    end
+  }
+)
 
 -- Set encoding
 vim.opt.encoding = 'utf-8'
