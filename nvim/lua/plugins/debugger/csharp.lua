@@ -79,10 +79,10 @@ end
 
 
 return {
-  setup = function(dap)
+  setup = function(dap, mason_registry)
     dap.adapters.coreclr = {
       type = 'executable',
-      command = require('mason-registry')
+      command = mason_registry
           .get_package('netcoredbg')
           :get_install_path() .. '\\netcoredbg\\netcoredbg.exe',
       args = { '--interpreter=vscode' }
