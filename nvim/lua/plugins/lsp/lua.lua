@@ -1,6 +1,6 @@
 return {
-  setup = function(lsp, coq)
-    lsp.lua_ls.setup(coq.lsp_ensure_capabilities(
+  setup = function(opts)
+    opts.lsp.lua_ls.setup(opts.coq.lsp_ensure_capabilities(
       {
         cmd = { 'lua-language-server' },
         on_init = function(client)
