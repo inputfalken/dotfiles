@@ -1,5 +1,5 @@
 return {
-  setup = function(lsp, coq)
-    lsp.tsserver.setup(coq.lsp_ensure_capabilities());
+  setup = function(opts)
+    opts.lsp.tsserver.setup(opts.coq.lsp_ensure_capabilities());
   end
 }

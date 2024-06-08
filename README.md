@@ -6,4 +6,3 @@
 
 ## Installation 
 Move the files into `~/AppData/Local/nvim/`
-
