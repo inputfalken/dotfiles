@@ -9,3 +9,5 @@ Plugged needs to be installed in order to install plugins.
 ## Installation 
 Move the files into `~/AppData/Local/nvim/`
 
+
+`cp . -r ~\AppData\Local\nvim`
