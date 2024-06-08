@@ -53,15 +53,51 @@ require('lazy').setup({
         branch = 'artifacts',
         -- LSP
         { 'Hoffs/omnisharp-extended-lsp.nvim' },
-        { 'williamboman/mason.nvim' },
-        { 'williamboman/mason-lspconfig.nvim' },
-        { 'neovim/nvim-lspconfig' },
-        -- Debugger
+        {
+          'neovim/nvim-lspconfig',
+          config = function()
+            require('plugins.lsp').setup(
+              require('coq'),
+              require('lspconfig')
+            )
+          end
+        },
+        {
+          'williamboman/mason-lspconfig.nvim',
+          opts = {
+            ensure_installed = {
+              'tsserver',
+              'omnisharp',
+              'lua_ls',
+              'powershell_es'
+            }
+          },
+          config = function(_, opts)
+            require('mason-lspconfig').setup(opts);
+          end,
+          dependencies = {
+            {
+              'williamboman/mason.nvim',
+              build = ':MasonUpdate',
+              config = function()
+                require('mason').setup()
+              end
+            }
+          }
+        },
         {
           'rcarriga/nvim-dap-ui',
           dependencies = {
             { 'mfussenegger/nvim-dap' },
             { 'nvim-neotest/nvim-nio' },
+            config = function()
+              -- Is needed since we depend on mason for the debugger
+              require('plugins.debugger').setup(
+                require('dapui'),
+                require('dap'),
+                require('mason-registry')
+              )
+            end
           },
         },
       }
@@ -69,20 +105,6 @@ require('lazy').setup({
     init = function()
       vim.g.coq_settings = { auto_start = 'shut-up', keymap = { manual_complete = '<C-E>' } }
     end,
-    config = function()
-      require('plugins.lsp').setup(
-        require('mason'),
-        require('mason-lspconfig'),
-        require('coq'),
-        require('lspconfig')
-      )
-      -- Is needed since we depend on mason for the debugger
-      require('plugins.debugger').setup(
-        require('dapui'),
-        require('dap'),
-        require('mason-registry')
-      )
-    end
 
   },
   {
