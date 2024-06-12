@@ -19,6 +19,9 @@ if (home == nil or home == '' or homeDrive == nil and homeDrive == '') then
 end
 
 return {
+  dap_adapaters = {
+    csharp = 'netcoredbg'
+  },
   get_file = function(filePath)
     validate_filepath(filePath)
     return vim.fn.fnamemodify(filePath, ':t:r')
