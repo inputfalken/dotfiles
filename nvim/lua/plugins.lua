@@ -83,10 +83,25 @@ require('lazy').setup({
 
           -- Mappings.
           local opts = { buffer = bufnr, noremap = true, silent = true }
-          vim.keymap.set('n', '<Leader>gD', vim.lsp.buf.declaration, opts)
-          vim.keymap.set('n', '<Leader>gd', vim.lsp.buf.definition, opts)
-          vim.keymap.set('n', '<Leader>fu', vim.lsp.buf.references, opts)
-          vim.keymap.set('n', '<Leader>gi', vim.lsp.buf.implementation, opts)
+
+          local builtin = require('telescope.builtin')
+          if (builtin ~= nil) then
+            if (client ~= nil and client.config.name == 'omnisharp' and require('omnisharp_extended') ~= nil) then
+              vim.keymap.set('n', '<Leader>gd', require('omnisharp_extended').telescope_lsp_definition, opts)
+              vim.keymap.set('n', '<Leader>fu', require('omnisharp_extended').telescope_lsp_references, opts)
+              vim.keymap.set('n', '<Leader>gi', require('omnisharp_extended').telescope_lsp_implementation, opts)
+            else
+              vim.keymap.set('n', '<Leader>gd', builtin.lsp_definitions, opts)
+              vim.keymap.set('n', '<Leader>fu', builtin.lsp_references, opts)
+              vim.keymap.set('n', '<Leader>gi', builtin.lsp_implementations, opts)
+            end
+            vim.keymap.set('n', '<Leader>gD', builtin.lsp_type_definitions, opts)
+          else
+            vim.keymap.set('n', '<Leader>gD', vim.lsp.buf.declaration, opts)
+            vim.keymap.set('n', '<Leader>fu', vim.lsp.buf.references, opts)
+            vim.keymap.set('n', '<Leader>gd', vim.lsp.buf.definition, opts)
+            vim.keymap.set('n', '<Leader>gi', vim.lsp.buf.implementation, opts)
+          end
           vim.keymap.set('n', '<Leader>?', function()
             if (vim.diagnostic.open_float(nil, floatOpts) ~= nil) then
               return
@@ -171,6 +186,7 @@ require('lazy').setup({
       require('plugins.lsp.typescript').setup(opts)
       require('plugins.lsp.lua').setup(opts)
       require('plugins.lsp.powershell').setup(opts)
+      require('plugins.lsp.csharp').setup(opts)
     end
   },
   {
@@ -178,28 +194,21 @@ require('lazy').setup({
     dependencies = {
       { 'ms-jpq/coq_nvim' },
       { 'williamboman/mason-lspconfig.nvim' } -- Is Required in order to find LSP's
-    },
-    opts = function()
-      return {
-        lsp = require('lspconfig'),
-        coq = require('coq'),
-        omnisharp_extended = require('omnisharp_extended')
-      }
-    end,
-    config = function(_, opts)
-      require('plugins.lsp.csharp').setup(opts)
-    end
+    }
   },
   {
-    'junegunn/fzf.vim',
-    dependencies = {
-      'junegunn/fzf',
-      build = function()
-        vim.fn['fzf#install']()
-      end
-    },
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.6',
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
-      require('plugins.file_search')
+      local builtin = require('telescope.builtin')
+
+      vim.keymap.set('n', '<leader>/', builtin.live_grep, {})
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+      vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+      vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
     end
   }
-})
+}
+)
