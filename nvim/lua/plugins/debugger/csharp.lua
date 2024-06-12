@@ -80,7 +80,8 @@ end
 
 return {
   setup = function(dap, mason_registry)
-    dap.adapters.coreclr = {
+    local adapter = utils.dap_adapaters.csharp
+    dap.adapters[adapter] = {
       type = 'executable',
       command = mason_registry
           .get_package('netcoredbg')
@@ -90,7 +91,7 @@ return {
     -- `vim.lsp.buf.list_workspace_folders()` could be used to find projects files.
     local config = {
       {
-        type    = 'coreclr',
+        type    = adapter,
         name    = 'Launch (CWD)',
         request = 'launch',
         program = function()
@@ -108,7 +109,7 @@ return {
         end,
       },
       {
-        type    = 'coreclr',
+        type    = adapter,
         name    = 'Launch (CWF)',
         request = 'launch',
         program = function()
@@ -134,7 +135,7 @@ return {
       },
       {
         name      = 'Attach to process',
-        type      = 'coreclr',
+        type      = adapter,
         request   = 'attach',
         processId = function()
           local name_id_json = vim.fn.system(

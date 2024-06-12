@@ -1,4 +1,5 @@
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+---@diagnostic disable-next-line: undefined-field
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system({
     'git',
@@ -55,6 +56,9 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)
           local bufnr, client = args.buf, vim.lsp.get_client_by_id(args.data.client_id)
+          if client == nil then
+            error([[Could not obtain client from event 'LspAttach']])
+          end
 
           if client.server_capabilities.completionProvider then
             vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -197,6 +201,34 @@ require('lazy').setup({
     }
   },
   {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter'
+    },
+    config = function()
+      vim.keymap.set('n', '<leader>dt', function() require('neotest').run.run({ strategy = 'dap' }) end, {})
+      vim.keymap.set('n', '<leader>rt', function() require('neotest').run.run() end, {})
+    end
+  },
+  {
+    'Issafalcon/neotest-dotnet',
+    dependencies = { 'nvim-neotest/neotest' },
+    config = function()
+      require('neotest').setup({
+        adapters = {
+          require('neotest-dotnet')({
+            dap = {
+              adapter_name = require('modules.util').dap_adapaters.csharp
+            }
+          })
+        }
+      })
+    end
+  },
+  {
     'nvim-telescope/telescope.nvim',
     tag = '0.1.6',
     dependencies = { 'nvim-lua/plenary.nvim' },
@@ -209,6 +241,17 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
       vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
     end
+  },
+  {
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup {
+        log_level = 'error',
+        auto_session_suppress_dirs = { '~/', '~/Downloads', '/' },
+      }
+      vim.keymap.set('n', '<Leader>fs', require('auto-session.session-lens').search_session, {
+        noremap = true,
+      })
+    end
   }
-}
-)
+})
