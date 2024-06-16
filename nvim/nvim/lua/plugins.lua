@@ -151,6 +151,7 @@ require('lazy').setup({
       require('plugins.debugger').setup(opts)
     end
   },
+  -- Auto completion
   {
     'ms-jpq/coq_nvim',
     build = function()
@@ -185,7 +186,6 @@ require('lazy').setup({
   },
   {
     'Hoffs/omnisharp-extended-lsp.nvim',
-    ft = { 'cs', 'cshtml', 'fs' },
     dependencies = {
       { 'ms-jpq/coq_nvim' },
       { 'williamboman/mason-lspconfig.nvim' } -- Is Required in order to find LSP's
@@ -199,7 +199,6 @@ require('lazy').setup({
       'antoinemadec/FixCursorHold.nvim',
       'nvim-treesitter/nvim-treesitter'
     },
-    optional = true,
     config = function()
       vim.keymap.set('n', '<leader>dt', function() require('neotest').run.run({ strategy = 'dap' }) end, {})
       vim.keymap.set('n', '<leader>rt', function() require('neotest').run.run() end, {})
@@ -208,7 +207,6 @@ require('lazy').setup({
   {
     'Issafalcon/neotest-dotnet',
     dependencies = { 'nvim-neotest/neotest' },
-    ft = { 'cs', 'cshtml', 'fs' },
     config = function()
       require('neotest').setup({
         adapters = {
@@ -226,38 +224,25 @@ require('lazy').setup({
     tag = '0.1.6',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
-      vim.keymap.set('n', '<leader>/', require('telescope.builtin').live_grep, {})
-      vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, {})
-      vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, {})
-      vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, {})
-      vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, {})
+      local builtin = require('telescope.builtin')
+
+      vim.keymap.set('n', '<leader>/', builtin.live_grep, {})
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+      vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+      vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
     end
   },
   {
     'rmagatti/auto-session',
     config = function()
-      local utils = require('modules.util');
       require('auto-session').setup {
         log_level = 'error',
-        post_restore_cmds = { 'NvimTreeClose' },
-        pre_save_cmds = { 'NvimTreeClose' },
-        auto_session_suppress_dirs = {
-          utils.HOME_PATH,
-          string.format('%s\\Downloads', utils.HOME_PATH),
-          [[\]],
-          string.format('%s\\source\\repos', utils.HOME_PATH)
-        },
+        auto_session_suppress_dirs = { '~/', '~/Downloads', '/' },
       }
       vim.keymap.set('n', '<Leader>fs', require('auto-session.session-lens').search_session, {
         noremap = true,
       })
-    end
-  },
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('lualine').setup({ options = { theme = 'gruvbox-material' } })
     end
   }
 })

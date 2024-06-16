@@ -23,10 +23,6 @@ return {
       filters = {
         dotfiles = true,
       },
-      update_focused_file = {
-        enable = true,
-        update_cwd = false,
-      }
     })
 
     vim.keymap.set('n', '<Leader>fe', ':NvimTreeToggle<CR>') -- Open file explorer
