@@ -63,7 +63,7 @@
     nnoremap             <Leader>R :action Run<CR>
     nnoremap             <Leader>re :action RenameElement<CR>
     nnoremap             <Leader>sv :source ~/.ideavimrc<CR>
-    nnoremap             <Leader>? :action ShowErrorDescription<CR>
+    nnoremap             <Leader>? :action ShowHoverInfo<CR>
     " Seems to not be possible to override commands, uppercasing first letter
     " works tho
     command Only action CloseAllEditorsButActive
