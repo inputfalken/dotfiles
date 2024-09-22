@@ -124,7 +124,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup(
         {
           ensure_installed = {
-            'tsserver',
+            'ts_ls',
             'omnisharp',
             'lua_ls',
             'powershell_es'
