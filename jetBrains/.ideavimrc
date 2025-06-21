@@ -47,6 +47,8 @@
     nnoremap             <Leader>gi :action GotoImplementation<CR>
     nnoremap             <Leader>gm :action FileStructurePopup<cr>
     nnoremap             <Leader>bp :action ViewBreakpoints<cr>
+    nnoremap             <Leader>fs :action ActivateProjectToolWindow<CR>
+    
     nnoremap             j gj
     nnoremap             k gk
     nnoremap             x "_x
@@ -59,6 +61,7 @@
     nnoremap             <Leader>bm :action ToggleBookmark<CR>
     nnoremap             <Leader>bp :action ToggleLineBreakpoint<CR>
     nnoremap             <Leader>cr :action CollapseRegion<CR>
+    nnoremap             <Leader>co :action ExpandRegion<CR>
     nnoremap             <Leader>D :action Debug<CR>
     nnoremap             <Leader>R :action Run<CR>
     nnoremap             <Leader>re :action RenameElement<CR>
