@@ -83,9 +83,7 @@ return {
     local adapter = utils.dap_adapaters.csharp
     dap.adapters[adapter] = {
       type = 'executable',
-      command = mason_registry
-          .get_package('netcoredbg')
-          :get_install_path() .. '\\netcoredbg\\netcoredbg.exe',
+      command = vim.fn.expand('$MASON/packages/netcoredbg/netcoredbg/netcoredbg.exe'),
       args = { '--interpreter=vscode' }
     }
     -- `vim.lsp.buf.list_workspace_folders()` could be used to find projects files.

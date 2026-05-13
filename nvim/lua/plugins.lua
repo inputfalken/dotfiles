@@ -30,11 +30,11 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false,
+    build = ':TSUpdate',
     config = function()
-      require('plugins.treesitter').setup(
-        require('nvim-treesitter.install'),
-        require('nvim-treesitter.configs')
-      )
+      require('plugins.treesitter').setup()
     end
   },
   {
@@ -124,7 +124,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup(
         {
           ensure_installed = {
-            'ts_ls',
+            -- 'ts_ls',
             'omnisharp',
             'lua_ls',
             'powershell_es'
@@ -169,7 +169,6 @@ require('lazy').setup({
     },
     opts = function()
       return {
-        lsp = require('lspconfig'),
         coq = require('coq')
       }
     end,
@@ -177,7 +176,7 @@ require('lazy').setup({
       vim.g.coq_settings = { auto_start = 'shut-up', keymap = { manual_complete = '<C-E>' } }
     end,
     config = function(_, opts)
-      require('plugins.lsp.typescript').setup(opts)
+--      require('plugins.lsp.typescript').setup(opts)
       require('plugins.lsp.lua').setup(opts)
       require('plugins.lsp.powershell').setup(opts)
       require('plugins.lsp.csharp').setup(opts)
@@ -226,6 +225,11 @@ require('lazy').setup({
     tag = '0.1.6',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
+      require('telescope').setup({
+        defaults = {
+          preview = { treesitter = false },
+        },
+      })
       vim.keymap.set('n', '<leader>/', require('telescope.builtin').live_grep, {})
       vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, {})
       vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, {})
@@ -233,26 +237,26 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, {})
     end
   },
-  {
-    'rmagatti/auto-session',
-    config = function()
-      local utils = require('modules.util');
-      require('auto-session').setup {
-        log_level = 'error',
-        post_restore_cmds = { 'NvimTreeClose' },
-        pre_save_cmds = { 'NvimTreeClose' },
-        auto_session_suppress_dirs = {
-          utils.HOME_PATH,
-          string.format('%s\\Downloads', utils.HOME_PATH),
-          [[\]],
-          string.format('%s\\source\\repos', utils.HOME_PATH)
-        },
-      }
-      vim.keymap.set('n', '<Leader>fs', require('auto-session.session-lens').search_session, {
-        noremap = true,
-      })
-    end
-  },
+--  {
+--    'rmagatti/auto-session',
+--    config = function()
+--      local utils = require('modules.util');
+--      require('auto-session').setup {
+--        log_level = 'error',
+--        post_restore_cmds = { 'NvimTreeClose' },
+--        pre_save_cmds = { 'NvimTreeClose' },
+--        auto_session_suppress_dirs = {
+--          utils.HOME_PATH,
+--          string.format('%s\\Downloads', utils.HOME_PATH),
+--          [[\]],
+--          string.format('%s\\source\\repos', utils.HOME_PATH)
+--        },
+--      }
+--      vim.keymap.set('n', '<Leader>fs', require('auto-session.session-lens').search_session, {
+--        noremap = true,
+--      })
+--    end
+--  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },

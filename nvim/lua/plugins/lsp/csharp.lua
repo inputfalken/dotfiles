@@ -1,6 +1,6 @@
 return {
   setup = function(opts)
-    opts.lsp.omnisharp.setup(opts.coq.lsp_ensure_capabilities({
+    vim.lsp.config('omnisharp', opts.coq.lsp_ensure_capabilities({
       settings = {
         RoslynExtensionsOptions = {
           enableDecompilationSupport = true
@@ -10,5 +10,6 @@ return {
         }
       }
     }))
+    vim.lsp.enable('omnisharp')
   end
 }

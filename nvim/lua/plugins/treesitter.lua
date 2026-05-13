@@ -1,27 +1,34 @@
+local parsers = {
+  'lua',
+  'vimdoc',
+  'c_sharp',
+  'json',
+  'xml',
+  'javascript',
+  'typescript',
+  'css',
+  'csv',
+  'gitcommit',
+  'markdown',
+  'markdown_inline',
+  'sql',
+  'yaml'
+}
+
 return {
-  setup = function(nvim_treesitter_install, nvim_treesitter_configs)
-    nvim_treesitter_install.prefer_git = false;
-    nvim_treesitter_configs.setup({
-      -- Current solution to solve this is to install 'Visual Studio Build Tools' and compile these parsers with the correct arcitecture for the system.
-      -- See https://github.com/nvim-treesitter/nvim-treesitter/wiki/Windows-support
-      ensure_installed = {
-        'lua',
-        'vimdoc',
-        'c_sharp',
-        'json',
-        'xml',
-        'javascript',
-        'typescript',
-        'css',
-        'csv',
-        'gitcommit',
-        'markdown',
-        'sql',
-        'yaml'
-      },
-      highlight = {
-        enable = true
-      }
+  setup = function()
+    local nts = require('nvim-treesitter')
+
+    nts.install(parsers)
+
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = parsers,
+      callback = function(args)
+        local ok = pcall(vim.treesitter.start, args.buf)
+        if ok then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
     })
   end
 }
