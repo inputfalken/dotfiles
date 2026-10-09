@@ -18,6 +18,8 @@
   # https://stackoverflow.com/a/40720527
   sshCommand = 'C:\\Windows\\System32\\OpenSSH\\ssh.exe'
 	symlinks = true
+	fsmonitor = true
+	untrackedCache = true
   #editor = nvim
 [interactive]
   diffFilter = delta --color-only
@@ -71,3 +73,5 @@
 # Machine-specific settings (e.g. [user] name/email), not tracked
 [include]
   path = ~/.gitconfig.local
+[feature]
+	manyFiles = true
