@@ -1,13 +1,16 @@
 Import-Module util-functions 3> $null
 
 ## posh-git {
-  # Needed for autcomplete
-  Import-Module posh-git
+  # Only needed for git autocomplete, so load it on the first git tab completion
+  Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    Import-Module posh-git
+    Expand-GitCommand $commandAst.Extent.Text.Substring(0, $cursorPosition - $commandAst.Extent.StartOffset)
+  }
 #}
 
 ## oh-my-posh {
-  $env:POSH_GIT_ENABLED = $true
-  oh-my-posh --init --shell pwsh --config ~/jandedobbeleer.omp.json | Invoke-Expression
+  oh-my-posh init pwsh --config ~/jandedobbeleer.omp.json | Invoke-Expression
 #}
 
 # Terminal Icons {
