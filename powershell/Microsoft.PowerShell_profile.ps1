@@ -318,3 +318,8 @@ filter __kubectl_escapeStringWithSpecialChars {
 }
 Register-ArgumentCompleter -CommandName 'kubectl' -ScriptBlock $__kubectlCompleterBlock
 #}
+
+# Home on Dev Drive {
+  # Makes `cd` and `~` resolve to D:\ in PowerShell only. Keep last: lines above rely on ~ = $env:USERPROFILE
+  (Get-PSProvider FileSystem).Home = 'D:\'
+#}
