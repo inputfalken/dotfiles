@@ -13,7 +13,7 @@
           "foreground": "black",
           "background": "lightBlue",
           "powerline_symbol": "",
-          "template": " \ue5ff {{ .Path }}",
+          "template": " \ue5ff {{ .Path }} ",
           "properties": {
             "style": "folder"
           }
@@ -24,8 +24,9 @@
           "powerline_symbol": "\ue0b0",
           "foreground": "black",
           "background": "lightYellow",
-          "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }}",
+          "template": " {{ .UpstreamIcon }} {{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} ",
           "properties": {
+            "branch_icon": "\ue0a0 ",
             "fetch_stash_count": true,
             "fetch_status": true,
             "fetch_upstream_icon": true

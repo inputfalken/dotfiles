@@ -10,7 +10,7 @@ Import-Module util-functions 3> $null
 #}
 
 ## oh-my-posh {
-  oh-my-posh init pwsh --config ~/jandedobbeleer.omp.json | Invoke-Expression
+  oh-my-posh init pwsh --config ~/minimal.omp.json | Invoke-Expression
 #}
 
 # Terminal Icons {
