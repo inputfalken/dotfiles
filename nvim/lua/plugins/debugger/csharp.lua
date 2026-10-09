@@ -1,99 +1,46 @@
-local utils = require('modules.util');
-
--- Must be called from within a coroutine, yields until the user has made a selection.
-local prompt_selection = function(items, opts)
-  local co = coroutine.running()
-  vim.ui.select(items, {
-    prompt = string.format('Select %s:', opts.subject),
-    format_item = opts.element_stringifier or tostring,
-  }, function(choice)
-    -- Scheduled since the callback can be invoked before we yield.
-    vim.schedule(function() coroutine.resume(co, choice) end)
-  end)
-  return coroutine.yield()
-end
-
-local select_element_from_table = function(items, opts)
-  if (items == nil) then
-    utils.print_warning(string.format('The list of %s is nil', opts.subject))
-    return
-  end
-
-  if #items == 0 then
-    utils.print_warning(string.format('The list of %s is empty', opts.subject))
-    return
-  end
-
-  return (opts.smartSelect and #items == 1)
-      and items[1]
-      or prompt_selection(items, opts)
-end
+local dotnet = require('modules.dotnet')
+local ui = require('dap.ui')
 
 -- Runs `fn` in a coroutine and hands its result to nvim-dap, see `:h dap-configuration`.
-local async = function(fn)
+local function async(fn)
   return coroutine.create(function(dap_run_co)
     coroutine.resume(dap_run_co, fn())
   end)
 end
 
-local dll_selection = function(project_list_command)
-  local project_list_json = vim.fn.system(project_list_command);
-  if (project_list_json == nil or project_list_json == '') then
-    utils.print_warning(string.format('The payload was empty from command:\n%s', project_list_command))
+-- Picks a project, builds it like Rider and returns the assembly to debug. Must be called from within a coroutine.
+local function launch_program(projects)
+  if #projects == 0 then
+    vim.notify('No project found', vim.log.levels.WARN)
+    return
+  end
+  local project = ui.pick_if_many(projects, 'Select project:', vim.fs.basename)
+  if project == nil then
     return
   end
 
-  local project_file_path = select_element_from_table(
-    vim.json.decode(project_list_json),
-    { subject = 'project', smartSelect = true }
-  )
-
-  if project_file_path == nil then
-    return
-  end
-
-  local project_directory_path = utils.get_directory(project_file_path);
-  -- We currently assume the bin folder is next to the project directory.
-  -- TODO combine the commands of finding the *.csproj and binaries to a single shell invocation. which bin folder override from csproj into account.
-  local binary_paths_json = vim.fn.system(
-    string.format(
-      [[
-        Join-Path -Path '%s' -ChildPath 'bin' `
-        | Get-ChildItem -Filter 'Debug' `
-        | Get-ChildItem `
-        | Select-Object -ExpandProperty FullName `
-        | ConvertTo-Json -Compress -AsArray
-      ]],
-      project_directory_path
-    )
-  )
-  local binary_path = select_element_from_table(
-    vim.json.decode(binary_paths_json),
-    { subject = 'binary', smartSelect = true }
-  )
-  if binary_path == nil then
+  local co = coroutine.running()
+  dotnet.build(project, function(succeeded) coroutine.resume(co, succeeded) end)
+  if coroutine.yield() == false then
     return
   end
 
   -- Sets the working directory for the window/buffer only.
-  vim.cmd.lchdir(project_directory_path)
-
-  return binary_path
-      .. '/'
-      .. utils.get_file(project_file_path)
-      .. '.dll'
+  vim.cmd.lchdir(vim.fs.dirname(project))
+  return dotnet.target_path(project)
 end
-
 
 return {
   setup = function(dap)
-    local adapter = utils.dap_adapaters.csharp
+    local adapter = dotnet.dap_adapter
     dap.adapters[adapter] = {
       type = 'executable',
+      -- Mason's `bin` only has a `.cmd` shim, which libuv can't spawn on Windows.
       command = vim.fn.expand('$MASON/packages/netcoredbg/netcoredbg/netcoredbg.exe'),
       args = { '--interpreter=vscode' }
     }
-    -- `vim.lsp.buf.list_workspace_folders()` could be used to find projects files.
+    -- Like Rider's "Break on user-unhandled exceptions".
+    dap.defaults[adapter].exception_breakpoints = { 'user-unhandled' }
     local config = {
       {
         type    = adapter,
@@ -102,17 +49,7 @@ return {
         program = function()
           local cwd = vim.fn.getcwd()
           return async(function()
-            return dll_selection(
-              string.format(
-                [=[
-                  Get-ChildItem -Recurse -Depth 10 -Path '%s' -File -Filter '*.csproj' `
-                  | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
-                  | Select-Object -ExpandProperty FullName `
-                  | ConvertTo-Json -Compress -AsArray
-                ]=],
-                cwd
-              )
-            ) or dap.ABORT
+            return launch_program(dotnet.find_projects(cwd)) or dap.ABORT
           end)
         end,
       },
@@ -123,23 +60,7 @@ return {
         program = function()
           local file_directory = vim.fn.expand('%:p:h')
           return async(function()
-            return dll_selection(
-              string.format(
-                [=[
-                  $cwd = Get-Item -Path '%s'
-                  $rootDirectory = Get-Item -Path '/'
-                  do {
-                    $items = Get-ChildItem -Path $cwd.FullName -Filter '*.csproj'
-                    $cwd = $cwd.Parent
-                  } until ($items -or ($cwd.FullName -eq $rootDirectory.FullName))
-                  $items `
-                  | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
-                  | Select-Object -ExpandProperty FullName `
-                  | ConvertTo-Json -Compress -AsArray
-                ]=],
-                file_directory
-              )
-            ) or dap.ABORT
+            return launch_program({ dotnet.nearest_project(file_directory) }) or dap.ABORT
           end)
         end,
       },
@@ -149,34 +70,18 @@ return {
         request   = 'attach',
         processId = function()
           return async(function()
-            local name_id_json = vim.fn.system(
-              [[
-                Get-Process `
-                | Where-Object { $_.Path -ne $null } `
-                | Where-Object { $_.Path.StartsWith($env:USERPROFILE) } `
-                | Sort-Object -Descending StartTime `
-                | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
-                | ConvertTo-Json -Compress -AsArray
-              ]]
-            )
-
-            local process = select_element_from_table(
-              vim.json.decode(name_id_json),
-              {
-                subject = 'process',
-                smartSelect = false,
-                element_stringifier = function(x)
-                  if (x.Name == nil or x.Id == nil) then
-                    error(string.format('Unexpected fields in JSON \'%s\'', name_id_json))
-                  end
-                  return string.format('%s(%s)', x.Name, x.Id)
-                end
-              }
-            )
-
-            return process == nil
-                and dap.ABORT
-                or process.Id
+            -- Processes started from the user's profile, newest first.
+            local processes = vim.json.decode(vim.fn.system([[
+              Get-Process `
+              | Where-Object { $_.Path -and $_.Path.StartsWith($env:USERPROFILE) } `
+              | Sort-Object -Descending StartTime `
+              | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
+              | ConvertTo-Json -Compress -AsArray
+            ]]))
+            local process = ui.pick_one(processes, 'Select process:', function(p)
+              return string.format('%s(%s)', p.Name, p.Id)
+            end)
+            return process and process.Id or dap.ABORT
           end)
         end,
         args      = {},

@@ -16,20 +16,17 @@ vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
 
-local profile_path = require('modules.util').HOME_PATH
-    .. [[\Documents\PowerShell\Microsoft.PowerShell_profile.ps1]]
-vim.api.nvim_create_autocmd(
-  'FileType',
-  {
-    pattern = 'ps1',
-    callback = function(ev)
-      if (profile_path ~= ev.file) then
-        return
-      end
-      vim.cmd.lchdir(require('modules.util').get_directory(ev.file))
+-- Editing the PowerShell profile works from its directory, e.g. for `:e profile.local.ps1`.
+local profile_path = vim.fs.normalize(vim.fs.joinpath(vim.uv.os_homedir(), 'Documents/PowerShell/Microsoft.PowerShell_profile.ps1'))
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'ps1',
+  callback = function(ev)
+    if vim.fs.normalize(vim.api.nvim_buf_get_name(ev.buf)) ~= profile_path then
+      return
     end
-  }
-)
+    vim.cmd.lchdir(vim.fs.dirname(profile_path))
+  end
+})
 
 -- Enable spelling check for commit message buffer
 vim.api.nvim_create_autocmd(
@@ -81,3 +78,8 @@ vim.opt.undofile = true                     -- Persist undo history between sess
 vim.opt.updatetime = 250                    -- Delay before 'CursorHold' fires (diagnostic pop-up).
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+
+-- Load a project-local `.nvim.lua` (ignored through the global gitignore). Neovim asks once per file before
+-- trusting it, see `:h :trust`. Projects can set e.g. `vim.g.telescope_ignore_paths = { 'src/vendor' }` to hide
+-- folders from telescope or `vim.g.roslyn_solution = 'App.sln'` to pick a solution.
+vim.opt.exrc = true

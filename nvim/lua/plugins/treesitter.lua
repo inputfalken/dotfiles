@@ -17,7 +17,11 @@ local parsers = {
 }
 
 return {
-  setup = function()
+  'nvim-treesitter/nvim-treesitter',
+  branch = 'main',
+  lazy = false,
+  build = ':TSUpdate',
+  config = function()
     local nts = require('nvim-treesitter')
 
     -- Building several large grammars (e.g. c_sharp) in parallel exhausts the compiler's memory with MSVC.
