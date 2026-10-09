@@ -1,20 +1,21 @@
 local utils = require('modules.util');
+
+-- Must be called from within a coroutine, yields until the user has made a selection.
 local prompt_selection = function(items, opts)
-  local mapped_options = opts.element_stringifier == nil
-      and utils.map(items, function(i, x) return string.format('%s : %s', i, x) end)
-      or utils.map(items, function(i, x) return string.format('%s : %s', i, opts.element_stringifier(x)) end)
-
-  table.insert(mapped_options, 1, string.format('Select %s:', opts.subject))
-  local index = vim.fn.inputlist(mapped_options)
-
-  return index > 0
-      and items[index]
-      or nil
+  local co = coroutine.running()
+  vim.ui.select(items, {
+    prompt = string.format('Select %s:', opts.subject),
+    format_item = opts.element_stringifier or tostring,
+  }, function(choice)
+    -- Scheduled since the callback can be invoked before we yield.
+    vim.schedule(function() coroutine.resume(co, choice) end)
+  end)
+  return coroutine.yield()
 end
 
 local select_element_from_table = function(items, opts)
   if (items == nil) then
-    utils.print_warning(string.format(string.format('The list of %s is nil', opts.subject)))
+    utils.print_warning(string.format('The list of %s is nil', opts.subject))
     return
   end
 
@@ -28,16 +29,22 @@ local select_element_from_table = function(items, opts)
       or prompt_selection(items, opts)
 end
 
+-- Runs `fn` in a coroutine and hands its result to nvim-dap, see `:h dap-configuration`.
+local async = function(fn)
+  return coroutine.create(function(dap_run_co)
+    coroutine.resume(dap_run_co, fn())
+  end)
+end
 
 local dll_selection = function(project_list_command)
   local project_list_json = vim.fn.system(project_list_command);
   if (project_list_json == nil or project_list_json == '') then
-    utils.print_warning(string.format('The payload from was empty from command:\n%s', project_list_command))
+    utils.print_warning(string.format('The payload was empty from command:\n%s', project_list_command))
     return
   end
 
   local project_file_path = select_element_from_table(
-    vim.json.decode(vim.fn.system(project_list_command)),
+    vim.json.decode(project_list_json),
     { subject = 'project', smartSelect = true }
   )
 
@@ -51,7 +58,7 @@ local dll_selection = function(project_list_command)
   local binary_paths_json = vim.fn.system(
     string.format(
       [[
-        Join-Path -Path '%s' -ChildPath 'bin'
+        Join-Path -Path '%s' -ChildPath 'bin' `
         | Get-ChildItem -Filter 'Debug' `
         | Get-ChildItem `
         | Select-Object -ExpandProperty FullName `
@@ -69,7 +76,7 @@ local dll_selection = function(project_list_command)
   end
 
   -- Sets the working directory for the window/buffer only.
-  vim.cmd(string.format('lchdir %s', project_directory_path))
+  vim.cmd.lchdir(project_directory_path)
 
   return binary_path
       .. '/'
@@ -79,7 +86,7 @@ end
 
 
 return {
-  setup = function(dap, mason_registry)
+  setup = function(dap)
     local adapter = utils.dap_adapaters.csharp
     dap.adapters[adapter] = {
       type = 'executable',
@@ -93,17 +100,20 @@ return {
         name    = 'Launch (CWD)',
         request = 'launch',
         program = function()
-          return dll_selection(
-            string.format(
-              [=[
-                Get-ChildItem -Recurse -Depth 10 -Path '%s' -File -Filter '*.csproj' `
-                | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
-                | Select-Object -ExpandProperty FullName `
-                | ConvertTo-Json -Compress -AsArray
-              ]=],
-              vim.fn.getcwd()
-            )
-          ) or dap.ABORT
+          local cwd = vim.fn.getcwd()
+          return async(function()
+            return dll_selection(
+              string.format(
+                [=[
+                  Get-ChildItem -Recurse -Depth 10 -Path '%s' -File -Filter '*.csproj' `
+                  | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
+                  | Select-Object -ExpandProperty FullName `
+                  | ConvertTo-Json -Compress -AsArray
+                ]=],
+                cwd
+              )
+            ) or dap.ABORT
+          end)
         end,
       },
       {
@@ -111,24 +121,26 @@ return {
         name    = 'Launch (CWF)',
         request = 'launch',
         program = function()
-          return dll_selection(
-            string.format(
-              [=[
-                $items
-                $cwd = Get-Item -Path '%s'
-                $rootDirectory = Get-Item -Path '/'
-                do {
-                  $items = Get-ChildItem -Path $cwd.FullName -Filter '*.csproj'
-                  $cwd = $cwd.Parent
-                } until ($items -or ($cwd.FullName -eq $rootDirectory.FullName))
-                $items `
-                | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
-                | Select-Object -ExpandProperty FullName `
-                | ConvertTo-Json -Compress -AsArray
-              ]=],
-              vim.fn.expand('%:p:h')
-            )
-          ) or dap.ABORT
+          local file_directory = vim.fn.expand('%:p:h')
+          return async(function()
+            return dll_selection(
+              string.format(
+                [=[
+                  $cwd = Get-Item -Path '%s'
+                  $rootDirectory = Get-Item -Path '/'
+                  do {
+                    $items = Get-ChildItem -Path $cwd.FullName -Filter '*.csproj'
+                    $cwd = $cwd.Parent
+                  } until ($items -or ($cwd.FullName -eq $rootDirectory.FullName))
+                  $items `
+                  | Sort-Object { [System.Linq.Enumerable]::Count($_.FullName, [Func[char ,bool]]{ param($x) $x -eq [System.IO.Path]::DirectorySeparatorChar }) } `
+                  | Select-Object -ExpandProperty FullName `
+                  | ConvertTo-Json -Compress -AsArray
+                ]=],
+                file_directory
+              )
+            ) or dap.ABORT
+          end)
         end,
       },
       {
@@ -136,35 +148,36 @@ return {
         type      = adapter,
         request   = 'attach',
         processId = function()
-          local name_id_json = vim.fn.system(
-            [[
-              Get-Process
-              | Where-Object { $_.Path -ne $null } `
-              | Where-Object { $_.Path.StartsWith($env:USERPROFILE) } `
-              | Sort-Object -Descending StartTime `
-              | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
-              | ConvertTo-Json -Compress -AsArray
-            ]]
-          )
-          local table = vim.json.decode(name_id_json);
+          return async(function()
+            local name_id_json = vim.fn.system(
+              [[
+                Get-Process `
+                | Where-Object { $_.Path -ne $null } `
+                | Where-Object { $_.Path.StartsWith($env:USERPROFILE) } `
+                | Sort-Object -Descending StartTime `
+                | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
+                | ConvertTo-Json -Compress -AsArray
+              ]]
+            )
 
-          local process = select_element_from_table(
-            table,
-            {
-              subject = 'process',
-              smartSelect = false,
-              element_stringifier = function(x)
-                if (x.Name == nil or x.Id == nil) then
-                  error(string.format('Unexpected fields in JSON \'%s\''), name_id_json)
+            local process = select_element_from_table(
+              vim.json.decode(name_id_json),
+              {
+                subject = 'process',
+                smartSelect = false,
+                element_stringifier = function(x)
+                  if (x.Name == nil or x.Id == nil) then
+                    error(string.format('Unexpected fields in JSON \'%s\'', name_id_json))
+                  end
+                  return string.format('%s(%s)', x.Name, x.Id)
                 end
-                return string.format('%s(%s)', x.Name, x.Id)
-              end
-            }
-          )
+              }
+            )
 
-          return process == nil
-              and dap.ABORT
-              or process.Id
+            return process == nil
+                and dap.ABORT
+                or process.Id
+          end)
         end,
         args      = {},
       },

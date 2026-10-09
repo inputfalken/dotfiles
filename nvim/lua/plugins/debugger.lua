@@ -1,26 +1,26 @@
 return {
-  setup = function(opts)
-    vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
-    vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
-    vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
-    vim.keymap.set('n', '<S-F11>', function() require('dap').step_out() end)
-    vim.keymap.set('n', '<Leader>bp', function() opts.dap.toggle_breakpoint() end);
-    vim.keymap.set('n', '<S-F5>', function() opts.dap.disconnect({ terminateDebuggee = true }) end);
+  setup = function(dap, dap_ui)
+    vim.keymap.set('n', '<F5>', dap.continue)
+    vim.keymap.set('n', '<F10>', dap.step_over)
+    vim.keymap.set('n', '<F11>', dap.step_into)
+    vim.keymap.set('n', '<S-F11>', dap.step_out)
+    vim.keymap.set('n', '<Leader>bp', dap.toggle_breakpoint)
+    vim.keymap.set('n', '<S-F5>', function() dap.disconnect({ terminateDebuggee = true }) end)
 
-    opts.dap_ui.setup()
-    opts.dap.listeners.before.attach.dapui_config = function()
-      opts.dap_ui.open()
+    dap_ui.setup()
+    dap.listeners.before.attach.dapui_config = function()
+      dap_ui.open()
     end
-    opts.dap.listeners.before.launch.dapui_config = function()
-      opts.dap_ui.open()
+    dap.listeners.before.launch.dapui_config = function()
+      dap_ui.open()
     end
-    opts.dap.listeners.before.event_terminated.dapui_config = function()
-      opts.dap_ui.close()
+    dap.listeners.before.event_terminated.dapui_config = function()
+      dap_ui.close()
     end
-    opts.dap.listeners.before.event_exited.dapui_config = function()
-      opts.dap_ui.close()
+    dap.listeners.before.event_exited.dapui_config = function()
+      dap_ui.close()
     end
 
-    require('plugins.debugger.csharp').setup(opts.dap, opts.mason_registry);
+    require('plugins.debugger.csharp').setup(dap)
   end
 }

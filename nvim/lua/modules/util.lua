@@ -11,10 +11,9 @@ local function validate_filepath(filePath)
     error(warning('Filepath was either nil or empty string.'))
   end
 end
-local home = os.getenv('HOMEPATH');
-local homeDrive = os.getenv('HOMEDRIVE');
 
-if (home == nil or home == '' or homeDrive == nil and homeDrive == '') then
+local home = vim.uv.os_homedir()
+if (home == nil or home == '') then
   error(warning('Could not detect $HOME path.'))
 end
 
@@ -30,7 +29,7 @@ return {
     validate_filepath(filePath)
     return vim.fn.fnamemodify(filePath, ':p:h')
   end,
-  HOME_PATH = homeDrive .. home,
+  HOME_PATH = home,
   print_warning = function(message)
     vim.print(warning(message))
   end,

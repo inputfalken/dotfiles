@@ -2,10 +2,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 -- }
-vim.opt.hidden = true -- Change buffer without saving
 
-vim.g.python_host_prog = 'C:\\Program Files\\Python312\\python'
-vim.g.python3_host_prog = 'C:\\Program Files\\Python312\\python'
+-- Disable netrw before any plugin loads, nvim-tree replaces it.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- powershell core as terminal
 vim.opt.shell = 'pwsh'
@@ -16,28 +16,20 @@ vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
 
-local pattern = require('modules.util').HOME_PATH
+local profile_path = require('modules.util').HOME_PATH
     .. [[\Documents\PowerShell\Microsoft.PowerShell_profile.ps1]]
 vim.api.nvim_create_autocmd(
   'FileType',
   {
     pattern = 'ps1',
     callback = function(ev)
-      if (pattern ~= ev.file) then
+      if (profile_path ~= ev.file) then
         return
       end
-      vim.cmd(string.format(
-        'lchdir %s',
-        require('modules.util').get_directory(ev.file)
-      ))
+      vim.cmd.lchdir(require('modules.util').get_directory(ev.file))
     end
   }
 )
-
--- Set encoding
-vim.opt.encoding = 'utf-8'
-vim.opt.fileencoding = 'utf-8'
---
 
 -- Enable spelling check for commit message buffer
 vim.api.nvim_create_autocmd(
@@ -47,19 +39,13 @@ vim.api.nvim_create_autocmd(
   }
 )
 
+-- Briefly highlight yanked text.
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function() vim.hl.on_yank() end
+})
+
 vim.opt.path = vim.opt.path + '**' -- Perform recursive search when using find command.
--- https://github.com/nvim-zh/better-escape.vim {
-vim.g.better_escape_shortcut = 'jk'
--- 'inoremap jk <esc>' is  an alternative if the plugin is not available
--- }
-
-vim.opt.dictionary = 'spell'   -- Complete words from the spelling dict.
-vim.keymap.set('n', 'Y', 'y$') -- Make yank consistent commands such as 'D'.
-
--- Move by line on the screen rather than by line in the file {
-vim.keymap.set('n', 'j', 'gj')
-vim.keymap.set('n', 'k', 'gk')
--- }
+vim.opt.dictionary = 'spell' -- Complete words from the spelling dict.
 
 -- Indent Settings {
 vim.opt.copyindent = true
@@ -67,21 +53,21 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
-vim.opt.autoindent = true -- Copy the previous indentation on auto indenting
 vim.opt.shiftround = true -- Use multiple of shift width when indenting with '<' and '>'
 -- }
 
 -- Line Settings {
-vim.opt.number = true -- Enable line numbers
-vim.opt.scrolloff = 5 -- Sets the amount of rows before scrolling kicks in file.
-vim.wo.wrap = false   -- Disables wrapping lines to fit monitor.
+vim.opt.number = true       -- Enable line numbers
+vim.opt.scrolloff = 5       -- Sets the amount of rows before scrolling kicks in file.
+vim.opt.wrap = false        -- Disables wrapping lines to fit monitor.
+vim.opt.signcolumn = 'yes'  -- Keep the sign column so diagnostics don't shift the text.
 -- }
 
 -- File search {
-vim.opt.ignorecase = true -- Disables case sensitivity
-vim.opt.smartcase = true  -- Enables case sensitivity when casing switches in search string.
-vim.opt.hlsearch = true   -- Highlight searches.
-vim.opt.incsearch = true  -- show matches for each keystroke
+vim.opt.ignorecase = true      -- Disables case sensitivity
+vim.opt.smartcase = true       -- Enables case sensitivity when casing switches in search string.
+vim.opt.inccommand = 'split'   -- Preview substitutions in a split.
+vim.keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR>') -- Clear search highlight.
 -- }
 
 -- Pair chars {
@@ -90,5 +76,8 @@ vim.opt.showmatch = true                        -- Show matching pairs
 -- }
 
 vim.opt.cpoptions = vim.opt.cpoptions + '$' -- Appends a '$' where changes are applied.
-vim.opt.showmode = true                     -- Show the current mode
-vim.opt.mousehide = true                    -- Hide the mouse pointer while typing
+vim.opt.termguicolors = true
+vim.opt.undofile = true                     -- Persist undo history between sessions.
+vim.opt.updatetime = 250                    -- Delay before 'CursorHold' fires (diagnostic pop-up).
+vim.opt.splitright = true
+vim.opt.splitbelow = true
