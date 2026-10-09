@@ -58,9 +58,6 @@
   updated = green bold
 [color "branch"]
   current = green bold
-[user]
-  name = TODO
-  email = TODO
 [rerere]
   enabled = true
   autoUpdate = true
@@ -71,3 +68,6 @@
   oldHighlight = red bold 52
   newNormal = green bold
   newHighlight = green bold 22
+# Machine-specific settings (e.g. [user] name/email), not tracked
+[include]
+  path = ~/.gitconfig.local
