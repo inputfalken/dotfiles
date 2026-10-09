@@ -5,9 +5,7 @@ return {
   ft = 'cs',
   dependencies = { 'mason-org/mason.nvim' },
   keys = {
-    { '<C-S-b>', function() require('modules.dotnet').build_current() end, desc = 'Build solution' },
-    -- Windows Terminal can't send Ctrl+Shift+B, so terminal/settings.json turns it into Ctrl+Shift+F12.
-    { '<C-S-F12>', function() require('modules.dotnet').build_current() end, desc = 'Build solution' },
+    { '<Leader>bu', function() require('modules.dotnet').build_current() end, desc = 'Build solution' },
   },
   opts = {
     choose_target = function(targets)

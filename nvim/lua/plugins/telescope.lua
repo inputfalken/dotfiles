@@ -14,6 +14,7 @@ return {
     },
   },
   keys = {
+    { '<Leader>fa', function() require('modules.search_everywhere').open() end, desc = 'Search everywhere' },
     { '<Leader>/',  function() require('telescope.builtin').live_grep() end,  desc = 'Live grep' },
     { '<Leader>ff', function() require('telescope.builtin').find_files() end, desc = 'Find files' },
     { '<Leader>fh', function() require('telescope.builtin').help_tags() end,  desc = 'Find help' },
