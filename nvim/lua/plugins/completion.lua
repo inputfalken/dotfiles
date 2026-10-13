@@ -2,7 +2,8 @@ return {
   'saghen/blink.cmp',
   version = '1.*',
   event = { 'InsertEnter', 'CmdlineEnter' },
-  -- LSP capabilities are registered automatically through `vim.lsp.config('*')`.
+  -- Loading registers its LSP capabilities through `vim.lsp.config('*')`, so only servers started after the first
+  -- InsertEnter/CmdlineEnter get them.
   -- Behaves like JetBrains IDEs: the first item is preselected but not inserted until accepted,
   -- Enter accepts, Tab accepts and replaces the rest of the word, Ctrl+Space/Ctrl+Shift+Space/Ctrl+J/Alt+/
   -- trigger basic/smart/live template/word completion and Ctrl+Q/Ctrl+P show docs/parameter info.
@@ -11,12 +12,16 @@ return {
       preset = 'enter',
       ['<Tab>'] = {
         function(cmp)
-          if cmp.is_menu_visible() == false or cmp.get_selected_item() == nil then return end
+          if cmp.is_menu_visible() == false or cmp.get_selected_item() == nil then
+            return
+          end
 
           local bufnr = vim.api.nvim_get_current_buf()
           local row, col = unpack(vim.api.nvim_win_get_cursor(0))
           local suffix = vim.fn.matchstr(vim.api.nvim_get_current_line(), [[^\k\+]], col)
-          if suffix == '' then return cmp.accept() end
+          if suffix == '' then
+            return cmp.accept()
+          end
 
           -- Extmarks follow the suffix while the accepted item is inserted in front of it.
           local ns = vim.api.nvim_create_namespace('blink_cmp_replace_suffix')
@@ -29,50 +34,73 @@ return {
               local start = vim.api.nvim_buf_get_extmark_by_id(bufnr, ns, start_id, {})
               local finish = vim.api.nvim_buf_get_extmark_by_id(bufnr, ns, end_id, {})
               vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
-              if #start == 0 or #finish == 0 then return end
+              if #start == 0 or #finish == 0 then
+                return
+              end
 
               -- The language server's edit may already have replaced the suffix.
               local text = vim.api.nvim_buf_get_text(bufnr, start[1], start[2], finish[1], finish[2], {})
-              if table.concat(text, '\n') ~= suffix then return end
+              if table.concat(text, '\n') ~= suffix then
+                return
+              end
 
               vim.api.nvim_buf_set_text(bufnr, start[1], start[2], finish[1], finish[2], {})
-            end
+            end,
           })
         end,
         'snippet_forward',
-        'fallback'
+        'fallback',
       },
-      ['<C-S-Space>'] = { function(cmp) return cmp.show({ providers = { 'lsp' } }) end },
-      ['<C-j>'] = { function(cmp) return cmp.show({ providers = { 'snippets' } }) end, 'fallback' },
+      ['<C-S-Space>'] = {
+        function(cmp)
+          return cmp.show({ providers = { 'lsp' } })
+        end,
+      },
+      ['<C-j>'] = {
+        function(cmp)
+          return cmp.show({ providers = { 'snippets' } })
+        end,
+        'fallback',
+      },
       -- Cyclic word expansion, Vim's own keyword completion starts with the nearest word.
       ['<M-/>'] = {
         function(cmp)
           cmp.hide()
           vim.api.nvim_feedkeys(vim.keycode('<C-p>'), 'n', false)
           return true
-        end
+        end,
       },
-      ['<M-?>'] = {
+      -- Windows Terminal sends Alt+? as Alt+Shift+/.
+      ['<M-S-/>'] = {
         function(cmp)
           cmp.hide()
           vim.api.nvim_feedkeys(vim.keycode('<C-n>'), 'n', false)
           return true
-        end
+        end,
       },
       ['<C-q>'] = { 'show_documentation', 'hide_documentation', 'fallback' },
       ['<C-p>'] = { 'select_prev', 'show_signature', 'hide_signature', 'fallback_to_mappings' },
     },
+    appearance = {
+      kind_icons = {
+        Interface = '',
+        Struct = '',
+        Enum = '',
+        EnumMember = '',
+      },
+    },
     completion = {
-      list = { selection = { preselect = true, auto_insert = false } },
+      list = { selection = { auto_insert = false } },
+      menu = { draw = { snippet_indicator = '' } },
       documentation = { auto_show = true },
     },
     signature = { enabled = true },
     sources = {
-      default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      per_filetype = { lua = { 'lazydev', inherit_defaults = true } },
       providers = {
         lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink', score_offset = 100 },
-      }
+      },
     },
-    fuzzy = { implementation = 'prefer_rust_with_warning' }
-  }
+  },
 }

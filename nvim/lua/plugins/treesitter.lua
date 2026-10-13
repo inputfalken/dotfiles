@@ -7,19 +7,19 @@ local parsers = {
   'xml',
   'javascript',
   'typescript',
+  'tsx',
   'css',
   'csv',
   'gitcommit',
   'markdown',
   'markdown_inline',
   'sql',
-  'yaml'
+  'yaml',
 }
 
 return {
   'nvim-treesitter/nvim-treesitter',
   branch = 'main',
-  lazy = false,
   build = ':TSUpdate',
   config = function()
     local nts = require('nvim-treesitter')
@@ -37,10 +37,10 @@ return {
       pattern = filetypes,
       callback = function(args)
         local ok = pcall(vim.treesitter.start, args.buf)
-        if ok then
+        if ok and vim.treesitter.query.get(vim.treesitter.language.get_lang(args.match), 'indents') then
           vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end
       end,
     })
-  end
+  end,
 }

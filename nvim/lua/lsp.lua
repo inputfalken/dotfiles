@@ -1,24 +1,62 @@
 -- Server specific configuration lives in `after/lsp/<server>.lua`, see `:h lsp-config`.
 -- Servers installed through mason are enabled automatically by mason-lspconfig, except Roslyn which roslyn.nvim runs.
-local floatOpts = {
+
+-- Diagnostics {
+local severity_icons = {
+  [vim.diagnostic.severity.ERROR] = '󰅚',
+  [vim.diagnostic.severity.WARN] = '󰀪',
+  [vim.diagnostic.severity.INFO] = '󰋽',
+  [vim.diagnostic.severity.HINT] = '󰌶',
+}
+
+local float_opts = {
   focusable = false,
   close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
   border = 'rounded',
   source = true,
-  prefix = ' ',
+  header = { '󰒡 Diagnostics', 'Title' },
+  prefix = function(diagnostic)
+    local name = vim.diagnostic.severity[diagnostic.severity]
+    return severity_icons[diagnostic.severity] .. ' ', 'Diagnostic' .. name:sub(1, 1) .. name:sub(2):lower()
+  end,
   scope = 'cursor',
 }
 
 vim.diagnostic.config({
-  underline = true,
-  virtual_text = true,
+  signs = {
+    text = severity_icons,
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+    },
+  },
+  virtual_text = {
+    prefix = function(diagnostic)
+      return severity_icons[diagnostic.severity]
+    end,
+  },
   severity_sort = true,
-  float = floatOpts,
+  float = float_opts,
 })
+-- }
 
+-- Code lens {
 -- Reference counts above types and members, like Rider's code vision.
 vim.lsp.codelens.enable(true)
+-- }
 
+-- Inlay hints {
+-- Shown while reading, hidden while typing so they don't shift the text.
+vim.lsp.inlay_hint.enable(true)
+vim.api.nvim_create_autocmd({ 'InsertEnter', 'InsertLeave' }, {
+  group = vim.api.nvim_create_augroup('LspInlayHint', { clear = true }),
+  callback = function(event)
+    vim.lsp.inlay_hint.enable(event.event == 'InsertLeave', { bufnr = event.buf })
+  end,
+})
+-- }
+
+-- Solution errors {
 -- Compile errors across the current file's solution, like Rider's "Errors in Solution". Workspace diagnostics
 -- arrive asynchronously, so the list is refreshed while it is the current quickfix list.
 local solution_errors = 'Solution errors'
@@ -33,47 +71,110 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
       refresh_scheduled = false
       vim.diagnostic.setqflist({ title = solution_errors, severity = vim.diagnostic.severity.ERROR, open = false })
     end, 200)
-  end
+  end,
 })
 vim.keymap.set('n', '<Leader>fd', function()
-  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0, method = 'workspace/diagnostic' })) do
-    vim.lsp.buf.workspace_diagnostics({ client_id = client.id })
-  end
+  vim.lsp.buf.workspace_diagnostics()
   vim.diagnostic.setqflist({ title = solution_errors, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Solution errors' })
+-- }
 
+-- Attach {
+-- One group per feature, each cleared per buffer only by a server that has the feature, so a second server
+-- attaching to the same buffer doesn't remove the first one's autocmds.
 local hover_group = vim.api.nvim_create_augroup('LspDiagnosticHover', { clear = true })
+local highlight_group = vim.api.nvim_create_augroup('LspDocumentHighlight', { clear = true })
+local eslint_group = vim.api.nvim_create_augroup('LspEslintFixOnSave', { clear = true })
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
 
     -- Open diagnostic pop-up when hovering, the delay is controlled by 'updatetime'.
     -- Cleared first so multiple clients attaching to a buffer don't stack autocmds.
-    vim.api.nvim_clear_autocmds({ group = hover_group, buffer = bufnr })
+    vim.api.nvim_clear_autocmds({ group = hover_group, buf = bufnr })
     vim.api.nvim_create_autocmd('CursorHold', {
       group = hover_group,
-      buffer = bufnr,
+      buf = bufnr,
       callback = function()
         vim.diagnostic.open_float()
-      end
+      end,
     })
 
+    -- Highlight the other uses of the symbol under the cursor, like Rider.
+    if client and client:supports_method('textDocument/documentHighlight') then
+      vim.api.nvim_clear_autocmds({ group = highlight_group, buf = bufnr })
+      vim.api.nvim_create_autocmd('CursorHold', {
+        group = highlight_group,
+        buf = bufnr,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
+        group = highlight_group,
+        buf = bufnr,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+
+    -- ESLint fixes the file before it is saved, the command comes from nvim-lspconfig's eslint config.
+    if client and client.name == 'eslint' then
+      vim.api.nvim_clear_autocmds({ group = eslint_group, buf = bufnr })
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = eslint_group,
+        buf = bufnr,
+        command = 'LspEslintFixAll',
+      })
+    end
+
+    -- The server's fold ranges (e.g. C# #region) replace treesitter's for this buffer.
+    if client and client:supports_method('textDocument/foldingRange') then
+      for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+        vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+      end
+    end
+
     -- Mappings. Next/previous diagnostic are Neovim's default `]d`/`[d`.
-    local opts = { buffer = bufnr, silent = true }
-    local telescope = require('telescope.builtin')
-    vim.keymap.set('n', '<Leader>gd', telescope.lsp_definitions, opts)
-    vim.keymap.set('n', '<Leader>fu', telescope.lsp_references, opts)
-    vim.keymap.set('n', '<Leader>gi', telescope.lsp_implementations, opts)
-    vim.keymap.set('n', '<Leader>gD', telescope.lsp_type_definitions, opts)
-    vim.keymap.set('n', '<Leader>?', function()
+    local map = function(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buf = bufnr, desc = desc })
+    end
+    -- Telescope is required on use, so attaching a server doesn't load it.
+    map('n', '<Leader>gd', function()
+      require('telescope.builtin').lsp_definitions()
+    end, 'Go to definition')
+    map('n', '<Leader>fu', function()
+      require('telescope.builtin').lsp_references({ include_declaration = false })
+    end, 'Find usages')
+    map('n', '<Leader>gi', function()
+      require('telescope.builtin').lsp_implementations()
+    end, 'Go to implementation')
+    map('n', '<Leader>gD', function()
+      require('telescope.builtin').lsp_type_definitions()
+    end, 'Go to type definition')
+    -- The file's types and members like Rider's "Go to File Member", locals and namespaces are left out.
+    map('n', '<Leader>gm', function()
+      require('telescope.builtin').lsp_document_symbols({
+        symbols = {
+          'Class', 'Struct', 'Interface', 'Enum', 'EnumMember', 'Constructor', 'Method', 'Function', 'Property',
+          'Field', 'Event', 'Constant', 'Operator',
+        },
+      })
+    end, 'Go to member')
+    map('n', '<Leader>?', function()
       if vim.diagnostic.open_float() == nil then
         vim.lsp.buf.hover({ border = 'rounded' })
       end
-    end, opts)
-    vim.keymap.set({ 'n', 'i' }, '<F2>', vim.lsp.buf.rename, opts)
-    -- Windows Terminal keeps Alt+Enter for full screen, so Ctrl+Enter opens the actions as well.
-    vim.keymap.set({ 'n', 'i', 'x' }, '<A-CR>', vim.lsp.buf.code_action, opts)
-    vim.keymap.set({ 'n', 'i', 'x' }, '<C-CR>', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<Leader>rc', vim.lsp.buf.format, opts)
+    end, 'Diagnostics or hover')
+    map({ 'n', 'i' }, '<F2>', vim.lsp.buf.rename, 'Rename')
+    if client and client:supports_method('textDocument/codeLens') then
+      map('n', '<Leader>cl', vim.lsp.codelens.run, 'Code lens actions')
+    end
+    -- Only for servers with code actions, so the mssql.nvim server keeps `<C-CR>` for executing SQL.
+    if client and client:supports_method('textDocument/codeAction') then
+      -- Alt+Enter like Rider, Windows Terminal's settings.json unbinds it from full screen. Ctrl+Enter opens the
+      -- actions as well.
+      map({ 'n', 'i', 'x' }, '<A-CR>', vim.lsp.buf.code_action, 'Code actions')
+      map({ 'n', 'i', 'x' }, '<C-CR>', vim.lsp.buf.code_action, 'Code actions')
+    end
   end,
 })
+-- }

@@ -1,94 +1,83 @@
 local dotnet = require('modules.dotnet')
 local ui = require('dap.ui')
 
--- Runs `fn` in a coroutine and hands its result to nvim-dap, see `:h dap-configuration`.
-local function async(fn)
-  return coroutine.create(function(dap_run_co)
-    coroutine.resume(dap_run_co, fn())
-  end)
-end
-
--- Picks a project, builds it like Rider and returns the assembly to debug. Must be called from within a coroutine.
+-- Picks a project, builds it like Rider and returns the assembly to debug and the project directory to run it from,
+-- Rider's default working directory, or a config nvim-dap aborts. Must be called from within a coroutine.
 local function launch_program(projects)
   if #projects == 0 then
     vim.notify('No project found', vim.log.levels.WARN)
-    return
+    return { program = require('dap').ABORT }
   end
   local project = ui.pick_if_many(projects, 'Select project:', vim.fs.basename)
   if project == nil then
-    return
+    return { program = require('dap').ABORT }
   end
 
   local co = coroutine.running()
-  dotnet.build(project, function(succeeded) coroutine.resume(co, succeeded) end)
+  dotnet.build(project, function(succeeded)
+    coroutine.resume(co, succeeded)
+  end)
   if coroutine.yield() == false then
-    return
+    return { program = require('dap').ABORT }
   end
 
-  -- Sets the working directory for the window/buffer only.
-  vim.cmd.lchdir(vim.fs.dirname(project))
-  return dotnet.target_path(project)
+  dotnet.target_path(project, function(path)
+    coroutine.resume(co, path)
+  end)
+  local program = coroutine.yield()
+  if program == nil then
+    return { program = require('dap').ABORT }
+  end
+  return { program = program, cwd = vim.fs.dirname(project) }
 end
 
 return {
   setup = function(dap)
-    local adapter = dotnet.dap_adapter
+    local adapter = 'netcoredbg'
     dap.adapters[adapter] = {
       type = 'executable',
       -- Mason's `bin` only has a `.cmd` shim, which libuv can't spawn on Windows.
       command = vim.fn.expand('$MASON/packages/netcoredbg/netcoredbg/netcoredbg.exe'),
-      args = { '--interpreter=vscode' }
+      args = { '--interpreter=vscode' },
     }
     -- Like Rider's "Break on user-unhandled exceptions".
     dap.defaults[adapter].exception_breakpoints = { 'user-unhandled' }
+    -- nvim-dap calls `__call` from within its coroutine when a run starts, to add `program` and `cwd`, or `processId`, at once.
     local config = {
-      {
-        type    = adapter,
-        name    = 'Launch (CWD)',
-        request = 'launch',
-        program = function()
-          local cwd = vim.fn.getcwd()
-          return async(function()
-            return launch_program(dotnet.find_projects(cwd)) or dap.ABORT
+      setmetatable({ type = adapter, name = 'Launch project', request = 'launch' }, {
+        __call = function(launch)
+          local co = coroutine.running()
+          dotnet.executable_projects(dotnet.workspace_dir(), function(projects)
+            coroutine.resume(co, projects)
           end)
+          return vim.tbl_extend('force', launch, launch_program(coroutine.yield()))
         end,
-      },
-      {
-        type    = adapter,
-        name    = 'Launch (CWF)',
-        request = 'launch',
-        program = function()
-          local file_directory = vim.fn.expand('%:p:h')
-          return async(function()
-            return launch_program({ dotnet.nearest_project(file_directory) }) or dap.ABORT
-          end)
+      }),
+      setmetatable({ type = adapter, name = 'Launch (CWF)', request = 'launch' }, {
+        __call = function(launch)
+          local projects = { dotnet.nearest_project(vim.fn.expand('%:p:h')) }
+          return vim.tbl_extend('force', launch, launch_program(projects))
         end,
-      },
-      {
-        name      = 'Attach to process',
-        type      = adapter,
-        request   = 'attach',
-        processId = function()
-          return async(function()
-            -- Processes started from the user's profile, newest first.
-            local processes = vim.json.decode(vim.fn.system([[
-              Get-Process `
-              | Where-Object { $_.Path -and $_.Path.StartsWith($env:USERPROFILE) } `
-              | Sort-Object -Descending StartTime `
-              | Select-Object Id, @{Name = 'Name'; Expression='ProcessName'} `
-              | ConvertTo-Json -Compress -AsArray
-            ]]))
-            local process = ui.pick_one(processes, 'Select process:', function(p)
-              return string.format('%s(%s)', p.Name, p.Id)
+      }),
+      setmetatable({ type = adapter, name = 'Attach to process', request = 'attach' }, {
+        __call = function(attach)
+          -- Every .NET process opens a `dotnet-diagnostic-<pid>` pipe, so these are the processes netcoredbg can attach to.
+          local processes = vim
+            .iter(vim.fn.readdir('//./pipe/'))
+            :map(function(pipe)
+              local pid = tonumber(pipe:match('^dotnet%-diagnostic%-(%d+)$'))
+              return pid and vim.api.nvim_get_proc(pid)
             end)
-            return process and process.Id or dap.ABORT
+            :totable()
+          local process = ui.pick_one(processes, 'Select process:', function(p)
+            return string.format('%s(%s)', p.name, p.pid)
           end)
+          return vim.tbl_extend('force', attach, { processId = process and process.pid or dap.ABORT })
         end,
-        args      = {},
-      },
+      }),
     }
 
     dap.configurations.cs = config
     dap.configurations.fsharp = config
-  end
+  end,
 }

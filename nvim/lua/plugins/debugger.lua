@@ -1,3 +1,7 @@
+local function continue()
+  require('dap').continue()
+end
+
 return {
   'rcarriga/nvim-dap-ui',
   dependencies = {
@@ -7,17 +11,53 @@ return {
     { 'theHamsta/nvim-dap-virtual-text', opts = { virt_text_pos = 'eol' } }, -- Values at the end of the line, like Rider.
   },
   -- The mappings below and nvim-dap's commands load the debugger on first use.
-  keys = { '<F5>', '<Leader>bp' },
+  keys = {
+    { '<F5>', continue },
+    { '<Leader>dec', continue, desc = 'Start or continue debugging' },
+    {
+      '<Leader>deb',
+      function()
+        require('dap').toggle_breakpoint()
+      end,
+      desc = 'Toggle breakpoint',
+    },
+    {
+      '<Leader>deB',
+      function()
+        require('dap').clear_breakpoints()
+      end,
+      desc = 'Clear breakpoints',
+    },
+  },
   cmd = {
-    'DapContinue', 'DapToggleBreakpoint', 'DapClearBreakpoints', 'DapStepOver', 'DapStepInto', 'DapStepOut',
-    'DapPause', 'DapTerminate', 'DapDisconnect', 'DapRestartFrame', 'DapNew', 'DapEval', 'DapToggleRepl',
-    'DapSetLogLevel', 'DapShowLog',
+    'DapContinue',
+    'DapToggleBreakpoint',
+    'DapClearBreakpoints',
+    'DapStepOver',
+    'DapStepInto',
+    'DapStepOut',
+    'DapPause',
+    'DapTerminate',
+    'DapDisconnect',
+    'DapRestartFrame',
+    'DapNew',
+    'DapEval',
+    'DapToggleRepl',
+    'DapSetLogLevel',
+    'DapShowLog',
   },
   config = function()
     local dap, dap_ui = require('dap'), require('dapui')
 
-    vim.keymap.set('n', '<F5>', dap.continue)
-    vim.keymap.set('n', '<Leader>bp', dap.toggle_breakpoint)
+    for name, sign in pairs({
+      DapBreakpoint = { text = '', texthl = 'DiagnosticError' },
+      DapBreakpointCondition = { text = '', texthl = 'DiagnosticError' },
+      DapLogPoint = { text = '', texthl = 'DiagnosticInfo' },
+      DapStopped = { text = '', texthl = 'DiagnosticWarn', linehl = 'Visual' },
+      DapBreakpointRejected = { text = '', texthl = 'DiagnosticWarn' },
+    }) do
+      vim.fn.sign_define(name, sign)
+    end
 
     -- Rider's debugger keys only exist while a session runs, so they keep their normal meaning otherwise.
     local session_keys = {
@@ -27,14 +67,18 @@ return {
       { 'n', '<C-F10>', dap.run_to_cursor },
       { 'n', '<C-S-F5>', dap.restart },
       -- Like Rider, stop terminates a launched program but only detaches from an attached process.
-      { 'n', '<S-F5>', function()
-        local session = dap.session()
-        if session == nil then
-          return
-        end
-        dap.disconnect({ terminateDebuggee = session.config.request == 'launch' })
-      end },
-      { { 'n', 'x' }, '<C-q>', function() dap_ui.eval() end },
+      {
+        'n',
+        '<S-F5>',
+        function()
+          local session = dap.session()
+          if session == nil then
+            return
+          end
+          dap.disconnect({ terminateDebuggee = session.config.request == 'launch' })
+        end,
+      },
+      { { 'n', 'x' }, '<C-q>', dap_ui.eval },
     }
     dap.listeners.on_session.session_keys = function(_, new_session)
       for _, key in ipairs(session_keys) do
@@ -61,5 +105,5 @@ return {
     end
 
     require('plugins.debugger.csharp').setup(dap)
-  end
+  end,
 }

@@ -22,4 +22,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Every file in `lua/plugins/` returns a plugin spec.
-require('lazy').setup({ spec = { { import = 'plugins' } } })
+require('lazy').setup({
+  spec = { { import = 'plugins' } },
+  -- No plugin needs luarocks or the remote plugin host.
+  rocks = { enabled = false },
+  performance = { rtp = { disabled_plugins = { 'rplugin' } } },
+})
