@@ -1,5 +1,3 @@
-[push]
-  default = simple
 [alias]
   lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
   d = difftool
@@ -12,20 +10,16 @@
   rename = "!git branch -m $2 $3 && git push $1 :$2 $3 -u #"
 [core]
   excludesfile = ~/.gitignore_global
-  ignorecase = true
   pager = delta
-  attributesfile = ~/.gitattributes
   # https://stackoverflow.com/a/40720527
   sshCommand = 'C:\\Windows\\System32\\OpenSSH\\ssh.exe'
 	symlinks = true
 	fsmonitor = true
-	untrackedCache = true
-  #editor = nvim
+  editor = nvim
 [interactive]
   diffFilter = delta --color-only
 [delta]
   navigate = true
-  line-numbers = true
   side-by-side= true
 [pull]
   rebase = true
@@ -35,20 +29,18 @@
 [log]
   follow = true
 [merge]
-  conflictstyle = diff3
+  conflictstyle = zdiff3
   renormalize = true
-  tool = vimdiff
+  tool = nvimdiff
 [mergetool]
     prompt = true
-[mergetool "vimdiff"]
-    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[mergetool "nvimdiff"]
+    layout = (BASE,LOCAL,REMOTE)/MERGED
 [difftool]
     prompt = false
 [diff]
-  tool = vimdiff
+  tool = nvimdiff
   colorMoved = default
-[branch]
-  autosetuprebase = always
 [color "diff"]
   new = green bold
   meta = yellow
@@ -63,13 +55,6 @@
 [rerere]
   enabled = true
   autoUpdate = true
-[color]
-  ui = true
-[color "diff-highlight"]
-  oldNormal = red bold
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
 # Machine-specific settings (e.g. [user] name/email), not tracked
 [include]
   path = ~/.gitconfig.local
