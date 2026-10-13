@@ -2,6 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "version": 2,
   "final_space": true,
+  "shell_integration": true,
+  "pwd": "osc99",
+  "console_title_template": "{{ if .Root }}Admin: {{ end }}{{ .Folder }}",
   "blocks": [
     {
       "type": "prompt",
@@ -12,7 +15,7 @@
           "style": "plain",
           "foreground": "lightBlue",
           "template": "{{ .Path }} ",
-          "properties": {
+          "options": {
             "style": "folder"
           }
         },
@@ -21,7 +24,7 @@
           "style": "plain",
           "foreground": "lightYellow",
           "template": "{{ .HEAD }}{{ if .Working.Changed }}*{{ end }}{{ .BranchStatus }} ",
-          "properties": {
+          "options": {
             "fetch_status": true
           }
         },
@@ -33,7 +36,7 @@
             "{{ if gt .Code 0 }}red{{ end }}"
           ],
           "template": "❯",
-          "properties": {
+          "options": {
             "always_enabled": true
           }
         }
