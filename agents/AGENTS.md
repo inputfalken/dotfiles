@@ -1,5 +1,6 @@
 ## Workflow Orchestration
 - Code, comments, app content: English only
+- Commits, PRs: no AI attribution. No `Co-Authored-By`, no "Generated with" line, no agent as author
 
 ## Core Principles
 - **Simplicity First:** Every change simple. Min code impact

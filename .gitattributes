@@ -1,2 +1,5 @@
 # PowerShell scripts always use Windows line endings, regardless of the tool that wrote them.
+* text=auto
 *.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
