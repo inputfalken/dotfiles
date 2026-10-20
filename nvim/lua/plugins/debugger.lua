@@ -1,7 +1,3 @@
-local function continue()
-  require('dap').continue()
-end
-
 return {
   'rcarriga/nvim-dap-ui',
   dependencies = {
@@ -12,22 +8,10 @@ return {
   },
   -- The mappings below and nvim-dap's commands load the debugger on first use.
   keys = {
-    { '<F5>', continue },
-    { '<Leader>dec', continue, desc = 'Start or continue debugging' },
-    {
-      '<Leader>deb',
-      function()
-        require('dap').toggle_breakpoint()
-      end,
-      desc = 'Toggle breakpoint',
-    },
-    {
-      '<Leader>deB',
-      function()
-        require('dap').clear_breakpoints()
-      end,
-      desc = 'Clear breakpoints',
-    },
+    { '<F5>', '<Cmd>DapContinue<CR>' },
+    { '<Leader>dec', '<Cmd>DapContinue<CR>', desc = 'Start or continue debugging' },
+    { '<Leader>deb', '<Cmd>DapToggleBreakpoint<CR>', desc = 'Toggle breakpoint' },
+    { '<Leader>deB', '<Cmd>DapClearBreakpoints<CR>', desc = 'Clear breakpoints' },
   },
   cmd = {
     'DapContinue',

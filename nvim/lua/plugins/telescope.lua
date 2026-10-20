@@ -23,34 +23,10 @@ return {
       end,
       desc = 'Search everywhere',
     },
-    {
-      '<Leader>/',
-      function()
-        require('telescope.builtin').live_grep()
-      end,
-      desc = 'Live grep',
-    },
-    {
-      '<Leader>ff',
-      function()
-        require('telescope.builtin').find_files()
-      end,
-      desc = 'Find files',
-    },
-    {
-      '<Leader>fh',
-      function()
-        require('telescope.builtin').help_tags()
-      end,
-      desc = 'Find help',
-    },
-    {
-      '<Leader>fb',
-      function()
-        require('telescope.builtin').buffers()
-      end,
-      desc = 'Find buffers',
-    },
+    { '<Leader>/', '<Cmd>Telescope live_grep<CR>', desc = 'Live grep' },
+    { '<Leader>ff', '<Cmd>Telescope find_files<CR>', desc = 'Find files' },
+    { '<Leader>fh', '<Cmd>Telescope help_tags<CR>', desc = 'Find help' },
+    { '<Leader>fb', '<Cmd>Telescope buffers<CR>', desc = 'Find buffers' },
   },
   init = function()
     -- `vim.ui.select`, e.g. code actions, opens a filterable list at the cursor like Rider's context actions.

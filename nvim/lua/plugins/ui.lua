@@ -16,7 +16,15 @@ return {
       sections = {
         lualine_b = {
           'branch',
-          { 'diff', symbols = { added = ' ', modified = ' ', removed = ' ' } },
+          {
+            'diff',
+            symbols = { added = ' ', modified = ' ', removed = ' ' },
+            -- Line counts gitsigns already keeps, so lualine doesn't run git diff per buffer.
+            source = function()
+              local status = vim.b.gitsigns_status_dict
+              return status and { added = status.added, modified = status.changed, removed = status.removed }
+            end,
+          },
           'diagnostics',
         },
         lualine_c = {
@@ -37,20 +45,16 @@ return {
     'folke/which-key.nvim',
     event = 'VeryLazy',
     opts = {
+      -- A group with one entry shows that entry instead, e.g. <Leader>bu in place of <Leader>b, and needs no label.
+      expand = 1,
       spec = {
         { '<Leader>f', group = 'Find' },
         { '<Leader>g', group = 'Go to', icon = { icon = '󰜴', color = 'blue' } },
         { '<Leader>h', group = 'Git hunk' },
         -- The first key of the two-letter namespaces, e.g. <Leader>db for the database and <Leader>de for debugging.
-        { '<Leader>b', group = 'Build', icon = { icon = '󱁤', color = 'orange' } },
-        { '<Leader>c', group = 'Code', icon = { icon = '󰈈', color = 'purple' } },
         { '<Leader>d', group = 'Database & debug', icon = { icon = '', color = 'red' } },
-        { '<Leader>e', group = 'Edit', icon = { icon = '', color = 'grey' } },
-        { '<Leader>l', group = 'Language server', icon = { icon = '󰒋', color = 'blue' } },
         { '<Leader>r', group = 'Run & reformat', icon = { icon = '', color = 'green' } },
-        { '<Leader>t', group = 'Test', icon = { icon = '󰙨', color = 'green' } },
         { '<Leader>bu', group = 'Build', icon = { icon = '󱁤', color = 'orange' } },
-        { '<Leader>ru', group = 'Run', icon = { icon = '', color = 'green' } },
         { '<Leader>te', group = 'Test', icon = { icon = '󰙨', color = 'green' } },
         { '<Leader>de', group = 'Debug', icon = { icon = '', color = 'red' } },
         { '<Leader>ls', group = 'Language server', icon = { icon = '󰒋', color = 'blue' } },
@@ -75,10 +79,7 @@ return {
           { pattern = '^code lens actions$', icon = '󰈈', color = 'purple' }, -- <Leader>cl
           { pattern = '^build solution$', icon = '󱁤', color = 'orange' }, -- <Leader>bus
           { pattern = '^build project$', icon = '󱁤', color = 'yellow' }, -- <Leader>bup
-          { pattern = '^run project$', icon = '', color = 'green' }, -- <Leader>run
-          { pattern = '^run nearest test$', icon = '󰙨', color = 'green' }, -- <Leader>ten
           { pattern = '^run tests in file$', icon = '󰙨', color = 'green' }, -- <Leader>tef
-          { pattern = '^run all tests$', icon = '󰙨', color = 'green' }, -- <Leader>tea
           { pattern = '^test output$', icon = '󰍩', color = 'blue' }, -- <Leader>teo
           { pattern = '^test summary$', icon = '󰙅', color = 'blue' }, -- <Leader>tes
           { pattern = '^start or continue debugging$', icon = '', color = 'green' }, -- <Leader>dec

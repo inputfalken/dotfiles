@@ -11,36 +11,27 @@ return {
     vim.g.db_ui_disable_mappings_sql = 1
   end,
   config = function()
-    local function encode(value)
-      return (tostring(value):gsub('[^%w%-._~]', function(char)
-        return string.format('%%%02X', char:byte())
-      end))
-    end
-
     local connections_file = vim.fs.joinpath(vim.fn.stdpath('data'), 'mssql.nvim', 'connections.json')
     local connections = vim.json.decode(table.concat(vim.fn.readfile(connections_file), '\n'))
 
     -- Without a user the dadbod adapter falls back to Windows authentication.
-    vim.g.dbs = vim
-      .iter(connections)
-      :map(function(name, connection)
-        local credentials = connection.user
-            and string.format('%s:%s@', encode(connection.user), encode(connection.password or ''))
-          or ''
-        local params = connection.trustServerCertificate and '?trustServerCertificate=true' or ''
-        return name,
-          string.format(
-            'sqlserver://%s%s/%s%s',
-            credentials,
-            encode(connection.server),
-            encode(connection.database or ''),
-            params
+    vim.g.dbs = vim.tbl_map(function(connection)
+      local credentials = connection.user
+          and string.format(
+            '%s:%s@',
+            vim.uri_encode(connection.user, 'rfc2396'),
+            vim.uri_encode(connection.password or '', 'rfc2396')
           )
-      end)
-      :fold({}, function(dbs, name, url)
-        dbs[name] = url
-        return dbs
-      end)
+        or ''
+      local params = connection.trustServerCertificate and '?trustServerCertificate=true' or ''
+      return string.format(
+        'sqlserver://%s%s/%s%s',
+        credentials,
+        vim.uri_encode(connection.server, 'rfc2396'),
+        vim.uri_encode(connection.database or '', 'rfc2396'),
+        params
+      )
+    end, connections)
 
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(args)

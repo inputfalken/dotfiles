@@ -7,13 +7,7 @@ return {
     'rcarriga/nvim-dap-ui', -- Registers the netcoredbg adapter the dap strategy runs on.
   },
   keys = {
-    {
-      '<Leader>ten',
-      function()
-        require('neotest').run.run()
-      end,
-      desc = 'Run nearest test',
-    },
+    { '<Leader>ten', '<Cmd>Neotest run<CR>', desc = 'Run nearest test' },
     {
       '<Leader>tef',
       function()
@@ -21,34 +15,10 @@ return {
       end,
       desc = 'Run tests in file',
     },
-    {
-      '<Leader>tea',
-      function()
-        require('neotest').run.run({ suite = true })
-      end,
-      desc = 'Run all tests',
-    },
-    {
-      '<Leader>teo',
-      function()
-        require('neotest').output.open({ enter = true, last_run = true })
-      end,
-      desc = 'Test output',
-    },
-    {
-      '<Leader>tes',
-      function()
-        require('neotest').summary.toggle()
-      end,
-      desc = 'Test summary',
-    },
-    {
-      '<Leader>det',
-      function()
-        require('neotest').run.run({ strategy = 'dap' })
-      end,
-      desc = 'Debug nearest test',
-    },
+    { '<Leader>tea', '<Cmd>Neotest run suite=true<CR>', desc = 'Run all tests' },
+    { '<Leader>teo', '<Cmd>Neotest output enter=true last_run=true<CR>', desc = 'Test output' },
+    { '<Leader>tes', '<Cmd>Neotest summary<CR>', desc = 'Test summary' },
+    { '<Leader>det', '<Cmd>Neotest run strategy="dap"<CR>', desc = 'Debug nearest test' },
   },
   config = function()
     require('neotest').setup({

@@ -1,7 +1,6 @@
 " Options {
     " Disable bell sounds
     set                  visualbell
-    set                  noerrorbells
     " Settings
     set                  cursorline
     " Enable vim surround function
@@ -24,7 +23,6 @@
 " }
 
 " Navigation {
-    map                  Y y$
     inoremap             jk <esc>
     nnoremap             <C-j> :action MethodDown<CR>
     nnoremap             <C-k> :action MethodUp<CR>
@@ -46,7 +44,6 @@
     nnoremap             <Leader>gf :action GotoFile<CR>
     nnoremap             <Leader>gi :action GotoImplementation<CR>
     nnoremap             <Leader>gm :action FileStructurePopup<cr>
-    nnoremap             <Leader>bp :action ViewBreakpoints<cr>
     nnoremap             <Leader>fs :action ActivateProjectToolWindow<CR>
     
     nnoremap             j gj
@@ -60,8 +57,6 @@
     nnoremap             <Leader>B :action build<CR>
     nnoremap             <Leader>bm :action ToggleBookmark<CR>
     nnoremap             <Leader>bp :action ToggleLineBreakpoint<CR>
-    nnoremap             <Leader>cr :action CollapseRegion<CR>
-    nnoremap             <Leader>co :action ExpandRegion<CR>
     nnoremap             <Leader>D :action Debug<CR>
     nnoremap             <Leader>R :action Run<CR>
     nnoremap             <Leader>re :action RenameElement<CR>

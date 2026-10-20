@@ -8,7 +8,8 @@ Windows dotfiles. Each config is linked from its expected location into this rep
 | `powershell/Microsoft.PowerShell_profile.ps1` | Symlink | `$PROFILE` |
 | `powershell/minimal.omp.json` | Symlink | `~\minimal.omp.json` |
 | `powershell/modules/*` | Symlink | `~\Documents\PowerShell\Modules\*` |
-| `git/.gitconfig`, `git/.gitignore_global` | Symlink | `~\` |
+| `git/.gitconfig` | Symlink | `~\` |
+| `git/.gitignore_global` | Symlink | `~\.config\git\ignore` |
 | `terminal/settings.json` | Symlink | `~\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json` |
 | `agents/AGENTS.md` | Symlink | `~\AGENTS.md` |
 | `agents/CLAUDE.md` | Symlink | `~\.claude\CLAUDE.md` |

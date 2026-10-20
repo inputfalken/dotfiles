@@ -1,15 +1,14 @@
 [alias]
-  lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+  lg = log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
   d = difftool
   ls = "log --oneline"
   nuke = !sh -c 'git branch -D $1 && git push origin :$1' -
   ours = "!f() { git checkout --ours ${@-.} && git add ${@-.}; }; f"
   theirs = "!f() { git checkout --theirs ${@-.} && git add ${@-.}; }; f"
-  lf = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]\" --decorate --numstat"
+  lf = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]\" --numstat"
   # Example: git rename origin old_branch new_branch
   rename = "!git branch -m $2 $3 && git push $1 :$2 $3 -u #"
 [core]
-  excludesfile = ~/.gitignore_global
   pager = delta
   # https://stackoverflow.com/a/40720527
   sshCommand = 'C:\\Windows\\System32\\OpenSSH\\ssh.exe'
@@ -39,7 +38,6 @@
 [difftool]
     prompt = false
 [diff]
-  tool = nvimdiff
   colorMoved = default
 [color "diff"]
   new = green bold

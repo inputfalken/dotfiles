@@ -33,7 +33,7 @@
           "style": "plain",
           "foreground": "green",
           "foreground_templates": [
-            "{{ if gt .Code 0 }}red{{ end }}"
+            "{{ if .Error }}red{{ end }}"
           ],
           "template": "❯",
           "options": {

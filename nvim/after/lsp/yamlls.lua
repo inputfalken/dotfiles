@@ -2,7 +2,7 @@
 return {
   settings = {
     yaml = {
-      schemaStore = { enable = false, url = '' },
+      schemaStore = { enable = false },
     },
   },
   -- Deferred to server start, since mason-lspconfig resolves every installed server's config at startup.

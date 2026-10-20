@@ -12,7 +12,6 @@ local severity_icons = {
 local float_opts = {
   focusable = false,
   close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
-  border = 'rounded',
   source = true,
   header = { '󰒡 Diagnostics', 'Title' },
   prefix = function(diagnostic)
@@ -137,19 +136,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     local map = function(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buf = bufnr, desc = desc })
     end
-    -- Telescope is required on use, so attaching a server doesn't load it.
-    map('n', '<Leader>gd', function()
-      require('telescope.builtin').lsp_definitions()
-    end, 'Go to definition')
-    map('n', '<Leader>fu', function()
-      require('telescope.builtin').lsp_references({ include_declaration = false })
-    end, 'Find usages')
-    map('n', '<Leader>gi', function()
-      require('telescope.builtin').lsp_implementations()
-    end, 'Go to implementation')
-    map('n', '<Leader>gD', function()
-      require('telescope.builtin').lsp_type_definitions()
-    end, 'Go to type definition')
+    -- Telescope loads on first use, so attaching a server doesn't load it.
+    map('n', '<Leader>gd', '<Cmd>Telescope lsp_definitions<CR>', 'Go to definition')
+    map('n', '<Leader>fu', '<Cmd>Telescope lsp_references include_declaration=false<CR>', 'Find usages')
+    map('n', '<Leader>gi', '<Cmd>Telescope lsp_implementations<CR>', 'Go to implementation')
+    map('n', '<Leader>gD', '<Cmd>Telescope lsp_type_definitions<CR>', 'Go to type definition')
     -- The file's types and members like Rider's "Go to File Member", locals and namespaces are left out.
     map('n', '<Leader>gm', function()
       require('telescope.builtin').lsp_document_symbols({
@@ -161,7 +152,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, 'Go to member')
     map('n', '<Leader>?', function()
       if vim.diagnostic.open_float() == nil then
-        vim.lsp.buf.hover({ border = 'rounded' })
+        vim.lsp.buf.hover()
       end
     end, 'Diagnostics or hover')
     map({ 'n', 'i' }, '<F2>', vim.lsp.buf.rename, 'Rename')

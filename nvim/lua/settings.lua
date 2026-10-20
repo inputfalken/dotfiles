@@ -22,7 +22,6 @@ vim.opt.shellcmdflag =
   "-NonInteractive -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;"
 vim.opt.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
 vim.opt.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
-vim.opt.shellquote = ''
 vim.opt.shellxquote = ''
 
 -- Started from pwsh, the inherited module path lists PowerShell 7 modules first. Windows PowerShell, which plugins
@@ -41,13 +40,10 @@ local settings_group = vim.api.nvim_create_augroup('Settings', { clear = true })
 -- Editing the PowerShell profile works from its directory, e.g. for `:e profile.local.ps1`.
 local profile_path =
   vim.fs.normalize(vim.fs.joinpath(vim.uv.os_homedir(), 'Documents/PowerShell/Microsoft.PowerShell_profile.ps1'))
-vim.api.nvim_create_autocmd('FileType', {
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
   group = settings_group,
-  pattern = 'ps1',
-  callback = function(ev)
-    if vim.fs.normalize(vim.api.nvim_buf_get_name(ev.buf)) ~= profile_path then
-      return
-    end
+  pattern = profile_path,
+  callback = function()
     vim.cmd.lchdir(vim.fs.dirname(profile_path))
   end,
 })
@@ -180,12 +176,13 @@ vim.opt.undofile = true -- Persist undo history between sessions.
 vim.opt.updatetime = 250 -- Delay before 'CursorHold' fires (diagnostic pop-up).
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+vim.opt.winborder = 'rounded' -- Floats that set no border of their own, e.g. hover, diagnostics and completion.
 -- }
 
 -- Auto reload {
--- Buffers follow changes other programs (e.g. an agent in a terminal split) make to their files. 'autoread' only acts
--- on `:checktime`, so a watcher per file buffer runs it as soon as the file changes, focus or not.
-vim.opt.autoread = true
+-- Buffers follow changes other programs (e.g. an agent in a terminal split) make to their files. 'autoread' only
+-- reloads when Neovim checks the file (`:checktime`, focus gained), so a watcher per file buffer runs `:checktime` as
+-- soon as the file changes, focus or not.
 local reload_group = vim.api.nvim_create_augroup('AutoReload', { clear = true })
 local watchers = {}
 
@@ -234,7 +231,7 @@ vim.api.nvim_create_autocmd('BufUnload', {
 })
 
 -- Covers files the watcher misses, e.g. created after the buffer was opened.
-vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'TermLeave' }, {
+vim.api.nvim_create_autocmd({ 'BufEnter', 'TermLeave' }, {
   group = reload_group,
   callback = function()
     if vim.fn.getcmdwintype() ~= '' then

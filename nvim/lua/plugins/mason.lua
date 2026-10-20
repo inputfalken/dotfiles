@@ -31,6 +31,12 @@ return {
     opts = {
       ensure_installed = { 'netcoredbg', 'stylua', 'prettier', 'biome' },
     },
+    -- The plugin installs from a VimEnter autocmd, which has already fired when VeryLazy loads it.
+    config = function(_, opts)
+      local installer = require('mason-tool-installer')
+      installer.setup(opts)
+      installer.run_on_start()
+    end,
   },
   -- JSON and YAML schemas by file name (appsettings.json, package.json, Azure Pipelines, ...), see after/lsp/.
   { 'b0o/SchemaStore.nvim', lazy = true },

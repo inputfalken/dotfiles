@@ -13,7 +13,6 @@ local parsers = {
   'editorconfig',
   'gitcommit',
   'markdown',
-  'markdown_inline',
   'sql',
   'yaml',
 }

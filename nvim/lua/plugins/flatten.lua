@@ -2,7 +2,6 @@ return {
   -- Neovim started inside a terminal (`nvim file`, git commit, rebase -i) opens its files here instead of nesting.
   -- Loaded first, so the nested instance hands over before other plugins load. git waits for commit and rebase buffers.
   'willothy/flatten.nvim',
-  lazy = false,
   priority = 1001,
   opts = {
     window = {

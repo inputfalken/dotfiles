@@ -15,7 +15,7 @@ Set-PSReadLineOption -BellStyle None
 # Predictions from history plus what Tab would complete (CompletionPredictor), shown as a list while typing.
 if ([Console]::IsOutputRedirected -eq $false) {
 Import-Module CompletionPredictor
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView
+Set-PSReadLineOption -PredictionViewStyle ListView
 }
 Set-PSReadlineKeyhandler -Key ctrl+n -Function TabCompleteNext
 Set-PSReadlineKeyhandler -Key ctrl+p -Function TabCompletePrevious
@@ -49,11 +49,6 @@ function cat { bat --paging=never @args }
 $PSStyle.Progress.UseOSCIndicator = $true
 #}
 
-# Directory listing {
-# The default is a blue background block (`e[44;1m). Palette colors follow the terminal's color scheme.
-$PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue + $PSStyle.Bold
-#}
-
 ## oh-my-posh {
 # `--print` skips the temporary init script, see https://ohmyposh.dev/docs/installation/prompt (PowerShell).
 & ([ScriptBlock]::Create((oh-my-posh init pwsh --config ~/minimal.omp.json --print) -join "`n"))
@@ -64,13 +59,9 @@ $PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue + $PSStyle.Bold
 Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -SupportEvent -Action { Import-Module -Name Terminal-Icons -Global }
 #}
 
-# PowerShell parameter completion shim for the dotnet CLI {
-Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-  param($wordToComplete, $commandAst, $cursorPosition)
-      dotnet complete --position $cursorPosition "$commandAst" | ForEach-Object {
-          [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-      }
-}
+# dotnet CLI completions {
+# The SDK generates the completion script in ~0.15 s, so it waits until the prompt is idle
+Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -SupportEvent -Action { dotnet completions script pwsh | Out-String | Invoke-Expression }
 #}
 
 ## Azure CLI {
