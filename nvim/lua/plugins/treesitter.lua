@@ -10,6 +10,7 @@ local parsers = {
   'tsx',
   'css',
   'csv',
+  'editorconfig',
   'gitcommit',
   'markdown',
   'markdown_inline',

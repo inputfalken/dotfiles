@@ -178,3 +178,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 -- }
+
+-- Servers {
+-- Stop and restart act on the servers attached to the buffer. Start re-enables only the servers already enabled for
+-- its filetype, as `:lsp enable` without names would also enable unused configs such as nvim-lspconfig's roslyn_ls.
+vim.keymap.set('n', '<Leader>lss', function()
+  local names = vim
+    .iter(vim.lsp.get_configs({ enabled = true, filetype = vim.bo.filetype }))
+    :map(function(config)
+      return config.name
+    end)
+    :totable()
+  vim.lsp.enable(names)
+end, { desc = 'Start language servers' })
+vim.keymap.set('n', '<Leader>lsq', '<Cmd>lsp stop<CR>', { desc = 'Stop language servers' })
+vim.keymap.set('n', '<Leader>lsr', '<Cmd>lsp restart<CR>', { desc = 'Restart language servers' })
+-- }

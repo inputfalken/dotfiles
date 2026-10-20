@@ -49,6 +49,11 @@ function cat { bat --paging=never @args }
 $PSStyle.Progress.UseOSCIndicator = $true
 #}
 
+# Directory listing {
+# The default is a blue background block (`e[44;1m). Palette colors follow the terminal's color scheme.
+$PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue + $PSStyle.Bold
+#}
+
 ## oh-my-posh {
 # `--print` skips the temporary init script, see https://ohmyposh.dev/docs/installation/prompt (PowerShell).
 & ([ScriptBlock]::Create((oh-my-posh init pwsh --config ~/minimal.omp.json --print) -join "`n"))

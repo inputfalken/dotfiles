@@ -33,4 +33,55 @@ return {
       end,
     },
   },
+  {
+    'sindrets/diffview.nvim',
+    cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+    keys = function()
+      -- Every diffview key closes the diffview open in the current tab instead, like the file system toggle.
+      local toggle = function(open)
+        return function()
+          if require('diffview.lib').get_current_view() ~= nil then
+            vim.cmd.DiffviewClose()
+            return
+          end
+          open()
+        end
+      end
+      return {
+        {
+          '<Leader>hd',
+          toggle(function()
+            vim.cmd.DiffviewOpen('origin/HEAD...HEAD')
+          end),
+          desc = 'Review branch',
+        },
+        {
+          '<Leader>hD',
+          toggle(function()
+            local branches = vim.fn.systemlist({
+              'git',
+              'for-each-ref',
+              '--sort=-committerdate',
+              '--format=%(refname:lstrip=2)',
+              'refs/remotes',
+            })
+            vim.ui.select(branches, { prompt = 'Review against:' }, function(branch)
+              if branch == nil then
+                return
+              end
+              vim.cmd.DiffviewOpen(branch .. '...HEAD')
+            end)
+          end),
+          desc = 'Review branch against...',
+        },
+        {
+          '<Leader>hf',
+          toggle(function()
+            vim.cmd.DiffviewFileHistory('%')
+          end),
+          desc = 'File history',
+        },
+      }
+    end,
+  },
 }

@@ -46,12 +46,14 @@ return {
         { '<Leader>c', group = 'Code', icon = { icon = '󰈈', color = 'purple' } },
         { '<Leader>d', group = 'Database & debug', icon = { icon = '', color = 'red' } },
         { '<Leader>e', group = 'Edit', icon = { icon = '', color = 'grey' } },
+        { '<Leader>l', group = 'Language server', icon = { icon = '󰒋', color = 'blue' } },
         { '<Leader>r', group = 'Run & reformat', icon = { icon = '', color = 'green' } },
         { '<Leader>t', group = 'Test', icon = { icon = '󰙨', color = 'green' } },
         { '<Leader>bu', group = 'Build', icon = { icon = '󱁤', color = 'orange' } },
         { '<Leader>ru', group = 'Run', icon = { icon = '', color = 'green' } },
         { '<Leader>te', group = 'Test', icon = { icon = '󰙨', color = 'green' } },
         { '<Leader>de', group = 'Debug', icon = { icon = '', color = 'red' } },
+        { '<Leader>ls', group = 'Language server', icon = { icon = '󰒋', color = 'blue' } },
       },
       -- Icons for mappings that which-key's built-in rules leave blank, matched on the mapping's description so
       -- they only show where the mapping exists, e.g. LSP and git hunk mappings in buffers that have them.

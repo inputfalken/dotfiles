@@ -292,3 +292,5 @@ paket-files/
 
 # Project-local Neovim config (exrc)
 .nvim.lua
+
+**/.claude/settings.local.json

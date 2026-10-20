@@ -12,6 +12,8 @@ The C# language server (Roslyn) and debugger (netcoredbg) are installed through 
 
 The TypeScript/JavaScript (`vtsls`), ESLint, CSS, JSON and YAML language servers and the Prettier and Biome formatters are installed through Mason and require **Node.js** (`npm` on the `PATH`). JSON and YAML files get schemas by file name from [SchemaStore](https://www.schemastore.org) (appsettings.json, package.json, Azure Pipelines, ...). XML is handled by lemminx, which Mason installs with its own Java runtime, including `.csproj`, `.fsproj`, `.props` and `.targets` files (tag completion, well-formedness errors and formatting, no MSBuild-specific completion).
 
+Indentation, line endings and trailing whitespace follow the project's `.editorconfig` (built in, see `:h editorconfig`), and the formatters read it too.
+
 Files are formatted on save and with `<Leader>rc` through [conform.nvim](https://github.com/stevearc/conform.nvim): stylua for Lua, Biome for JS/TS/CSS when the project has a `biome.json` and Prettier otherwise. Other filetypes, e.g. C#, PowerShell, SQL, JSON, YAML and XML, are formatted by their language server. In projects with an ESLint config, ESLint's fixes are applied before saving.
 
 SQL Server support ([mssql.nvim](https://github.com/Kurren123/mssql.nvim), `<Leader>db`) downloads Microsoft's SQL Tools Service on first start. Connections are kept in a JSON file opened with `<Leader>dbe`. `<Leader>dbc` picks a connection, opening a query buffer when needed. `<Leader>dbf` lists tables, views and procedures, and `<C-CR>` runs the statement under the cursor.

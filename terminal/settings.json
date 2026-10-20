@@ -27,6 +27,7 @@
             "keys": "ctrl+shift+space"
         }
     ],
+    "launchMode": "fullscreenFocus",
     "profiles":
     {
         "defaults":

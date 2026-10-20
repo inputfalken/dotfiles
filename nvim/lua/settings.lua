@@ -118,12 +118,25 @@ vim.opt.dictionary = 'spell' -- Complete words from the spelling dict.
 -- }
 
 -- Indent Settings {
+-- Defaults for projects without an .editorconfig, which Neovim applies per buffer, see `:h editorconfig`.
 vim.opt.copyindent = true
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftround = true -- Use multiple of shift width when indenting with '<' and '>'
+
+-- The line past 'textwidth' (.editorconfig's max_line_length) shows while typing. ModeChanged rather than
+-- InsertLeave, which <C-c> skips.
+vim.api.nvim_create_autocmd('ModeChanged', {
+  group = settings_group,
+  callback = function()
+    local colorcolumn = vim.v.event.new_mode:match('^i') and '+1' or ''
+    if vim.wo.colorcolumn ~= colorcolumn then
+      vim.wo.colorcolumn = colorcolumn
+    end
+  end,
+})
 -- }
 
 -- Line Settings {
@@ -167,6 +180,69 @@ vim.opt.undofile = true -- Persist undo history between sessions.
 vim.opt.updatetime = 250 -- Delay before 'CursorHold' fires (diagnostic pop-up).
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+-- }
+
+-- Auto reload {
+-- Buffers follow changes other programs (e.g. an agent in a terminal split) make to their files. 'autoread' only acts
+-- on `:checktime`, so a watcher per file buffer runs it as soon as the file changes, focus or not.
+vim.opt.autoread = true
+local reload_group = vim.api.nvim_create_augroup('AutoReload', { clear = true })
+local watchers = {}
+
+local function unwatch(buf)
+  local watcher = watchers[buf]
+  if not watcher then
+    return
+  end
+  watcher:close()
+  watchers[buf] = nil
+end
+
+local function watch(buf)
+  unwatch(buf)
+  local path = vim.api.nvim_buf_get_name(buf)
+  if vim.bo[buf].buftype ~= '' or path == '' or not vim.uv.fs_stat(path) then
+    return
+  end
+  local watcher = vim.uv.new_fs_event()
+  watchers[buf] = watcher
+  watcher:start(
+    path,
+    {},
+    vim.schedule_wrap(function(err)
+      if err or not vim.api.nvim_buf_is_valid(buf) then
+        unwatch(buf)
+        return
+      end
+      vim.cmd.checktime(buf)
+    end)
+  )
+end
+
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufFilePost' }, {
+  group = reload_group,
+  callback = function(ev)
+    watch(ev.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufUnload', {
+  group = reload_group,
+  callback = function(ev)
+    unwatch(ev.buf)
+  end,
+})
+
+-- Covers files the watcher misses, e.g. created after the buffer was opened.
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'TermLeave' }, {
+  group = reload_group,
+  callback = function()
+    if vim.fn.getcmdwintype() ~= '' then
+      return
+    end
+    vim.cmd.checktime()
+  end,
+})
 -- }
 
 -- Project config {
